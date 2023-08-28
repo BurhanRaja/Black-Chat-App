@@ -1,0 +1,13 @@
+{
+  "name": "prismadb",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/client": "^5.2.0",
+    "@prisma/generator-helper": "^5.2.0",
+    "prisma": "^5.2.0",
+    "zod": "^3.22.2",
+    "zod-prisma": "^0.5.4"
+  }
+}
