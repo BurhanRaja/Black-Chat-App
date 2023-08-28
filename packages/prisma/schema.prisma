@@ -10,3 +10,90 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id              Int       @id @default(autoincrement())
+  username        String    @unique
+  email           String    @unique
+  phone           String    @unique
+  uniqueId        String    @unique
+  password        String    
+  emailVerified   Boolean   @default(false)
+  about           String
+  disable         Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model ChannelUserDetail {
+  id              Int       @id @default(autoincrement())
+  userId          Int
+  user            User      @relation(fields: [userId], reference: [id])
+  access_role     Int
+  permissions     Room[]
+  join_type       Int
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model UsersChannel {
+  id              Int         @id @default(autoincrement())
+  userId          Int
+  user            User        @relation(fields: [userId], reference: [id])
+  channels        Channel[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+model Channel {
+  id              Int                 @id @default(autoincrement())
+  authorId        Int
+  author          ChannelUserDetail   @relation(fields: [authorId], reference: [id])
+  uniqueId        String              @unique
+  name            String              @unique
+  rooms           Room[]
+  user            ChannelUserDetail[]
+  inviteCode      String              @unique
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+}
+
+model Room {
+  id              Int                 @id @default(autoincrement())
+  name            String
+  authorId        Int
+  author          ChannelUserDetail   @relation(fields: [authorId], reference: [id])
+  channelId       Int
+  channel         Channel             @relation(fields: [channelId], reference: [id])
+  access_roles    Int
+  roomchatId      String              @unique
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+}
+
+model Role {
+
+}
+
+model RoomPermission {
+
+}
+
+model Friends {
+
+}
+
+model Message {
+
+}
+
+model Notifications {
+
+}
+
+model RoomChat {
+
+}
+
+model IndividualChat {
+  
+}
