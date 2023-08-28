@@ -9,13 +9,9 @@
   "devDependencies": {
     "eslint": "^8.47.0",
     "prettier": "^3.0.2",
-    "tsconfig": "*",
+    "tsconfig": "workspace:*",
     "turbo": "latest"
   },
-  "name": "blackchatapp",
-  "packageManager": "yarn@1.22.19",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ]
+  "packageManager": "pnpm@8.6.10",
+  "name": "blackchatapp"
 }
