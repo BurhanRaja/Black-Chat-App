@@ -3,6 +3,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "db-migrate": "yarn prisma migrate dev",
+    "db-studio": "yarn prisma studio",
+    "db-up": "docker-compose up -d",
+    ""
+  },
   "dependencies": {
     "@prisma/client": "^5.2.0",
     "@prisma/generator-helper": "^5.2.0",
