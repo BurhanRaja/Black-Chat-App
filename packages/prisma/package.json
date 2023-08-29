@@ -1,13 +1,14 @@
 {
-  "name": "@blackchatapp/prismadb",
-  "version": "1.0.0",
-  "main": "index.js",
+  "name": "prisma",
+  "version": "0.0.0",
+  "main": "./index.ts",
+  "types": "./index.ts",
   "license": "MIT",
   "scripts": {
-    "db-migrate": "yarn prisma migrate dev",
-    "db-studio": "yarn prisma studio",
-    "db-up": "docker-compose up -d",
-    "db-run": "run-s db-up db-migrate"
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "db:up": "docker-compose up -d",
+    "db:setup": "run-s db:up db:migrate"
   },
   "dependencies": {
     "@prisma/client": "^5.2.0",
@@ -15,5 +16,8 @@
     "prisma": "^5.2.0",
     "zod": "^3.22.2",
     "zod-prisma": "^0.5.4"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
   }
 }

@@ -1,53 +1,70 @@
-/*
-  Warnings:
+-- CreateTable
+CREATE TABLE "User" (
+    "id" SERIAL NOT NULL,
+    "username" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "phone" TEXT NOT NULL,
+    "uniqueId" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "emailVerified" BOOLEAN NOT NULL DEFAULT false,
+    "about" TEXT NOT NULL,
+    "disable" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "channelId" INTEGER,
 
-  - You are about to drop the column `access_role` on the `ChannelUserDetail` table. All the data in the column will be lost.
-  - You are about to drop the column `access_roles` on the `Room` table. All the data in the column will be lost.
-  - You are about to drop the column `authorId` on the `Room` table. All the data in the column will be lost.
-  - You are about to drop the column `roomchatId` on the `Room` table. All the data in the column will be lost.
-  - A unique constraint covering the columns `[uniqueId]` on the table `Room` will be added. If there are existing duplicate values, this will fail.
-  - Added the required column `accessRole` to the `ChannelUserDetail` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `accessRoles` to the `Room` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `uniqueId` to the `Room` table without a default value. This is not possible if the table is not empty.
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
 
-*/
--- DropForeignKey
-ALTER TABLE "ChannelUserDetail" DROP CONSTRAINT "ChannelUserDetail_channelId_fkey";
+-- CreateTable
+CREATE TABLE "ChannelUserDetail" (
+    "id" SERIAL NOT NULL,
+    "userId" TEXT NOT NULL,
+    "accessRole" INTEGER NOT NULL,
+    "join_type" INTEGER NOT NULL,
+    "channelId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
--- DropForeignKey
-ALTER TABLE "ChannelUserDetail" DROP CONSTRAINT "ChannelUserDetail_userId_fkey";
+    CONSTRAINT "ChannelUserDetail_pkey" PRIMARY KEY ("id")
+);
 
--- DropForeignKey
-ALTER TABLE "Room" DROP CONSTRAINT "Room_authorId_fkey";
+-- CreateTable
+CREATE TABLE "UsersChannel" (
+    "id" SERIAL NOT NULL,
+    "userId" TEXT NOT NULL,
+    "uniqueId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
--- DropForeignKey
-ALTER TABLE "Room" DROP CONSTRAINT "Room_channelId_fkey";
+    CONSTRAINT "UsersChannel_pkey" PRIMARY KEY ("id")
+);
 
--- DropForeignKey
-ALTER TABLE "UsersChannel" DROP CONSTRAINT "UsersChannel_userId_fkey";
+-- CreateTable
+CREATE TABLE "Channel" (
+    "id" SERIAL NOT NULL,
+    "uniqueId" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "inviteCode" TEXT NOT NULL,
+    "usersChannelId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
--- DropIndex
-DROP INDEX "Room_roomchatId_key";
+    CONSTRAINT "Channel_pkey" PRIMARY KEY ("id")
+);
 
--- DropIndex
-DROP INDEX "UsersChannel_userId_key";
+-- CreateTable
+CREATE TABLE "Room" (
+    "id" SERIAL NOT NULL,
+    "uniqueId" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "channelId" TEXT NOT NULL,
+    "accessRoles" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
--- AlterTable
-ALTER TABLE "ChannelUserDetail" DROP COLUMN "access_role",
-ADD COLUMN     "accessRole" INTEGER NOT NULL,
-ALTER COLUMN "userId" SET DATA TYPE TEXT,
-ALTER COLUMN "channelId" SET DATA TYPE TEXT;
-
--- AlterTable
-ALTER TABLE "Room" DROP COLUMN "access_roles",
-DROP COLUMN "authorId",
-DROP COLUMN "roomchatId",
-ADD COLUMN     "accessRoles" INTEGER NOT NULL,
-ADD COLUMN     "uniqueId" TEXT NOT NULL,
-ALTER COLUMN "channelId" SET DATA TYPE TEXT;
-
--- AlterTable
-ALTER TABLE "UsersChannel" ALTER COLUMN "userId" SET DATA TYPE TEXT;
+    CONSTRAINT "Room_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "Friends" (
@@ -112,6 +129,33 @@ CREATE TABLE "_ChannelUserDetailToRoom" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_phone_key" ON "User"("phone");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_uniqueId_key" ON "User"("uniqueId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "UsersChannel_uniqueId_key" ON "UsersChannel"("uniqueId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Channel_uniqueId_key" ON "Channel"("uniqueId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Channel_name_key" ON "Channel"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Channel_inviteCode_key" ON "Channel"("inviteCode");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Room_uniqueId_key" ON "Room"("uniqueId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Friends_uniqueId_key" ON "Friends"("uniqueId");
 
 -- CreateIndex
@@ -126,8 +170,8 @@ CREATE UNIQUE INDEX "_ChannelUserDetailToRoom_AB_unique" ON "_ChannelUserDetailT
 -- CreateIndex
 CREATE INDEX "_ChannelUserDetailToRoom_B_index" ON "_ChannelUserDetailToRoom"("B");
 
--- CreateIndex
-CREATE UNIQUE INDEX "Room_uniqueId_key" ON "Room"("uniqueId");
+-- AddForeignKey
+ALTER TABLE "User" ADD CONSTRAINT "User_channelId_fkey" FOREIGN KEY ("channelId") REFERENCES "Channel"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ChannelUserDetail" ADD CONSTRAINT "ChannelUserDetail_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("uniqueId") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -137,6 +181,9 @@ ALTER TABLE "ChannelUserDetail" ADD CONSTRAINT "ChannelUserDetail_channelId_fkey
 
 -- AddForeignKey
 ALTER TABLE "UsersChannel" ADD CONSTRAINT "UsersChannel_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("uniqueId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Channel" ADD CONSTRAINT "Channel_usersChannelId_fkey" FOREIGN KEY ("usersChannelId") REFERENCES "UsersChannel"("uniqueId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Room" ADD CONSTRAINT "Room_channelId_fkey" FOREIGN KEY ("channelId") REFERENCES "Channel"("uniqueId") ON DELETE RESTRICT ON UPDATE CASCADE;
