@@ -7,7 +7,7 @@
     "db-migrate": "yarn prisma migrate dev",
     "db-studio": "yarn prisma studio",
     "db-up": "docker-compose up -d",
-    ""
+    "db-run": "run-s db-up db-migrate"
   },
   "dependencies": {
     "@prisma/client": "^5.2.0",
