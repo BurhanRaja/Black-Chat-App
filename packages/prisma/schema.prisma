@@ -10,6 +10,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+generator zod {
+  provider      = "zod-prisma"
+  output        = "./zod"
+  relationModel = true
+  modelCase     = "camelCase"
+}
+
 model User {
   id                    Int                 @id @default(autoincrement())
   username              String              @unique
@@ -22,32 +29,35 @@ model User {
   disable               Boolean             @default(false)
   channel               UsersChannel[] // many Channels does a User have Or Included
   allChannelUserDetails ChannelUserDetail[] // Many User Details in Channels
-  authorChannel         Channel? // Channel Author
+  authorChannel         Channel?            @relation(fields: [channelId], references: [id]) // Channel Author
   senderRequest         Friends[]           @relation(name: "SenderRequest") // Sender Request Friends
   receiverRequest       Friends[]           @relation(name: "ReceiverRequest") // Receiver Request Friends
-  createdAt             DateTime            @default(now())
-  updatedAt             DateTime            @updatedAt
   senderMessages        Message[]           @relation(name: "SenderMessage")
   receiverMessage       Message[]           @relation(name: "ReceiverMessage")
+  notifications         Notifications[]
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+  channelId             Int?
 }
 
 model ChannelUserDetail {
   id         Int      @id @default(autoincrement())
-  user       User     @relation(fields: [userId], references: [id]) // User Id for User Details in Channel
-  userId     Int
+  user       User     @relation(fields: [userId], references: [uniqueId]) // User Id for User Details in Channel
+  userId     String
   accessRole Int
   room       Room[] // Access to Multiple Rooms in a Channel for a User
   join_type  Int
-  channel    Channel? @relation(fields: [channelId], references: [id]) // Single Channel Id for Multiple Room 
-  channelId  Int
+  channel    Channel? @relation(fields: [channelId], references: [uniqueId]) // Single Channel Id for Multiple Room 
+  channelId  String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
 
 model UsersChannel {
   id        Int       @id @default(autoincrement())
-  user      User      @relation(fields: [userId], references: [id]) // User Id for Channels under User
-  userId    Int       @unique
+  user      User      @relation(fields: [userId], references: [uniqueId]) // User Id for Channels under User
+  userId    String
+  uniqueId  String    @unique
   channels  Channel[] // All Channels created by a User
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -55,68 +65,79 @@ model UsersChannel {
 
 model Channel {
   id             Int                 @id @default(autoincrement())
-  author         User                @relation(fields: [authorId], references: [id]) // Author of the Channel i.e. User Id
-  authorId       Int                 @unique
   uniqueId       String              @unique
   name           String              @unique
   rooms          Room[] // No of Rooms in Channel
   userDetails    ChannelUserDetail[] // Number Users in a Channel
   inviteCode     String              @unique
-  usersChannel   UsersChannel?       @relation(fields: [usersChannelId], references: [id]) // If a part of User's Channel
-  usersChannelId Int
+  usersChannel   UsersChannel?       @relation(fields: [usersChannelId], references: [uniqueId]) // If a part of User's Channel
+  usersChannelId String
   createdAt      DateTime            @default(now())
   updatedAt      DateTime            @updatedAt
+  User           User[]
 }
 
 model Room {
   id          Int                 @id @default(autoincrement())
+  uniqueId    String              @unique
   name        String
   users       ChannelUserDetail[] // User Details for Room
   channel     Channel             @relation(fields: [channelId], references: [uniqueId]) // Room of Channel Id
   channelId   String
   accessRoles Int
-  roomchatId  String              @unique
+  roomChat    Message[]
   createdAt   DateTime            @default(now())
   updatedAt   DateTime            @updatedAt
 }
 
 model Friends {
   id         Int      @id @default(autoincrement())
-  sender     User     @relation(fields: [senderId], references: [id], name: "SenderRequest") // Friend Request Sender Id
-  senderId   Int
-  reciever   User     @relation(fields: [receiverId], references: [id], name: "ReceiverRequest") // Friend Request Receiver Id
-  receiverId Int
+  sender     User     @relation(fields: [senderId], references: [uniqueId], name: "SenderRequest") // Friend Request Sender Id
+  senderId   String
+  reciever   User     @relation(fields: [receiverId], references: [uniqueId], name: "ReceiverRequest") // Friend Request Receiver Id
+  receiverId String
   status     Boolean  @default(false)
+  uniqueId   String   @unique
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
 
 model Message {
-  id           Int     @id @default(autoincrement())
-  message      String
-  type         String
-  read         Boolean
-  sender       User    @relation(fields: [senderId], references: [id], name: "SenderMessage")
-  senderId     Int
-  reciever     User    @relation(fields: [receiverId], references: [id], name: "ReceiverMessage") // Friend Request Receiver Id
-  receiverId   Int
-  reply        Boolean
-  replyMessage String
+  id               Int            @id @default(autoincrement())
+  uniqueId         String         @unique
+  message          String
+  file             String
+  type             String
+  read             Boolean
+  reply            Boolean
+  replyMessage     String
+  sender           User           @relation(fields: [senderId], references: [uniqueId], name: "SenderMessage") // Message Sender Id
+  senderId         String
+  reciever         User           @relation(fields: [receiverId], references: [uniqueId], name: "ReceiverMessage") // Message Receiver Id
+  receiverId       String
+  room             Room           @relation(fields: [roomId], references: [uniqueId])
+  roomId           String
+  individualChat   IndividualChat @relation(fields: [individualChatId], references: [uniqueId])
+  individualChatId String
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
 }
 
-// model Notifications {
+model Notifications {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  read        Boolean
+  user        User     @relation(fields: [userId], references: [uniqueId])
+  userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
 
-// }
-
-// model RoomChat {
-
-// }
-
-// model IndividualChat {
-
-// }
-
-// message-1
-// ------ message-2
-// --message-1 --- message-3
-// --message-4 --- message-3
+model IndividualChat {
+  id        Int       @id @default(autoincrement())
+  uniqueId  String    @unique
+  Message   Message[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
