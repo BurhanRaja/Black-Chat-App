@@ -6,6 +6,7 @@
   "dependencies": {
     "@trpc/client": "^10.38.0",
     "@trpc/server": "^10.38.0",
-    "prisma": "*"
+    "prisma": "*",
+    "zod": "^3.22.2"
   }
 }
