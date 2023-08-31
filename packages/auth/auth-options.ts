@@ -1,9 +1,6 @@
 import { prisma } from "../prisma/client";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import {
-  type DefaultSession,
-  type NextAuthOptions,
-} from "next-auth";
+import { type DefaultSession, type NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { verifyPassword } from "./verifyPassword";
 import { JWT, encode } from "next-auth/jwt";
@@ -21,13 +18,7 @@ declare module "next-auth" {
       // role: UserRole;
     } & DefaultSession["user"];
   }
-
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
 }
-
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -38,7 +29,7 @@ export const authOptions: NextAuthOptions = {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials, req) {
         if (!credentials) {
           console.error("For some reason credentials are missing.");
           throw new Error("internal-server-error.");
@@ -51,6 +42,7 @@ export const authOptions: NextAuthOptions = {
           select: {
             id: true,
             username: true,
+            password: true,
             email: true,
             phone: true,
             uniqueId: true,
@@ -63,7 +55,7 @@ export const authOptions: NextAuthOptions = {
         if (!user) {
         }
 
-        if (!user.disable) {
+        if (!user?.disable) {
         }
 
         if (!user?.emailVerified) {
@@ -71,19 +63,19 @@ export const authOptions: NextAuthOptions = {
 
         const checkPassword = await verifyPassword(
           credentials.password.toString(),
-          user.password
+          user?.password!
         );
 
         if (!checkPassword) {
         }
 
         return {
-          id: user.id,
-          uniqueId: user.uniqueId,
-          username: user.name,
-          email: user.email,
-          emailVerified: user.emailVerified,
-          phoneVerified: user.phoneVerified,
+          id: user?.id,
+          uniqueId: user?.uniqueId,
+          username: user?.username,
+          email: user?.email,
+          emailVerified: user?.emailVerified,
+          phoneVerified: user?.phoneVerified,
         };
       },
     }),
@@ -108,7 +100,7 @@ export const authOptions: NextAuthOptions = {
     },
   },
   jwt: {
-    maxAge: 15 * 24 * 30 * 60, // 15 days
+    maxAge: 7 * 24 * 30 * 60, // 7 days
   },
   pages: {
     signIn: "/",
