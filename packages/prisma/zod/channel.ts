@@ -1,5 +1,5 @@
 import * as z from "zod"
-import { CompleteRoom, relatedRoomModel, CompleteChannelUserDetail, relatedChannelUserDetailModel, CompleteUsersChannel, relatedUsersChannelModel, CompleteUser, relatedUserModel } from "./index"
+import { CompleteRoom, relatedRoomModel, CompleteChannelUserDetail, relatedChannelUserDetailModel, CompleteUsersChannel, relatedUsersChannelModel } from "./index"
 
 export const channelModel = z.object({
   id: z.number().int(),
@@ -15,7 +15,6 @@ export interface CompleteChannel extends z.infer<typeof channelModel> {
   rooms: CompleteRoom[]
   userDetails: CompleteChannelUserDetail[]
   usersChannel?: CompleteUsersChannel | null
-  User: CompleteUser[]
 }
 
 /**
@@ -27,5 +26,4 @@ export const relatedChannelModel: z.ZodSchema<CompleteChannel> = z.lazy(() => ch
   rooms: relatedRoomModel.array(),
   userDetails: relatedChannelUserDetailModel.array(),
   usersChannel: relatedUsersChannelModel.nullish(),
-  User: relatedUserModel.array(),
 }))

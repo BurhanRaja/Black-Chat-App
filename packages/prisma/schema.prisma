@@ -25,11 +25,12 @@ model User {
   uniqueId              String              @unique
   password              String
   emailVerified         Boolean             @default(false)
+  phoneVerified         Boolean             @default(false)
+  twoFactorEnable       Boolean             @default(false)
   about                 String
   disable               Boolean             @default(false)
   channel               UsersChannel[] // many Channels does a User have Or Included
   allChannelUserDetails ChannelUserDetail[] // Many User Details in Channels
-  authorChannel         Channel?            @relation(fields: [channelId], references: [id]) // Channel Author
   senderRequest         Friends[]           @relation(name: "SenderRequest") // Sender Request Friends
   receiverRequest       Friends[]           @relation(name: "ReceiverRequest") // Receiver Request Friends
   senderMessages        Message[]           @relation(name: "SenderMessage")
@@ -37,7 +38,6 @@ model User {
   notifications         Notifications[]
   createdAt             DateTime            @default(now())
   updatedAt             DateTime            @updatedAt
-  channelId             Int?
 }
 
 model ChannelUserDetail {
@@ -74,7 +74,6 @@ model Channel {
   usersChannelId String
   createdAt      DateTime            @default(now())
   updatedAt      DateTime            @updatedAt
-  User           User[]
 }
 
 model Room {

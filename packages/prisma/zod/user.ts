@@ -1,5 +1,5 @@
 import * as z from "zod"
-import { CompleteUsersChannel, relatedUsersChannelModel, CompleteChannelUserDetail, relatedChannelUserDetailModel, CompleteChannel, relatedChannelModel, CompleteFriends, relatedFriendsModel, CompleteMessage, relatedMessageModel, CompleteNotifications, relatedNotificationsModel } from "./index"
+import { CompleteUsersChannel, relatedUsersChannelModel, CompleteChannelUserDetail, relatedChannelUserDetailModel, CompleteFriends, relatedFriendsModel, CompleteMessage, relatedMessageModel, CompleteNotifications, relatedNotificationsModel } from "./index"
 
 export const userModel = z.object({
   id: z.number().int(),
@@ -9,17 +9,17 @@ export const userModel = z.object({
   uniqueId: z.string(),
   password: z.string(),
   emailVerified: z.boolean(),
+  phoneVerified: z.boolean(),
+  twoFactorEnable: z.boolean(),
   about: z.string(),
   disable: z.boolean(),
   createdAt: z.date(),
   updatedAt: z.date(),
-  channelId: z.number().int().nullish(),
 })
 
 export interface CompleteUser extends z.infer<typeof userModel> {
   channel: CompleteUsersChannel[]
   allChannelUserDetails: CompleteChannelUserDetail[]
-  authorChannel?: CompleteChannel | null
   senderRequest: CompleteFriends[]
   receiverRequest: CompleteFriends[]
   senderMessages: CompleteMessage[]
@@ -35,7 +35,6 @@ export interface CompleteUser extends z.infer<typeof userModel> {
 export const relatedUserModel: z.ZodSchema<CompleteUser> = z.lazy(() => userModel.extend({
   channel: relatedUsersChannelModel.array(),
   allChannelUserDetails: relatedChannelUserDetailModel.array(),
-  authorChannel: relatedChannelModel.nullish(),
   senderRequest: relatedFriendsModel.array(),
   receiverRequest: relatedFriendsModel.array(),
   senderMessages: relatedMessageModel.array(),
