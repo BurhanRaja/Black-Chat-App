@@ -6,6 +6,7 @@
   "dependencies": {
     "@trpc/client": "^10.38.0",
     "@trpc/server": "^10.38.0",
+    "argon2": "^0.31.0",
     "prisma": "*",
     "zod": "^3.22.2"
   }

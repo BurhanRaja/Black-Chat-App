@@ -3,10 +3,12 @@
   "globalDependencies": ["**/.env.*local"],
   "pipeline": {
     "db:setup": {
-      "cache": false
+      "cache": false,
+      "inputs": ["./docker-compose.yml"]
     },
     "db:run": {
-      "cache": false
+      "cache": false,
+      "inputs": ["./docker-compose.yml"]
     },
     "db:migrate": {
       "cache": false,
