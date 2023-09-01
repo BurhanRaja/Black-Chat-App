@@ -3,19 +3,14 @@ import type {
   NextApiRequest,
   NextApiResponse,
 } from "next";
-import { getServerSession as $getServerSession } from "next-auth";
-import { authOptions } from "./auth-options";
+import { getServerSession as $getServerSession, AuthOptions } from "next-auth";
 
-type GetServerSessionContext =
-  | {
-      req: GetServerSidePropsContext["req"];
-      res: GetServerSidePropsContext["res"];
-    }
-  | {
-      req: NextApiRequest;
-      res: NextApiResponse;
-    };
+type GetServerSessionContext = {
+  req?: NextApiRequest | GetServerSidePropsContext["req"];
+  res?: NextApiResponse | GetServerSidePropsContext["res"];
+  authOptions?: AuthOptions;
+};
 
 export const getServerSession = async (ctx: GetServerSessionContext) => {
-  return $getServerSession(ctx.req, ctx.res, authOptions);
+  return $getServerSession(ctx.req, ctx.res, ctx.authOptions);
 };

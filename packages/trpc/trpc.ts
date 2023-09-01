@@ -1,22 +1,14 @@
-import { CreateNextContextOptions } from "@trpc/server/adapters/next";
-import { User } from "prisma";
-import { Session } from "next-auth";
-import { prisma } from "prisma/client";
+import superjson from "superjson";
+import { initTRPC } from "@trpc/server";
+import { createContextInner } from "./creatContext";
 
-export interface CreateInnerContextOptions
-  extends Partial<CreateNextContextOptions> {
-  session: Session | null;
-  user?: Omit<
-    User,
-    "emailVerified" | "password" | "phoneVerified" | "twoFactorEnable"
-  >;
-}
+export const trpcContext = initTRPC
+  .context<typeof createContextInner>()
+  .create({
+    transformer: superjson,
+  });
 
-export async function createContextInner(opts: CreateInnerContextOptions) {
-  return {
-    prisma,
-    ...opts,
-  };
-}
-
-export async function createContext(opts: CreateNextContextOptions) {}
+export const router = trpcContext.router;
+export const mergeRouters = trpcContext.mergeRouters;
+export const middleware = trpcContext.middleware;
+export const procedure = trpcContext.procedure;
