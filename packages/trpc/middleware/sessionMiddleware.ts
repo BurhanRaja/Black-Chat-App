@@ -1,18 +1,14 @@
-import { prisma } from "prisma";
 import { Maybe, TRPCError } from "@trpc/server";
+import { TRPCInnerContext } from "../createContext";
 import { Session } from "next-auth";
-import { TRPCContextInner } from "../creatContext";
 import { getServerSession } from "auth/ensureSession";
 import { middleware } from "../trpc";
 
-// Get User and Check for correct session of user.
 export const getUserFromSession = async (
-  ctx: TRPCContextInner,
+  ctx: TRPCInnerContext,
   session: Maybe<Session>
 ) => {
-  const { prisma } = ctx;
-
-  const user = await prisma.user.findUnique({
+  const user = await ctx?.prisma.user.findUnique({
     where: {
       id: session?.user.id,
     },
@@ -23,6 +19,7 @@ export const getUserFromSession = async (
       phone: true,
       emailVerified: true,
       phoneVerified: true,
+      twoFactorEnable: true,
       uniqueId: true,
       disable: true,
     },
@@ -48,25 +45,18 @@ export const getUserFromSession = async (
 };
 
 // Getting Session for the Authentication
-export const getSession = async (ctx: TRPCContextInner) => {
-  const { req, res } = ctx;
-  return req ? await getServerSession({ req, res }) : null;
+export const getSession = async (ctx: TRPCInnerContext) => {
+  return ctx?.req
+    ? await getServerSession({ req: ctx?.req, res: ctx?.res })
+    : null;
 };
 
-// If user is already have session or user
-export const getUserSession = async (ctx: TRPCContextInner) => {
+export const getUserSession = async (ctx: TRPCInnerContext) => {
   const session = ctx.session || (await getSession(ctx));
   const user = session ? await getUserFromSession(ctx, session) : null;
   return { user, session };
 };
 
-// Session Middleware
-export const sessionMiddleware = middleware(async ({ ctx, next }) => {
-  const { user, session } = await getUserSession(ctx);
-  return next({ ctx: { user, session } });
-});
-
-// Check If user is authenticated;
 export const isAuthed = middleware(async ({ ctx, next }) => {
   const { user, session } = await getUserSession(ctx);
   if (!user || !session) {

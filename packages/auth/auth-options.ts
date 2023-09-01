@@ -3,8 +3,6 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { type DefaultSession, type NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { verifyPassword } from "./verifyPassword";
-import { JWT, encode } from "next-auth/jwt";
-import { AdapterUser } from "next-auth/adapters";
 
 function isNumber(n: string) {
   return !isNaN(parseFloat(n)) && !isNaN(+n);
@@ -24,12 +22,16 @@ export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     Credentials({
-      name: "Credentials",
+      name: "credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
+        email: {
+          label: "Email",
+          type: "email",
+          placeholder: "jsmith@gmail.com",
+        },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
+      authorize: async (credentials, req) => {
         if (!credentials) {
           console.error("For some reason credentials are missing.");
           throw new Error("internal-server-error.");
@@ -53,12 +55,15 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (!user) {
+          return;
         }
 
         if (!user?.disable) {
+          return;
         }
 
         if (!user?.emailVerified) {
+          return;
         }
 
         const checkPassword = await verifyPassword(
@@ -67,6 +72,7 @@ export const authOptions: NextAuthOptions = {
         );
 
         if (!checkPassword) {
+          return;
         }
 
         return {
@@ -89,7 +95,6 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.email = user.email;
       }
-
       return token;
     },
     session: async ({ session, token }) => {

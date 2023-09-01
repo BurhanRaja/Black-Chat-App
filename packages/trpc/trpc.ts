@@ -1,14 +1,14 @@
-import superjson from "superjson";
 import { initTRPC } from "@trpc/server";
-import { createContextInner } from "./creatContext";
+import superjson from "superjson";
+import { createContextInner } from "./createContext";
 
-export const trpcContext = initTRPC
+export const tRPCContext = initTRPC
   .context<typeof createContextInner>()
   .create({
     transformer: superjson,
   });
 
-export const router = trpcContext.router;
-export const mergeRouters = trpcContext.mergeRouters;
-export const middleware = trpcContext.middleware;
-export const procedure = trpcContext.procedure;
+export const middleware = tRPCContext.middleware;
+export const router = tRPCContext.router;
+export const procedure = tRPCContext.procedure;
+export const mergeRouters = tRPCContext.mergeRouters;
