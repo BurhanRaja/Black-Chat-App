@@ -1,7 +1,7 @@
 import * as z from "zod"
-import { CompleteChannelUserDetail, relatedChannelUserDetailModel, CompleteChannel, relatedChannelModel, CompleteMessage, relatedMessageModel } from "./index"
+import { CompleteChannelUserDetail, channelUserDetailModel, CompleteChannel, channelModel, CompleteMessage, messageModel } from "./index"
 
-export const roomModel = z.object({
+export const _roomModel = z.object({
   id: z.number().int(),
   uniqueId: z.string(),
   name: z.string(),
@@ -11,19 +11,19 @@ export const roomModel = z.object({
   updatedAt: z.date(),
 })
 
-export interface CompleteRoom extends z.infer<typeof roomModel> {
+export interface CompleteRoom extends z.infer<typeof _roomModel> {
   users: CompleteChannelUserDetail[]
   channel: CompleteChannel
   roomChat: CompleteMessage[]
 }
 
 /**
- * relatedRoomModel contains all relations on your model in addition to the scalars
+ * roomModel contains all relations on your model in addition to the scalars
  *
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
-export const relatedRoomModel: z.ZodSchema<CompleteRoom> = z.lazy(() => roomModel.extend({
-  users: relatedChannelUserDetailModel.array(),
-  channel: relatedChannelModel,
-  roomChat: relatedMessageModel.array(),
+export const roomModel: z.ZodSchema<CompleteRoom> = z.lazy(() => _roomModel.extend({
+  users: channelUserDetailModel.array(),
+  channel: channelModel,
+  roomChat: messageModel.array(),
 }))

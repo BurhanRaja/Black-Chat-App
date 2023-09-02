@@ -1,10 +1,11 @@
 import * as z from "zod"
-import { CompleteUsersChannel, relatedUsersChannelModel, CompleteChannelUserDetail, relatedChannelUserDetailModel, CompleteFriends, relatedFriendsModel, CompleteMessage, relatedMessageModel, CompleteNotifications, relatedNotificationsModel } from "./index"
+import { CompleteUsersChannel, usersChannelModel, CompleteChannelUserDetail, channelUserDetailModel, CompleteFriends, friendsModel, CompleteMessage, messageModel, CompleteNotifications, notificationsModel, CompleteAccount, accountModel, CompleteSession, sessionModel } from "./index"
 
-export const userModel = z.object({
+export const _userModel = z.object({
   id: z.number().int(),
   username: z.string(),
   email: z.string(),
+  country: z.string(),
   phone: z.string(),
   uniqueId: z.string(),
   password: z.string(),
@@ -17,7 +18,7 @@ export const userModel = z.object({
   updatedAt: z.date(),
 })
 
-export interface CompleteUser extends z.infer<typeof userModel> {
+export interface CompleteUser extends z.infer<typeof _userModel> {
   channel: CompleteUsersChannel[]
   allChannelUserDetails: CompleteChannelUserDetail[]
   senderRequest: CompleteFriends[]
@@ -25,19 +26,23 @@ export interface CompleteUser extends z.infer<typeof userModel> {
   senderMessages: CompleteMessage[]
   receiverMessage: CompleteMessage[]
   notifications: CompleteNotifications[]
+  accounts: CompleteAccount[]
+  sessions: CompleteSession[]
 }
 
 /**
- * relatedUserModel contains all relations on your model in addition to the scalars
+ * userModel contains all relations on your model in addition to the scalars
  *
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
-export const relatedUserModel: z.ZodSchema<CompleteUser> = z.lazy(() => userModel.extend({
-  channel: relatedUsersChannelModel.array(),
-  allChannelUserDetails: relatedChannelUserDetailModel.array(),
-  senderRequest: relatedFriendsModel.array(),
-  receiverRequest: relatedFriendsModel.array(),
-  senderMessages: relatedMessageModel.array(),
-  receiverMessage: relatedMessageModel.array(),
-  notifications: relatedNotificationsModel.array(),
+export const userModel: z.ZodSchema<CompleteUser> = z.lazy(() => _userModel.extend({
+  channel: usersChannelModel.array(),
+  allChannelUserDetails: channelUserDetailModel.array(),
+  senderRequest: friendsModel.array(),
+  receiverRequest: friendsModel.array(),
+  senderMessages: messageModel.array(),
+  receiverMessage: messageModel.array(),
+  notifications: notificationsModel.array(),
+  accounts: accountModel.array(),
+  sessions: sessionModel.array(),
 }))

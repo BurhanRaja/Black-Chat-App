@@ -13,7 +13,7 @@ datasource db {
 generator zod {
   provider      = "zod-prisma"
   output        = "./zod"
-  relationModel = true
+  relationModel = "default"
   modelCase     = "camelCase"
 }
 
@@ -21,13 +21,14 @@ model User {
   id                    Int                 @id @default(autoincrement())
   username              String              @unique
   email                 String              @unique
+  country               String              @default("India")
   phone                 String              @unique
   uniqueId              String              @unique
-  password              String
+  password              String              @default("")
   emailVerified         Boolean             @default(false)
   phoneVerified         Boolean             @default(false)
   twoFactorEnable       Boolean             @default(false)
-  about                 String
+  about                 String              @default("")
   disable               Boolean             @default(false)
   channel               UsersChannel[] // many Channels does a User have Or Included
   allChannelUserDetails ChannelUserDetail[] // Many User Details in Channels
@@ -44,10 +45,11 @@ model User {
 
 model Account {
   id                       String  @id @default(cuid())
-  userId                   String
-  type                     String
-  provider                 String
-  providerAccountId        String
+  user                     User    @relation(fields: [userId], references: [uniqueId], onDelete: Cascade)
+  userId                   String  @default("")
+  type                     String  @default("")
+  provider                 String  @default("")
+  providerAccountId        String  @default("")
   refresh_token            String? @db.Text
   refresh_token_expires_in Int?
   access_token             String? @db.Text
@@ -56,7 +58,6 @@ model Account {
   scope                    String?
   id_token                 String? @db.Text
   session_state            String?
-  user                     User    @relation(fields: [userId], references: [uniqueId], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -65,7 +66,7 @@ model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
   user         User     @relation(fields: [userId], references: [uniqueId], onDelete: Cascade)
-  userId       String
+  userId       String   @default("")
   expires      DateTime
 }
 
@@ -85,7 +86,7 @@ model ChannelUserDetail {
   room       Room[] // Access to Multiple Rooms in a Channel for a User
   join_type  Int
   channel    Channel? @relation(fields: [channelId], references: [uniqueId]) // Single Channel Id for Multiple Room 
-  channelId  String
+  channelId  String   @default("")
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
@@ -93,7 +94,7 @@ model ChannelUserDetail {
 model UsersChannel {
   id        Int       @id @default(autoincrement())
   user      User      @relation(fields: [userId], references: [uniqueId]) // User Id for Channels under User
-  userId    String
+  userId    String    @default("")
   uniqueId  String    @unique
   channels  Channel[] // All Channels created by a User
   createdAt DateTime  @default(now())
@@ -107,8 +108,8 @@ model Channel {
   rooms          Room[] // No of Rooms in Channel
   userDetails    ChannelUserDetail[] // Number Users in a Channel
   inviteCode     String              @unique
-  usersChannel   UsersChannel?       @relation(fields: [usersChannelId], references: [uniqueId]) // If a part of User's Channel
-  usersChannelId String
+  usersChannel   UsersChannel?       @relation(fields: [usersChannelId], references: [uniqueId], onDelete: Cascade) // If a part of User's Channel
+  usersChannelId String              @default("")
   createdAt      DateTime            @default(now())
   updatedAt      DateTime            @updatedAt
 }
@@ -118,8 +119,8 @@ model Room {
   uniqueId    String              @unique
   name        String
   users       ChannelUserDetail[] // User Details for Room
-  channel     Channel             @relation(fields: [channelId], references: [uniqueId]) // Room of Channel Id
-  channelId   String
+  channel     Channel             @relation(fields: [channelId], references: [uniqueId], onDelete: Cascade) // Room of Channel Id
+  channelId   String              @default("")
   accessRoles Int
   roomChat    Message[]
   createdAt   DateTime            @default(now())
@@ -129,9 +130,9 @@ model Room {
 model Friends {
   id         Int      @id @default(autoincrement())
   sender     User     @relation(fields: [senderId], references: [uniqueId], name: "SenderRequest") // Friend Request Sender Id
-  senderId   String
+  senderId   String   @default("")
   reciever   User     @relation(fields: [receiverId], references: [uniqueId], name: "ReceiverRequest") // Friend Request Receiver Id
-  receiverId String
+  receiverId String   @default("")
   status     Boolean  @default(false)
   uniqueId   String   @unique
   createdAt  DateTime @default(now())
@@ -148,13 +149,13 @@ model Message {
   reply            Boolean
   replyMessage     String
   sender           User           @relation(fields: [senderId], references: [uniqueId], name: "SenderMessage") // Message Sender Id
-  senderId         String
+  senderId         String         @default("")
   reciever         User           @relation(fields: [receiverId], references: [uniqueId], name: "ReceiverMessage") // Message Receiver Id
-  receiverId       String
+  receiverId       String         @default("")
   room             Room           @relation(fields: [roomId], references: [uniqueId])
-  roomId           String
+  roomId           String         @default("")
   individualChat   IndividualChat @relation(fields: [individualChatId], references: [uniqueId])
-  individualChatId String
+  individualChatId String         @default("")
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
 }
@@ -165,7 +166,7 @@ model Notifications {
   description String
   read        Boolean
   user        User     @relation(fields: [userId], references: [uniqueId])
-  userId      String
+  userId      String   @default("")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

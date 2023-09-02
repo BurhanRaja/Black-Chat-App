@@ -8,21 +8,25 @@ import {
   NextApiResponse,
 } from "next";
 
-type CreateContextOptions = GetServerSidePropsContext;
+type CreateContextOptions =
+  | CreateNextContextOptions
+  | GetServerSidePropsContext;
 
-type CreateInnerContext = {
+// Inner Context Params type
+export type CreateInnerContextOptions = {
   session: Session | null;
   user?: Omit<User, "emailVerified" | "twoFactorEnable" | "phoneVerified">;
 } & Partial<CreateContextOptions>;
 
-type ContextInnerReturn = {
+// Return Type Inner Context
+export type ContextInnerReturnType = {
   prisma: IPrismaClient;
-} & Partial<CreateInnerContext>;
+} & Partial<CreateInnerContextOptions>;
 
 // Create Inner Context can be used in procedures
 export function createContextInner(
-  opts: CreateInnerContext
-): ContextInnerReturn {
+  opts: CreateInnerContextOptions
+): ContextInnerReturnType {
   return {
     prisma,
     ...opts,

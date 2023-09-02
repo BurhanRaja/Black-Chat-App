@@ -1,22 +1,22 @@
 import * as z from "zod"
-import { CompleteMessage, relatedMessageModel } from "./index"
+import { CompleteMessage, messageModel } from "./index"
 
-export const individualChatModel = z.object({
+export const _individualChatModel = z.object({
   id: z.number().int(),
   uniqueId: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
 })
 
-export interface CompleteIndividualChat extends z.infer<typeof individualChatModel> {
+export interface CompleteIndividualChat extends z.infer<typeof _individualChatModel> {
   Message: CompleteMessage[]
 }
 
 /**
- * relatedIndividualChatModel contains all relations on your model in addition to the scalars
+ * individualChatModel contains all relations on your model in addition to the scalars
  *
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
-export const relatedIndividualChatModel: z.ZodSchema<CompleteIndividualChat> = z.lazy(() => individualChatModel.extend({
-  Message: relatedMessageModel.array(),
+export const individualChatModel: z.ZodSchema<CompleteIndividualChat> = z.lazy(() => _individualChatModel.extend({
+  Message: messageModel.array(),
 }))

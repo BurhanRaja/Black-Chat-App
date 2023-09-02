@@ -2,7 +2,7 @@ import { Maybe, TRPCError } from "@trpc/server";
 import { TRPCInnerContext } from "../createContext";
 import { Session } from "next-auth";
 import { getServerSession } from "auth/ensureSession";
-import { middleware } from "../trpc";
+import { middlewares } from "../trpc";
 
 export const getUserFromSession = async (
   ctx: TRPCInnerContext,
@@ -51,13 +51,15 @@ export const getSession = async (ctx: TRPCInnerContext) => {
     : null;
 };
 
+export type UserFromSession = Awaited<ReturnType<typeof getUserFromSession>>;
+
 export const getUserSession = async (ctx: TRPCInnerContext) => {
   const session = ctx.session || (await getSession(ctx));
   const user = session ? await getUserFromSession(ctx, session) : null;
   return { user, session };
 };
 
-export const isAuthed = middleware(async ({ ctx, next }) => {
+export const isAuthed = middlewares(async ({ ctx, next }) => {
   const { user, session } = await getUserSession(ctx);
   if (!user || !session) {
     throw new TRPCError({ code: "UNAUTHORIZED" });

@@ -1,7 +1,7 @@
 import * as z from "zod"
-import { CompleteUser, relatedUserModel, CompleteRoom, relatedRoomModel, CompleteChannel, relatedChannelModel } from "./index"
+import { CompleteUser, userModel, CompleteRoom, roomModel, CompleteChannel, channelModel } from "./index"
 
-export const channelUserDetailModel = z.object({
+export const _channelUserDetailModel = z.object({
   id: z.number().int(),
   userId: z.string(),
   accessRole: z.number().int(),
@@ -11,19 +11,19 @@ export const channelUserDetailModel = z.object({
   updatedAt: z.date(),
 })
 
-export interface CompleteChannelUserDetail extends z.infer<typeof channelUserDetailModel> {
+export interface CompleteChannelUserDetail extends z.infer<typeof _channelUserDetailModel> {
   user: CompleteUser
   room: CompleteRoom[]
   channel?: CompleteChannel | null
 }
 
 /**
- * relatedChannelUserDetailModel contains all relations on your model in addition to the scalars
+ * channelUserDetailModel contains all relations on your model in addition to the scalars
  *
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
-export const relatedChannelUserDetailModel: z.ZodSchema<CompleteChannelUserDetail> = z.lazy(() => channelUserDetailModel.extend({
-  user: relatedUserModel,
-  room: relatedRoomModel.array(),
-  channel: relatedChannelModel.nullish(),
+export const channelUserDetailModel: z.ZodSchema<CompleteChannelUserDetail> = z.lazy(() => _channelUserDetailModel.extend({
+  user: userModel,
+  room: roomModel.array(),
+  channel: channelModel.nullish(),
 }))

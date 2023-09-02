@@ -1,7 +1,7 @@
 import * as z from "zod"
-import { CompleteUser, relatedUserModel, CompleteRoom, relatedRoomModel, CompleteIndividualChat, relatedIndividualChatModel } from "./index"
+import { CompleteUser, userModel, CompleteRoom, roomModel, CompleteIndividualChat, individualChatModel } from "./index"
 
-export const messageModel = z.object({
+export const _messageModel = z.object({
   id: z.number().int(),
   uniqueId: z.string(),
   message: z.string(),
@@ -18,7 +18,7 @@ export const messageModel = z.object({
   updatedAt: z.date(),
 })
 
-export interface CompleteMessage extends z.infer<typeof messageModel> {
+export interface CompleteMessage extends z.infer<typeof _messageModel> {
   sender: CompleteUser
   reciever: CompleteUser
   room: CompleteRoom
@@ -26,13 +26,13 @@ export interface CompleteMessage extends z.infer<typeof messageModel> {
 }
 
 /**
- * relatedMessageModel contains all relations on your model in addition to the scalars
+ * messageModel contains all relations on your model in addition to the scalars
  *
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
-export const relatedMessageModel: z.ZodSchema<CompleteMessage> = z.lazy(() => messageModel.extend({
-  sender: relatedUserModel,
-  reciever: relatedUserModel,
-  room: relatedRoomModel,
-  individualChat: relatedIndividualChatModel,
+export const messageModel: z.ZodSchema<CompleteMessage> = z.lazy(() => _messageModel.extend({
+  sender: userModel,
+  reciever: userModel,
+  room: roomModel,
+  individualChat: individualChatModel,
 }))

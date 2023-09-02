@@ -1,18 +1,19 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
+  "globalDotEnv": [".env"],
   "pipeline": {
-    "db:setup": {
+    "prisma#db:setup": {
       "cache": false,
       "inputs": ["./docker-compose.yml"]
     },
-    "db:run": {
+    "prisma#db:run": {
       "cache": false,
       "inputs": ["./docker-compose.yml"]
     },
-    "db:migrate": {
+    "prisma#db:migrate": {
       "cache": false,
-      "dependsOn": ["db:run"]
+      "dependsOn": ["prisma#db:run"]
     },
     "build": {
       "dependsOn": ["^build"],

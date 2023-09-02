@@ -1,7 +1,7 @@
 import * as z from "zod"
-import { CompleteUser, relatedUserModel } from "./index"
+import { CompleteUser, userModel } from "./index"
 
-export const notificationsModel = z.object({
+export const _notificationsModel = z.object({
   id: z.number().int(),
   title: z.string(),
   description: z.string(),
@@ -11,15 +11,15 @@ export const notificationsModel = z.object({
   updatedAt: z.date(),
 })
 
-export interface CompleteNotifications extends z.infer<typeof notificationsModel> {
+export interface CompleteNotifications extends z.infer<typeof _notificationsModel> {
   user: CompleteUser
 }
 
 /**
- * relatedNotificationsModel contains all relations on your model in addition to the scalars
+ * notificationsModel contains all relations on your model in addition to the scalars
  *
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
-export const relatedNotificationsModel: z.ZodSchema<CompleteNotifications> = z.lazy(() => notificationsModel.extend({
-  user: relatedUserModel,
+export const notificationsModel: z.ZodSchema<CompleteNotifications> = z.lazy(() => _notificationsModel.extend({
+  user: userModel,
 }))

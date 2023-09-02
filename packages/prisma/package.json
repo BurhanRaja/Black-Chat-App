@@ -5,10 +5,14 @@
   "types": "./index.ts",
   "license": "MIT",
   "scripts": {
-    "db:migrate": "prisma migrate dev",
+    "db:migrate": "prisma migrate dev --name new",
     "db:studio": "prisma studio",
     "db:up": "docker-compose up -d",
-    "db:setup": "run-s db:up db:migrate"
+    "db:setup": "yarn run db:up & yarn run db:migrate",
+    "db:env": "bash ./addEnv.sh"
+  },
+  "prisma": {
+    "schema": "schema.prisma"
   },
   "dependencies": {
     "@prisma/client": "^5.2.0",

@@ -1,19 +1,13 @@
-import { prisma } from "../prisma/client";
+import { prisma } from "prisma/client";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { type DefaultSession, type NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { verifyPassword } from "./verifyPassword";
-
-function isNumber(n: string) {
-  return !isNaN(parseFloat(n)) && !isNaN(+n);
-}
+import { verifyPassword } from "lib";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: any;
-      // ...other properties
-      // role: UserRole;
     } & DefaultSession["user"];
   }
 }
@@ -24,14 +18,10 @@ export const authOptions: NextAuthOptions = {
     Credentials({
       name: "credentials",
       credentials: {
-        email: {
-          label: "Email",
-          type: "email",
-          placeholder: "jsmith@gmail.com",
-        },
+        email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      authorize: async (credentials, req) => {
+      authorize: async (credentials): Promise<any> => {
         if (!credentials) {
           console.error("For some reason credentials are missing.");
           throw new Error("internal-server-error.");
@@ -55,15 +45,11 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (!user) {
-          return;
+          throw new Error("user-not-found");
         }
 
-        if (!user?.disable) {
-          return;
-        }
-
-        if (!user?.emailVerified) {
-          return;
+        if (user?.disable) {
+          throw new Error("user-is-diabled");
         }
 
         const checkPassword = await verifyPassword(
@@ -72,7 +58,7 @@ export const authOptions: NextAuthOptions = {
         );
 
         if (!checkPassword) {
-          return;
+          throw new Error("password-incorrect");
         }
 
         return {
@@ -82,6 +68,7 @@ export const authOptions: NextAuthOptions = {
           email: user?.email,
           emailVerified: user?.emailVerified,
           phoneVerified: user?.phoneVerified,
+          disable: user?.disable,
         };
       },
     }),
