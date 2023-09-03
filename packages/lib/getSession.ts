@@ -13,8 +13,7 @@ export type SessionOptions = {
 export const getSession = async (options: SessionOptions) => {
   const { req, res } = options;
   if (req !== undefined && res !== undefined) {
-    const session = await getServerSession(req, res, {});
-    return session;
+    return await getServerSession(req, res, {});
   } else {
     return null;
   }
