@@ -2,6 +2,7 @@ import { _userModel } from "database/src/zod/user";
 import { userInputVal } from "../../../types";
 
 export const createUserInput = _userModel.omit({
+  id: true,
   uniqueId: true,
   emailVerified: true,
   phoneVerified: true,

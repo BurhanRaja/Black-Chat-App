@@ -19,6 +19,7 @@
     "@types/react-dom": "^18.0.7",
     "config": "*",
     "database": "*",
+    "trpc": "*",
     "eslint": "^7.32.0",
     "tsconfig": "*",
     "typescript": "^4.5.3"

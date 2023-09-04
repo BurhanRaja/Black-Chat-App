@@ -1,7 +1,7 @@
 import z from "zod";
 
 // User Input Validation
-export const userInputVal = {
+export const userInputVal = z.object({
   username: z
     .string()
     .min(5, "Min 5 characters are required.")
@@ -19,4 +19,4 @@ export const userInputVal = {
     .string()
     .min(8, "Min 8 characters are required.")
     .max(15, "Only 15 characters limit."),
-};
+});
