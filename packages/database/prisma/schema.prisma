@@ -32,21 +32,23 @@ model User {
   disable               Boolean             @default(false)
   channel               UsersChannel[] // many Channels does a User have Or Included
   allChannelUserDetails ChannelUserDetail[] // Many User Details in Channels
+  userMessages          Message[]           @relation(name: "userMessage")
+  userReplyMessages     Message[]           @relation(name: "replyUserMessage")
   senderRequest         Friends[]           @relation(name: "SenderRequest") // Sender Request Friends
   receiverRequest       Friends[]           @relation(name: "ReceiverRequest") // Receiver Request Friends
-  senderMessages        Message[]           @relation(name: "SenderMessage")
-  receiverMessage       Message[]           @relation(name: "ReceiverMessage")
   notifications         Notifications[]
   createdAt             DateTime            @default(now())
   updatedAt             DateTime            @updatedAt
-  accounts              Account[]
-  sessions              Session[]
+  account               Account?
+  session               Session?
+  dMUserOne             DirectMessage[]     @relation(name: "userOne")
+  dMUserTwo             DirectMessage[]     @relation(name: "userTwo")
 }
 
 model Account {
   id                       String  @id @default(cuid())
   user                     User    @relation(fields: [userId], references: [uniqueId], onDelete: Cascade)
-  userId                   String  @default("")
+  userId                   String  @unique
   type                     String  @default("")
   provider                 String  @default("")
   providerAccountId        String  @default("")
@@ -64,7 +66,7 @@ model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
   user         User     @relation(fields: [userId], references: [uniqueId], onDelete: Cascade)
-  userId       String   @default("")
+  userId       String   @unique
   expires      DateTime
 }
 
@@ -74,22 +76,29 @@ model VerificationToken {
   expires    DateTime
 }
 
+enum AccessRole {
+  ADMIN
+  MODERATOR
+  MEMBER
+  GUEST
+}
+
 model ChannelUserDetail {
-  id         Int      @id @default(autoincrement())
-  user       User     @relation(fields: [userId], references: [uniqueId]) // User Id for User Details in Channel
+  id         Int        @id @default(autoincrement())
+  user       User       @relation(fields: [userId], references: [uniqueId], onDelete: Cascade) // User Id for User Details in Channel
   userId     String
-  accessRole Int
+  accessRole AccessRole @default(GUEST)
   room       Room[] // Access to Multiple Rooms in a Channel for a User
   join_type  Int
-  channel    Channel? @relation(fields: [channelId], references: [uniqueId]) // Single Channel Id for Multiple Room 
-  channelId  String   @default("")
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  channel    Channel?   @relation(fields: [channelId], references: [uniqueId], onDelete: Cascade) // Single Channel Id for Multiple Room 
+  channelId  String     @default("")
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 }
 
 model UsersChannel {
   id        Int       @id @default(autoincrement())
-  user      User      @relation(fields: [userId], references: [uniqueId]) // User Id for Channels under User
+  user      User      @relation(fields: [userId], references: [uniqueId], onDelete: Cascade) // User Id for Channels under User
   userId    String    @default("")
   uniqueId  String    @unique
   channels  Channel[] // All Channels created by a User
@@ -111,23 +120,24 @@ model Channel {
 }
 
 model Room {
-  id          Int                 @id @default(autoincrement())
-  uniqueId    String              @unique
-  name        String
-  users       ChannelUserDetail[] // User Details for Room
-  channel     Channel             @relation(fields: [channelId], references: [uniqueId], onDelete: Cascade) // Room of Channel Id
-  channelId   String              @default("")
-  accessRoles Int
-  roomChat    Message[]
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt
+  id           Int                 @id @default(autoincrement())
+  uniqueId     String              @unique
+  name         String
+  users        ChannelUserDetail[] // User Details for Room
+  channel      Channel             @relation(fields: [channelId], references: [uniqueId], onDelete: Cascade) // Room of Channel Id
+  channelId    String              @default("")
+  accessRoles  Int
+  roomChat     Message[]
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  access_roles AccessRole[]
 }
 
 model Friends {
   id         Int      @id @default(autoincrement())
-  sender     User     @relation(fields: [senderId], references: [uniqueId], name: "SenderRequest") // Friend Request Sender Id
+  sender     User     @relation(fields: [senderId], references: [uniqueId], name: "SenderRequest", onDelete: Cascade) // Friend Request Sender Id
   senderId   String   @default("")
-  reciever   User     @relation(fields: [receiverId], references: [uniqueId], name: "ReceiverRequest") // Friend Request Receiver Id
+  reciever   User     @relation(fields: [receiverId], references: [uniqueId], name: "ReceiverRequest", onDelete: Cascade) // Friend Request Receiver Id
   receiverId String   @default("")
   status     Boolean  @default(false)
   uniqueId   String   @unique
@@ -136,24 +146,24 @@ model Friends {
 }
 
 model Message {
-  id               Int            @id @default(autoincrement())
-  uniqueId         String         @unique
-  message          String
-  file             String
-  type             String
-  read             Boolean
-  reply            Boolean
-  replyMessage     String
-  sender           User           @relation(fields: [senderId], references: [uniqueId], name: "SenderMessage") // Message Sender Id
-  senderId         String         @default("")
-  reciever         User           @relation(fields: [receiverId], references: [uniqueId], name: "ReceiverMessage") // Message Receiver Id
-  receiverId       String         @default("")
-  room             Room           @relation(fields: [roomId], references: [uniqueId])
-  roomId           String         @default("")
-  individualChat   IndividualChat @relation(fields: [individualChatId], references: [uniqueId])
-  individualChatId String         @default("")
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
+  id           Int           @id @default(autoincrement())
+  uniqueId     String        @unique
+  message      String
+  file         String
+  type         String
+  read         Boolean
+  reply        Boolean
+  replyMessage String
+  user         User          @relation(fields: [userId], references: [uniqueId], name: "userMessage", onDelete: Cascade)
+  userId       String
+  replyUser    User          @relation(fields: [replyUserId], references: [uniqueId], name: "replyUserMessage", onDelete: Cascade)
+  replyUserId  String
+  room         Room          @relation(fields: [roomId], references: [uniqueId], onDelete: Cascade)
+  roomId       String        @default("")
+  dMessage     DirectMessage @relation(fields: [dMessageId], references: [uniqueId], onDelete: Cascade)
+  dMessageId   String        @default("")
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 }
 
 model Notifications {
@@ -161,15 +171,19 @@ model Notifications {
   title       String
   description String
   read        Boolean
-  user        User     @relation(fields: [userId], references: [uniqueId])
+  user        User     @relation(fields: [userId], references: [uniqueId], onDelete: Cascade)
   userId      String   @default("")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
 
-model IndividualChat {
+model DirectMessage {
   id        Int       @id @default(autoincrement())
   uniqueId  String    @unique
+  userOne   User      @relation(fields: [userOneId], references: [uniqueId], name: "userOne", onDelete: Cascade)
+  userOneId String
+  userTwo   User      @relation(fields: [userTwoId], references: [uniqueId], name: "userTwo", onDelete: Cascade)
+  userTwoId String
   Message   Message[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

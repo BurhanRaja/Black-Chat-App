@@ -20,6 +20,7 @@
     "config": "*",
     "database": "*",
     "trpc": "*",
+    "lib": "*",
     "eslint": "^7.32.0",
     "tsconfig": "*",
     "typescript": "^4.5.3"
