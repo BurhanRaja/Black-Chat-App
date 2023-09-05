@@ -22,7 +22,6 @@ export interface CompleteUser extends z.infer<typeof _userModel> {
   channel: CompleteUsersChannel[]
   allChannelUserDetails: CompleteChannelUserDetail[]
   userMessages: CompleteMessage[]
-  userReplyMessages: CompleteMessage[]
   senderRequest: CompleteFriends[]
   receiverRequest: CompleteFriends[]
   notifications: CompleteNotifications[]
@@ -41,7 +40,6 @@ export const userModel: z.ZodSchema<CompleteUser> = z.lazy(() => _userModel.exte
   channel: usersChannelModel.array(),
   allChannelUserDetails: channelUserDetailModel.array(),
   userMessages: messageModel.array(),
-  userReplyMessages: messageModel.array(),
   senderRequest: friendsModel.array(),
   receiverRequest: friendsModel.array(),
   notifications: notificationsModel.array(),

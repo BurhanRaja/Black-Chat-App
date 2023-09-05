@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
+import { getToken } from "next-auth/jwt";
 
 const Login = () => {
   const [email, setEmail] = useState<string>("");

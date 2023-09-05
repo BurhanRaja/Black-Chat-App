@@ -4,14 +4,13 @@ import { CompleteUser, userModel, CompleteRoom, roomModel, CompleteDirectMessage
 export const _messageModel = z.object({
   id: z.number().int(),
   uniqueId: z.string(),
-  message: z.string(),
+  content: z.string(),
   file: z.string(),
   type: z.string(),
   read: z.boolean(),
   reply: z.boolean(),
-  replyMessage: z.string(),
+  replyMessageId: z.string(),
   userId: z.string(),
-  replyUserId: z.string(),
   roomId: z.string(),
   dMessageId: z.string(),
   createdAt: z.date(),
@@ -19,8 +18,9 @@ export const _messageModel = z.object({
 })
 
 export interface CompleteMessage extends z.infer<typeof _messageModel> {
+  replyMessage?: CompleteMessage | null
+  allReplyMessages: CompleteMessage[]
   user: CompleteUser
-  replyUser: CompleteUser
   room: CompleteRoom
   dMessage: CompleteDirectMessage
 }
@@ -31,8 +31,9 @@ export interface CompleteMessage extends z.infer<typeof _messageModel> {
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
 export const messageModel: z.ZodSchema<CompleteMessage> = z.lazy(() => _messageModel.extend({
+  replyMessage: messageModel.nullish(),
+  allReplyMessages: messageModel.array(),
   user: userModel,
-  replyUser: userModel,
   room: roomModel,
   dMessage: directMessageModel,
 }))

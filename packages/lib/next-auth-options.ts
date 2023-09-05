@@ -1,37 +1,41 @@
-import { DefaultSession, NextAuthOptions } from "next-auth";
+import { DefaultSession, NextAuthOptions, Session, User } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "database/src/client";
 import Credentials from "next-auth/providers/credentials";
 import { verifyPassword } from "./verifyPassword";
-import { DefaultJWT } from "next-auth/jwt";
+import { JWT } from "next-auth/jwt";
 
-declare module "next-auth" {
-  interface Session extends DefaultSession {
-    user: {
-      id: any;
-      uniqueId: any;
-    } & DefaultSession["user"];
-  }
+// declare module "next-auth" {
+//   interface Session {
+//     token: string;
+//     user: {
+//       id: any;
+//       uniqueId: any;
+//     };
+//   }
 
-  interface User {
-    uniqueId: any;
-  }
-}
+//   interface User {
+//     uniqueId: string;
+//     id?: any;
+//   }
+// }
 
-declare module "next-auth/jwt" {
-  interface JWT extends DefaultJWT {
-    user: {
-      uniqueId: any;
-      id: any;
-    };
-  }
-}
+// declare module "next-auth/jwt" {
+//   interface JWT {
+//     uniqueId: string;
+//     id: number;
+//     token: string;
+//   }
+// }
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   secret: process.env.NEXTAUTH_SECRET,
-  session: {
-    strategy: "jwt",
+  session: { strategy: "jwt", maxAge: 24 * 60 * 60 },
+
+  jwt: {
+    secret: process.env.NEXTAUTH_SECRET,
+    maxAge: 60 * 60 * 24 * 30,
   },
   providers: [
     Credentials({
@@ -91,26 +95,16 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    jwt: async ({ user, token }) => {
-      if (user !== undefined) {
-        console.log(user?.id);
-        token.id = user?.id;
-        token.uniqueId = user?.uniqueId;
+    async session({ session, user, token }) {
+      if (user !== null) {
+        session.user = user;
       }
-
-      return token;
+      return await session;
     },
-    session: async ({ token, session, user }) => {
-      if (token && session.user) {
-        session.user.id = user.id;
-        session.user.uniqueId = user.uniqueId;
-      }
 
-      return session;
+    async jwt({ token, user }) {
+      return await token;
     },
-  },
-  jwt: {
-    maxAge: 7 * 24 * 30 * 60, // 7 days
   },
   pages: {
     signIn: "/login",
