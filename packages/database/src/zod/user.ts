@@ -1,5 +1,5 @@
 import * as z from "zod"
-import { CompleteUsersChannel, usersChannelModel, CompleteChannelUserDetail, channelUserDetailModel, CompleteFriends, friendsModel, CompleteMessage, messageModel, CompleteNotifications, notificationsModel, CompleteAccount, accountModel, CompleteSession, sessionModel } from "./index"
+import { CompleteUsersChannel, usersChannelModel, CompleteChannelUserDetail, channelUserDetailModel, CompleteMessage, messageModel, CompleteFriends, friendsModel, CompleteNotifications, notificationsModel, CompleteAccount, accountModel, CompleteSession, sessionModel, CompleteDirectMessage, directMessageModel } from "./index"
 
 export const _userModel = z.object({
   id: z.number().int(),
@@ -21,13 +21,15 @@ export const _userModel = z.object({
 export interface CompleteUser extends z.infer<typeof _userModel> {
   channel: CompleteUsersChannel[]
   allChannelUserDetails: CompleteChannelUserDetail[]
+  userMessages: CompleteMessage[]
+  userReplyMessages: CompleteMessage[]
   senderRequest: CompleteFriends[]
   receiverRequest: CompleteFriends[]
-  senderMessages: CompleteMessage[]
-  receiverMessage: CompleteMessage[]
   notifications: CompleteNotifications[]
-  accounts: CompleteAccount[]
-  sessions: CompleteSession[]
+  account?: CompleteAccount | null
+  session?: CompleteSession | null
+  dMUserOne: CompleteDirectMessage[]
+  dMUserTwo: CompleteDirectMessage[]
 }
 
 /**
@@ -38,11 +40,13 @@ export interface CompleteUser extends z.infer<typeof _userModel> {
 export const userModel: z.ZodSchema<CompleteUser> = z.lazy(() => _userModel.extend({
   channel: usersChannelModel.array(),
   allChannelUserDetails: channelUserDetailModel.array(),
+  userMessages: messageModel.array(),
+  userReplyMessages: messageModel.array(),
   senderRequest: friendsModel.array(),
   receiverRequest: friendsModel.array(),
-  senderMessages: messageModel.array(),
-  receiverMessage: messageModel.array(),
   notifications: notificationsModel.array(),
-  accounts: accountModel.array(),
-  sessions: sessionModel.array(),
+  account: accountModel.nullish(),
+  session: sessionModel.nullish(),
+  dMUserOne: directMessageModel.array(),
+  dMUserTwo: directMessageModel.array(),
 }))

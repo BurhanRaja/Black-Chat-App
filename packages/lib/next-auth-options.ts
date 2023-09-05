@@ -3,28 +3,36 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "database/src/client";
 import Credentials from "next-auth/providers/credentials";
 import { verifyPassword } from "./verifyPassword";
+import { DefaultJWT } from "next-auth/jwt";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: any;
-      uniqueId?: string;
+      uniqueId: any;
     } & DefaultSession["user"];
   }
 
   interface User {
-    uniqueId?: string;
+    uniqueId: any;
   }
 }
 
 declare module "next-auth/jwt" {
-  interface JWT {
-    uniqueId?: string;
+  interface JWT extends DefaultJWT {
+    user: {
+      uniqueId: any;
+      id: any;
+    };
   }
 }
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
+  secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    strategy: "jwt",
+  },
   providers: [
     Credentials({
       name: "Credentials",
@@ -65,7 +73,7 @@ export const authOptions: NextAuthOptions = {
           user.password
         );
 
-        if (checkPassword) {
+        if (!checkPassword) {
           throw new Error("password-incorrect.");
         }
 
@@ -82,24 +90,22 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
-  session: {
-    strategy: "jwt",
-  },
   callbacks: {
     jwt: async ({ user, token }) => {
-      if (user) {
-        token.id = user.id;
-        token.email = user.email;
-        token.uniqueId = user.uniqueId;
+      if (user !== undefined) {
+        console.log(user?.id);
+        token.id = user?.id;
+        token.uniqueId = user?.uniqueId;
       }
 
       return token;
     },
-    session: ({ session, token, user }) => {
-      if (token) {
+    session: async ({ token, session, user }) => {
+      if (token && session.user) {
         session.user.id = user.id;
         session.user.uniqueId = user.uniqueId;
       }
+
       return session;
     },
   },
@@ -107,7 +113,7 @@ export const authOptions: NextAuthOptions = {
     maxAge: 7 * 24 * 30 * 60, // 7 days
   },
   pages: {
-    signIn: "/",
+    signIn: "/login",
     newUser: "/signup",
   },
 };

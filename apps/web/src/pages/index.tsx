@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { tRPC } from "trpc/client";
+import { useSession } from "next-auth/react";
 
 const Signup = () => {
   const [username, setUsername] = useState<string>("");
@@ -8,6 +9,10 @@ const Signup = () => {
   const [phone, setPhone] = useState<string>("");
   const [phoneCode, setPhoneCode] = useState<string>("");
   const [country, setCountry] = useState<string>("");
+
+  const { data: session } = useSession();
+
+  console.log(session);
 
   const { mutateAsync, isLoading, isSuccess, isError, error } =
     tRPC.createUser.useMutation();
@@ -23,8 +28,6 @@ const Signup = () => {
     };
     await mutateAsync(data);
   };
-
-  
 
   return (
     <div>

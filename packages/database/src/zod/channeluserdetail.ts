@@ -1,10 +1,11 @@
 import * as z from "zod"
+import { AccessRole } from "@prisma/client"
 import { CompleteUser, userModel, CompleteRoom, roomModel, CompleteChannel, channelModel } from "./index"
 
 export const _channelUserDetailModel = z.object({
   id: z.number().int(),
   userId: z.string(),
-  accessRole: z.number().int(),
+  accessRole: z.nativeEnum(AccessRole),
   join_type: z.number().int(),
   channelId: z.string(),
   createdAt: z.date(),

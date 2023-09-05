@@ -1,4 +1,5 @@
 import * as z from "zod"
+import { AccessRole } from "@prisma/client"
 import { CompleteChannelUserDetail, channelUserDetailModel, CompleteChannel, channelModel, CompleteMessage, messageModel } from "./index"
 
 export const _roomModel = z.object({
@@ -9,6 +10,7 @@ export const _roomModel = z.object({
   accessRoles: z.number().int(),
   createdAt: z.date(),
   updatedAt: z.date(),
+  access_roles: z.nativeEnum(AccessRole).array(),
 })
 
 export interface CompleteRoom extends z.infer<typeof _roomModel> {
