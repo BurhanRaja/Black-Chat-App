@@ -9,3 +9,13 @@ export type NextApiResponseSocketIo = NextApiResponse & {
     };
   };
 };
+
+export type InpType = {
+  type?: string;
+  label: string;
+  name: string;
+  value: string | number;
+  bgColor?: string;
+  textColor?: string;
+  setValue: Function;
+};

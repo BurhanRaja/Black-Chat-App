@@ -94,13 +94,9 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     jwt: async ({ token, user }) => {
-      console.log(token);
-      console.log(user);
       return { ...token, ...user };
     },
     session: async ({ user, session }) => {
-      // console.log(session);
-      console.log(user);
       if (session.user) {
         session.user.uniqueId = user?.uniqueId;
       }

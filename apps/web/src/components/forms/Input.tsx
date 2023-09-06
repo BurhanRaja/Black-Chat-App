@@ -1,14 +1,6 @@
 import React from "react";
+import { InpType } from "../../types";
 
-type InputType = {
-  type: string;
-  label: string;
-  name: string;
-  value: string | number;
-  color: string;
-  textColor: string;
-  setValue: Function;
-};
 
 const Input = ({
   type,
@@ -16,10 +8,10 @@ const Input = ({
   name,
   value,
   setValue,
-  color = "gray",
+  bgColor = "gray",
   textColor,
-}: InputType) => {
-  const cssInputColor = `bg-${color}-50 border border-${color}-300 ${textColor} sm:text-sm rounded-lg focus:ring-${color}-400 focus:outline-none focus:border-${color}-400 block w-full p-2.5`;
+}: InpType) => {
+  const cssInputColor = `bg-${bgColor}-50 border border-gray-300 ${textColor} sm:text-sm rounded-lg focus:outline-gray-400 block w-full p-2.5`;
 
   return (
     <>

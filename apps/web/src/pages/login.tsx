@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { GetServerSideProps } from "next";
 import { useSession, signIn, signOut, getSession } from "next-auth/react";
-import { decode } from "next-auth/jwt";
-import { getServerSession } from "next-auth";
+import SignupImage from "../components/signup/SignupImage";
+import LoginForm from "../components/login/LoginForm";
 
-const Login = ({token}) => {
+const Login = ({ token }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
@@ -35,27 +34,36 @@ const Login = ({token}) => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <input
-          type="email"
-          name="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-        />
-      </div>
-      <div>
-        <input
-          type="password"
-          name="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-        />
-      </div>
-      <button type="submit">Submit</button>
-    </form>
+    <>
+      <section className="bg-white">
+        <div className="flex items-center justify-between mx-auto md:h-screen">
+          <SignupImage />
+          {/* Validation is remaining */}
+          <LoginForm />
+        </div>
+      </section>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <input
+            type="email"
+            name="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
+          />
+        </div>
+        <div>
+          <input
+            type="password"
+            name="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+          />
+        </div>
+        <button type="submit">Submit</button>
+      </form>
+    </>
   );
 };
 
