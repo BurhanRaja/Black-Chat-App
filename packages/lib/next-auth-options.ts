@@ -1,18 +1,21 @@
-import { DefaultSession, NextAuthOptions, Session, User } from "next-auth";
+import { NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "database/src/client";
 import Credentials from "next-auth/providers/credentials";
 import { verifyPassword } from "./verifyPassword";
-import { JWT } from "next-auth/jwt";
+import { DefaultSession, DefaultUser } from "next-auth";
 
-// declare module "next-auth" {
-//   interface Session {
-//     token: string;
-//     user: {
-//       id: any;
-//       uniqueId: any;
-//     };
-//   }
+declare module "next-auth" {
+  interface Session extends DefaultSession {
+    user?: {
+      uniqueId: string;
+    } & DefaultSession["user"];
+  }
+
+  interface User extends DefaultUser {
+    uniqueId: string;
+  }
+}
 
 //   interface User {
 //     uniqueId: string;
@@ -32,11 +35,6 @@ export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   secret: process.env.NEXTAUTH_SECRET,
   session: { strategy: "jwt", maxAge: 24 * 60 * 60 },
-
-  jwt: {
-    secret: process.env.NEXTAUTH_SECRET,
-    maxAge: 60 * 60 * 24 * 30,
-  },
   providers: [
     Credentials({
       name: "Credentials",
@@ -95,15 +93,19 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async session({ session, user, token }) {
-      if (user !== null) {
-        session.user = user;
-      }
-      return await session;
+    jwt: async ({ token, user }) => {
+      console.log(token);
+      console.log(user);
+      return { ...token, ...user };
     },
+    session: async ({ user, session }) => {
+      // console.log(session);
+      console.log(user);
+      if (session.user) {
+        session.user.uniqueId = user?.uniqueId;
+      }
 
-    async jwt({ token, user }) {
-      return await token;
+      return session;
     },
   },
   pages: {

@@ -88,7 +88,6 @@ model ChannelUserDetail {
   user       User       @relation(fields: [userId], references: [uniqueId], onDelete: Cascade) // User Id for User Details in Channel
   userId     String
   accessRole AccessRole @default(GUEST)
-  room       Room[] // Access to Multiple Rooms in a Channel for a User
   join_type  Int
   channel    Channel?   @relation(fields: [channelId], references: [uniqueId], onDelete: Cascade) // Single Channel Id for Multiple Room 
   channelId  String     @default("")
@@ -123,14 +122,12 @@ model Room {
   id           Int                 @id @default(autoincrement())
   uniqueId     String              @unique
   name         String
-  users        ChannelUserDetail[] // User Details for Room
   channel      Channel             @relation(fields: [channelId], references: [uniqueId], onDelete: Cascade) // Room of Channel Id
   channelId    String              @default("")
-  accessRoles  Int
+  accessRoles  AccessRole[]
   roomChat     Message[]
   createdAt    DateTime            @default(now())
   updatedAt    DateTime            @updatedAt
-  access_roles AccessRole[]
 }
 
 model Friends {

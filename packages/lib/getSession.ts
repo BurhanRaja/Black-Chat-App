@@ -3,7 +3,7 @@ import {
   NextApiResponse,
   GetServerSidePropsContext,
 } from "next";
-import { getServerSession } from "next-auth";
+import { getServerSession as $getServerSession } from "next-auth";
 import { authOptions } from "./next-auth-options";
 
 export type SessionOptions = {
@@ -11,10 +11,10 @@ export type SessionOptions = {
   res?: NextApiResponse | GetServerSidePropsContext["res"];
 };
 
-export const getSession = async (options: SessionOptions) => {
+export const getServerSession = async (options: SessionOptions) => {
   const { req, res } = options;
   if (req !== undefined && res !== undefined) {
-    return await getServerSession(req, res, authOptions);
+    return await $getServerSession(req, res, authOptions);
   } else {
     return null;
   }

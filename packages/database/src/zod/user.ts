@@ -1,5 +1,22 @@
-import * as z from "zod"
-import { CompleteUsersChannel, usersChannelModel, CompleteChannelUserDetail, channelUserDetailModel, CompleteMessage, messageModel, CompleteFriends, friendsModel, CompleteNotifications, notificationsModel, CompleteAccount, accountModel, CompleteSession, sessionModel, CompleteDirectMessage, directMessageModel } from "./index"
+import * as z from "zod";
+import {
+  CompleteUsersChannel,
+  usersChannelModel,
+  CompleteChannelUserDetail,
+  channelUserDetailModel,
+  CompleteMessage,
+  messageModel,
+  CompleteFriends,
+  friendsModel,
+  CompleteNotifications,
+  notificationsModel,
+  CompleteAccount,
+  accountModel,
+  CompleteSession,
+  sessionModel,
+  CompleteDirectMessage,
+  directMessageModel,
+} from "./index";
 
 export const _userModel = z.object({
   id: z.number().int(),
@@ -16,19 +33,19 @@ export const _userModel = z.object({
   disable: z.boolean(),
   createdAt: z.date(),
   updatedAt: z.date(),
-})
+});
 
 export interface CompleteUser extends z.infer<typeof _userModel> {
-  channel: CompleteUsersChannel[]
-  allChannelUserDetails: CompleteChannelUserDetail[]
-  userMessages: CompleteMessage[]
-  senderRequest: CompleteFriends[]
-  receiverRequest: CompleteFriends[]
-  notifications: CompleteNotifications[]
-  account?: CompleteAccount | null
-  session?: CompleteSession | null
-  dMUserOne: CompleteDirectMessage[]
-  dMUserTwo: CompleteDirectMessage[]
+  channel: CompleteUsersChannel[];
+  allChannelUserDetails: CompleteChannelUserDetail[];
+  userMessages: CompleteMessage[];
+  senderRequest: CompleteFriends[];
+  receiverRequest: CompleteFriends[];
+  notifications: CompleteNotifications[];
+  account?: CompleteAccount | null;
+  session?: CompleteSession | null;
+  dMUserOne: CompleteDirectMessage[];
+  dMUserTwo: CompleteDirectMessage[];
 }
 
 /**
@@ -36,15 +53,17 @@ export interface CompleteUser extends z.infer<typeof _userModel> {
  *
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
-export const userModel: z.ZodSchema<CompleteUser> = z.lazy(() => _userModel.extend({
-  channel: usersChannelModel.array(),
-  allChannelUserDetails: channelUserDetailModel.array(),
-  userMessages: messageModel.array(),
-  senderRequest: friendsModel.array(),
-  receiverRequest: friendsModel.array(),
-  notifications: notificationsModel.array(),
-  account: accountModel.nullish(),
-  session: sessionModel.nullish(),
-  dMUserOne: directMessageModel.array(),
-  dMUserTwo: directMessageModel.array(),
-}))
+export const userModel: z.ZodSchema<CompleteUser> = z.lazy(() =>
+  _userModel.extend({
+    channel: usersChannelModel.array(),
+    allChannelUserDetails: channelUserDetailModel.array(),
+    userMessages: messageModel.array(),
+    senderRequest: friendsModel.array(),
+    receiverRequest: friendsModel.array(),
+    notifications: notificationsModel.array(),
+    account: accountModel.nullish(),
+    session: sessionModel.nullish(),
+    dMUserOne: directMessageModel.array(),
+    dMUserTwo: directMessageModel.array(),
+  })
+);

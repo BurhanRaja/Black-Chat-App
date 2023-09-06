@@ -1,29 +1,37 @@
 import React, { useState } from "react";
-import { useSession, signIn, signOut } from "next-auth/react";
-import { getToken } from "next-auth/jwt";
+import { GetServerSideProps } from "next";
+import { useSession, signIn, signOut, getSession } from "next-auth/react";
+import { decode } from "next-auth/jwt";
+import { getServerSession } from "next-auth";
 
-const Login = () => {
+const Login = ({token}) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const { data: session, status } = useSession();
-
-  console.log(session);
-  console.log(status);
+  const { data, status } = useSession();
+  // console.log(data);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await signIn("credentials", {
+    await signIn("credentials", {
       email,
       password,
       redirect: false,
     });
+  };
 
-    console.log(result);
+  const handleSignOut = async () => {
+    // e.preventDefault();
+    await signOut();
   };
 
   if (status === "authenticated") {
-    return <h1>Authenticated</h1>;
+    return (
+      <>
+        <h1>Authenticated</h1>
+        <button onClick={() => handleSignOut()}>Logout</button>
+      </>
+    );
   }
 
   return (
@@ -52,3 +60,21 @@ const Login = () => {
 };
 
 export default Login;
+
+export async function getServerSideProps<GetServerSideProps>(context) {
+  console.log(context.req.cookies);
+  const sessionToken = await getSession(context.req);
+
+  console.log(sessionToken);
+
+  return { props: { token: sessionToken } };
+
+  // decoded JSON will be like :
+  /**
+   * {
+   *  name: 'John Doe',
+   *  email: '...',
+   *  image: '...'
+   * }
+   */
+}
