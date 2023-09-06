@@ -1,12 +1,5 @@
-import * as z from "zod";
-import {
-  CompleteRoom,
-  roomModel,
-  CompleteChannelUserDetail,
-  channelUserDetailModel,
-  CompleteUsersChannel,
-  usersChannelModel,
-} from "./index";
+import * as z from "zod"
+import { CompleteRoom, roomModel, CompleteChannelUserDetail, channelUserDetailModel, CompleteUsersChannel, usersChannelModel } from "./index"
 
 export const _channelModel = z.object({
   id: z.number().int(),
@@ -16,12 +9,12 @@ export const _channelModel = z.object({
   usersChannelId: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
-});
+})
 
 export interface CompleteChannel extends z.infer<typeof _channelModel> {
-  rooms: CompleteRoom[];
-  userDetails: CompleteChannelUserDetail[];
-  usersChannel?: CompleteUsersChannel | null;
+  rooms: CompleteRoom[]
+  userDetails: CompleteChannelUserDetail[]
+  usersChannel?: CompleteUsersChannel | null
 }
 
 /**
@@ -29,10 +22,8 @@ export interface CompleteChannel extends z.infer<typeof _channelModel> {
  *
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
-export const channelModel: z.ZodSchema<CompleteChannel> = z.lazy(() =>
-  _channelModel.extend({
-    rooms: roomModel.array(),
-    userDetails: channelUserDetailModel.array(),
-    usersChannel: usersChannelModel.nullish(),
-  })
-);
+export const channelModel: z.ZodSchema<CompleteChannel> = z.lazy(() => _channelModel.extend({
+  rooms: roomModel.array(),
+  userDetails: channelUserDetailModel.array(),
+  usersChannel: usersChannelModel.nullish(),
+}))

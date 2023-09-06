@@ -1,6 +1,6 @@
 import * as z from "zod"
 import { AccessRole } from "@prisma/client"
-import { CompleteUser, userModel, CompleteRoom, roomModel, CompleteChannel, channelModel } from "./index"
+import { CompleteUser, userModel, CompleteChannel, channelModel } from "./index"
 
 export const _channelUserDetailModel = z.object({
   id: z.number().int(),
@@ -14,7 +14,6 @@ export const _channelUserDetailModel = z.object({
 
 export interface CompleteChannelUserDetail extends z.infer<typeof _channelUserDetailModel> {
   user: CompleteUser
-  room: CompleteRoom[]
   channel?: CompleteChannel | null
 }
 
@@ -25,6 +24,5 @@ export interface CompleteChannelUserDetail extends z.infer<typeof _channelUserDe
  */
 export const channelUserDetailModel: z.ZodSchema<CompleteChannelUserDetail> = z.lazy(() => _channelUserDetailModel.extend({
   user: userModel,
-  room: roomModel.array(),
   channel: channelModel.nullish(),
 }))

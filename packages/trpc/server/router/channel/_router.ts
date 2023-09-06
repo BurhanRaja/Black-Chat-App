@@ -8,5 +8,5 @@
 import { routers } from "../../trpc";
 
 export const channelRouter = routers({
-    createChannel: authe
+    // createChannel
 })

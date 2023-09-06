@@ -37,9 +37,9 @@ export const getUserFromSession = async (
     return null;
   }
 
-  if (!user.emailVerified) {
-    return null;
-  }
+  // if (!user.emailVerified) {
+  //   return null;
+  // }
 
   return user;
 };

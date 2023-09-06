@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { tRPC } from "trpc/client";
 import { useSession } from "next-auth/react";
+import Layout from "../components/defaults/Layout";
+import SignupImage from "../components/signup/SignupImage";
+import SignupForm from "../components/signup/SignupForm";
 
 const Signup = () => {
   const [username, setUsername] = useState<string>("");
@@ -30,65 +33,78 @@ const Signup = () => {
   };
 
   return (
-    <div>
+    <>
+      <section className='bg-white'>
+        <div className='flex items-center justify-between mx-auto md:h-screen'>
+          <SignupImage />
+          <SignupForm />
+        </div>
+      </section>
       <form onSubmit={handleSubmit}>
         <div>
+          {/* <Input
+            type='text'
+            value={username}
+            setValue={(val) => setUsername(val)}
+            placeholder=''
+            label='Username'
+          /> */}
           <input
-            type="text"
-            name="username"
+            type='text'
+            name='username'
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            placeholder="Username"
+            placeholder='Username'
           />
         </div>
         <div>
           <input
-            type="email"
-            name="email"
+            type='email'
+            name='email'
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
+            placeholder='Email'
           />
         </div>
         <div>
           <input
-            type="password"
-            name="password"
+            type='password'
+            name='password'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
+            placeholder='Password'
           />
         </div>
         <div>
           <input
-            type="text"
-            name="country"
+            type='text'
+            name='country'
             value={country}
             onChange={(e) => setCountry(e.target.value)}
-            placeholder="Country"
+            placeholder='Country'
           />
         </div>
         <div>
           <input
-            type="text"
-            name="phoneCode"
+            type='text'
+            name='phoneCode'
             value={phoneCode}
             onChange={(e) => setPhoneCode(e.target.value)}
-            placeholder="Phone Code"
+            placeholder='Phone Code'
           />
         </div>
         <div>
           <input
-            type="text"
-            name="phone"
+            type='text'
+            name='phone'
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            placeholder="Phone"
+            placeholder='Phone'
           />
         </div>
-        <button type="submit">Submit</button>
+        <button type='submit'>Submit</button>
       </form>
-    </div>
+    </>
   );
 };
 
