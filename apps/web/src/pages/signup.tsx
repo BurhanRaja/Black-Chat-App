@@ -1,7 +1,4 @@
 import React, { useState } from "react";
-import { tRPC } from "trpc/client";
-import { useSession } from "next-auth/react";
-import Layout from "../components/defaults/Layout";
 import SignupImage from "../components/signup/SignupImage";
 import SignupForm from "../components/signup/SignupForm";
 

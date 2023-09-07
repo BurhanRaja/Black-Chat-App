@@ -3,6 +3,7 @@ import Header from "../components/website/Header";
 import Hero from "../components/website/Hero";
 import Section1 from "../components/website/Section1";
 import Section2 from "../components/website/Section2";
+import Section3 from "../components/website/Section3";
 
 const Website = () => {
   return (
@@ -12,6 +13,7 @@ const Website = () => {
       <Hero />
       <Section1 />
       <Section2 />
+      <Section3 />
     </>
   );
 };
