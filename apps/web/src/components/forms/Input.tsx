@@ -10,9 +10,9 @@ const Input: FunctionComponent<InpType> = ({
   bgColor = "gray",
   textColor,
   placeHolder,
-  border
+  border,
 }) => {
-  const cssInputColor = `${bgColor} border ${border} ${textColor} sm:text-sm rounded-lg focus:outline-gray-400 block w-full p-2.5`;
+  const cssInputColor = `${bgColor} border ${border} ${textColor} sm:text-sm rounded-lg focus:outline-none block w-full p-2.5`;
 
   return (
     <>

@@ -1,5 +1,5 @@
 import * as z from "zod"
-import { AccessRole } from "@prisma/client"
+import { AccessRole, RoomType } from "@prisma/client"
 import { CompleteChannel, channelModel, CompleteMessage, messageModel } from "./index"
 
 export const _roomModel = z.object({
@@ -8,6 +8,7 @@ export const _roomModel = z.object({
   name: z.string(),
   channelId: z.string(),
   accessRoles: z.nativeEnum(AccessRole).array(),
+  roomType: z.nativeEnum(RoomType),
   createdAt: z.date(),
   updatedAt: z.date(),
 })

@@ -18,30 +18,7 @@
 }
 
 .room-panel-container::-webkit-scrollbar {
-  width: 3px;
-}
-
-/* Track */
-.room-panel-container::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px grey; 
-  border-radius: 10px;
-  margin-top: 10px;
-  margin-left: 10px;
-}
- 
-/* Handle */
-.room-panel-container::-webkit-scrollbar-thumb {
-  background: rgb(0, 0, 0); 
-  border-radius: 10px;
-}
-
-/* Handle on hover */
-.room-panel-container::-webkit-scrollbar-thumb:hover {
-  background: #4b4b4b; 
-}
-
-.hero-download-btn {
-  position: relative;
+  display: none;
 }
 
 .hero-download-btn::before {
@@ -71,7 +48,7 @@
   right: 8%;
 }
 
-.channel-icon {
+/* .channel-icon {
   border-radius: 50%;
   transition: all 0.3s;
   -webkit-transition: 0.3s;
@@ -87,4 +64,4 @@
   -o-transition: 0.3s;
   -ms-transition: 0.3s;
   border-radius: 10px;
-}
+} */

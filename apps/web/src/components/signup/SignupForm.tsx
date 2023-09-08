@@ -1,5 +1,5 @@
 import React, { useState, FunctionComponent } from "react";
-import { GrFormClose } from "react-icons/gr";
+import { AiOutlineClose } from "react-icons/ai";
 import { tRPC } from "trpc/client";
 import { useSession } from "next-auth/react";
 import Input from "../forms/Input";
@@ -20,8 +20,6 @@ const SignupForm: FunctionComponent = () => {
 
   const { data: session } = useSession();
 
-  console.log(session);
-
   const { mutateAsync, isLoading, isSuccess, isError, error } =
     tRPC.createUser.useMutation();
 
@@ -39,14 +37,9 @@ const SignupForm: FunctionComponent = () => {
   };
 
   return (
-    <div className='w-[48%]'>
-      <div className='w-[90%] mx-auto bg-[#e7e7e7] rounded-lg shadow-lg shadow-gray-600'>
-        <div className='flex justify-end p-3 pb-0'>
-          <Link href='/'>
-            <GrFormClose className='text-black text-xl' />
-          </Link>
-        </div>
-        <div className='flex items-center justify-center mb-1 p-5 pt-3 pb-0 text-2xl font-semibold text-gray-900'>
+    <div className='w-[40%]'>
+      <div className='w-[90%] mx-auto bg-gray-800 rounded-lg shadow-lg shadow-gray-600 py-6'>
+        <div className='flex items-center justify-center mb-1 p-5 pt-3 pb-0 text-2xl font-semibold text-gray-50'>
           <img
             className='w-8 h-8 mr-2'
             src='https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg'
@@ -55,7 +48,7 @@ const SignupForm: FunctionComponent = () => {
           BlackChat
         </div>
         <div className='p-6 space-y-4 md:space-y-6 sm:p-8'>
-          <h1 className='text-xl font-bold leading-tight tracking-tight text-center text-gray-900 md:text-2xl '>
+          <h1 className='text-xl font-bold leading-tight tracking-tight text-center text-gray-50 md:text-2xl '>
             Signup
           </h1>
           <form className='space-y-4 md:space-y-6' onChange={handleSubmit}>
@@ -68,7 +61,7 @@ const SignupForm: FunctionComponent = () => {
                   value={username}
                   setValue={(val) => setUsername(val)}
                   bgColor='gray'
-                  textColor='text-gray-900'
+                  textColor='text-gray-50'
                 />
               </div>
               <div>
@@ -79,7 +72,7 @@ const SignupForm: FunctionComponent = () => {
                   value={email}
                   setValue={(val) => setEmail(val)}
                   bgColor='gray'
-                  textColor='text-gray-900'
+                  textColor='text-gray-50'
                 />
               </div>
             </div>
@@ -90,7 +83,7 @@ const SignupForm: FunctionComponent = () => {
                   label='Country'
                   value={country}
                   setValue={(val) => setCountry(val)}
-                  textColor='text-gray-900'
+                  textColor='text-gray-50'
                   mappedData={
                     <>
                       <option value='India'>India</option>
@@ -110,7 +103,7 @@ const SignupForm: FunctionComponent = () => {
                   value={phone}
                   setValue={(val) => setPhone(val)}
                   bgColor='gray'
-                  textColor='text-gray-900'
+                  textColor='text-gray-50'
                 />
               </div>
             </div>
@@ -123,7 +116,7 @@ const SignupForm: FunctionComponent = () => {
                   value={password}
                   setValue={(val) => setPassword(val)}
                   bgColor='gray'
-                  textColor='text-gray-900'
+                  textColor='text-gray-50'
                 />
               </div>
               <div>
@@ -134,7 +127,7 @@ const SignupForm: FunctionComponent = () => {
                   value={confirmPassword}
                   setValue={(val) => setConfirmPassword(val)}
                   bgColor='gray'
-                  textColor='text-gray-900'
+                  textColor='text-gray-50'
                 />
               </div>
             </div>
@@ -146,11 +139,11 @@ const SignupForm: FunctionComponent = () => {
               Create an account
             </button>
           </form>
-          <p className='text-sm font-light text-gray-500'>
+          <p className='text-sm font-light text-gray-100'>
             Already have an account?{" "}
             <Link
               href='/login'
-              className='font-medium text-blue-600 hover:underline'
+              className='font-medium text-blue-500 hover:underline'
             >
               Login here
             </Link>

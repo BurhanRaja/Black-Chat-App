@@ -1,4 +1,5 @@
 import * as z from "zod"
+import { ChannelType } from "@prisma/client"
 import { CompleteRoom, roomModel, CompleteChannelUserDetail, channelUserDetailModel, CompleteUsersChannel, usersChannelModel } from "./index"
 
 export const _channelModel = z.object({
@@ -9,6 +10,8 @@ export const _channelModel = z.object({
   usersChannelId: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
+  channelType: z.nativeEnum(ChannelType),
+  channelFor: z.number().int(),
 })
 
 export interface CompleteChannel extends z.infer<typeof _channelModel> {

@@ -11,7 +11,7 @@ const RoomItem: FunctionComponent<RoomItemProps> = ({
 }) => {
   return (
     <>
-      <div className='flex my-0.5 justify-between group/roomitem items-center cursor-pointer rounded-md p-3 hover:bg-gray-700'>
+      <div className='flex my-0.5 mx-2 justify-between group/roomitem items-center cursor-pointer rounded-md p-3 hover:bg-gray-700'>
         <div className='flex items-center justify-start w-[85%] font-medium text-gray-300 group-hover/roomitem:text-gray-200'>
           {type === "chat" ? (
             <BiHash className='mr-3' />
