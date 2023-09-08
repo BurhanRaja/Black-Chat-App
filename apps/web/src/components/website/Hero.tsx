@@ -17,7 +17,7 @@ const Hero = () => {
               with everyone in an easy and comfortable way
             </p>
             <div className='flex justify-center'>
-              <button className='inline-flex text-white drop-shadow-[0_-1px_51px_rgb(0,112,255,0.25)] bg-blue-700 border-0 py-5 px-10 focus:outline-none hover:bg-indigo-600 rounded-3xl text-xl'>
+              <button className='inline-flex text-white drop-shadow-[0_-1px_51px_rgb(0,112,255,0.6)] bg-blue-700 border-0 py-5 px-10 focus:outline-none hover:bg-indigo-600 rounded-3xl text-xl hero-download-btn'>
                 Download for Windows
               </button>
             </div>

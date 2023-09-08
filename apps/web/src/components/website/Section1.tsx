@@ -4,7 +4,7 @@ import Image from "next/image";
 const Section1 = () => {
   return (
     <section>
-      <div className="relative h-[30rem] bg-gray-950">
+      <div className="relative h-[30rem] bg-gray-950 section1-main-image">
         <div className="absolute bottom-[-22rem] w-[100%]">
           <Image
             src={"/images/websitebanner-2.png"}

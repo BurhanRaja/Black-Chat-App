@@ -260,7 +260,7 @@ var require_client = __commonJS({
           "value": "prisma-client-js"
         },
         "output": {
-          "value": "C:\\Users\\Admin\\Documents\\Black-Chat-App\\node_modules\\@prisma\\client",
+          "value": "C:\\Users\\burha\\OneDrive\\Desktop\\github Repositories\\blackchatapp\\node_modules\\@prisma\\client",
           "fromEnvVar": null
         },
         "config": {

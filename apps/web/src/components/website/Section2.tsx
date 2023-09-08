@@ -4,11 +4,11 @@ import Image from "next/image";
 const Section2 = () => {
   return (
     <section className='pt-96 mt-9'>
-      <div className='w-[70%] mx-auto'>
+      <div className='w-[65%] mx-auto'>
         <p className='text-lg font-medium text-gray-700 text-center mb-4'>
           Supported and being used by large companies like
         </p>
-        <div className='flex justify-between'>
+        <div className='flex justify-between mt-5'>
           <Image
             src={"/images/logo-1.svg"}
             alt='logo-1'

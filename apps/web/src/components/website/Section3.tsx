@@ -27,7 +27,7 @@ const Section3 = () => {
   ];
 
   return (
-    <section className='py-32'>
+    <section className='py-40'>
       <h1 className='text-6xl w-[45%] font-bold text-gray-800 mx-auto text-center'>
         Some of our features will help you
       </h1>
