@@ -1,10 +1,10 @@
 import React from "react";
 import ChannelCon from "./ChannelCon";
 
-const ChannelList = () => {
+const ChannelPannel = () => {
   return (
     <>
-      <div className='flex flex-col p-4 bg-gray-900 w-[6%] fixed'>
+      <div className='flex flex-col p-4 bg-gray-900 w-[6%] channel-list-container'>
         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((el) => {
           return <ChannelCon />;
         })}
@@ -13,4 +13,4 @@ const ChannelList = () => {
   );
 };
 
-export default ChannelList;
+export default ChannelPannel;

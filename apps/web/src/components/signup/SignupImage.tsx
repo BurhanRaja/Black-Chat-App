@@ -1,17 +1,15 @@
-import React from "react";
+import React, { FunctionComponent } from "react";
+import Image from "next/image";
 
-const SignupImage = () => {
+const SignupImage: FunctionComponent = () => {
   return (
-    <div
-      className='w-[50%]'
-      style={{
-        backgroundImage: `url(./images/sideImage.jpg)`,
-        height: "100%",
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
-      {/* <Image src={sideImage} alt='Signup Image' className="w-[100%]" /> */}
+    <div className='w-[50%]' style={{}}>
+      <Image
+        src={"/images/auth-img-2-1.png"}
+        alt='Signup Image'
+        width={640}
+        height={400}
+      />
     </div>
   );
 };

@@ -1,8 +1,7 @@
-import React from "react";
+import React, { FunctionComponent } from "react";
 import { InpType } from "../../types";
 
-
-const Input = ({
+const Input: FunctionComponent<InpType> = ({
   type,
   label,
   name,
@@ -10,8 +9,10 @@ const Input = ({
   setValue,
   bgColor = "gray",
   textColor,
-}: InpType) => {
-  const cssInputColor = `bg-${bgColor}-50 border border-gray-300 ${textColor} sm:text-sm rounded-lg focus:outline-gray-400 block w-full p-2.5`;
+  placeHolder,
+  border
+}) => {
+  const cssInputColor = `${bgColor} border ${border} ${textColor} sm:text-sm rounded-lg focus:outline-gray-400 block w-full p-2.5`;
 
   return (
     <>
@@ -28,6 +29,7 @@ const Input = ({
         value={value}
         onChange={(e) => setValue(e.target.value)}
         className={cssInputColor}
+        placeholder={placeHolder}
       />
     </>
   );

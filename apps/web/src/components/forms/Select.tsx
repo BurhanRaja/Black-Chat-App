@@ -1,11 +1,11 @@
-import React from "react";
+import React, { FunctionComponent } from "react";
 import { InpType } from "../../types";
 
 interface SelectType extends InpType {
   mappedData: any;
 }
 
-const Select = ({
+const Select: FunctionComponent<SelectType> = ({
   label,
   name,
   value,
@@ -13,7 +13,7 @@ const Select = ({
   bgColor = "gray",
   textColor = "text-gray-900",
   mappedData,
-}: SelectType) => {
+}) => {
   const cssInputColor = `bg-${bgColor}-50 border border-gray-300 ${textColor} sm:text-sm rounded-lg focus:outline-gray-400 block w-full p-2.5`;
 
   return (
@@ -28,7 +28,7 @@ const Select = ({
         id={name}
         name={name}
         value={value}
-        onChange={(val) => setValue(val)}
+        onChange={(e) => setValue(e.target.value)}
         className={cssInputColor}
       >
         {mappedData}

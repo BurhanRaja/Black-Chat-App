@@ -1,6 +1,6 @@
-import React from "react";
+import React, { FunctionComponent } from "react";
 
-const Hero = () => {
+const Hero: FunctionComponent = () => {
   return (
     <>
       <section className='text-gray-600 body-font bg-gray-950'>

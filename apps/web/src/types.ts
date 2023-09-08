@@ -17,5 +17,19 @@ export type InpType = {
   value: string | number;
   bgColor?: string;
   textColor?: string;
+  placeHolder?: string;
+  border?: string;
   setValue: Function;
 };
+
+export interface RoomItemProps {
+  type?: string;
+  notifications?: number;
+  name: string;
+}
+
+export interface DropdownProps {
+  color: string;
+  name: string;
+  mappedData: any;
+}

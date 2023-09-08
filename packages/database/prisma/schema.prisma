@@ -105,6 +105,14 @@ model UsersChannel {
   updatedAt DateTime  @updatedAt
 }
 
+enum ChannelType {
+  GAMING
+  MUSIC
+  EDUCATION
+  SCIENCEANDTECH
+  ENTERTAINMENT
+}
+
 model Channel {
   id             Int                 @id @default(autoincrement())
   uniqueId       String              @unique
@@ -116,18 +124,27 @@ model Channel {
   usersChannelId String              @default("")
   createdAt      DateTime            @default(now())
   updatedAt      DateTime            @updatedAt
+  channelType    ChannelType
+  channelFor     Int
+}
+
+enum RoomType {
+  CHAT
+  ANOUNCEMENT
+  VOICE
 }
 
 model Room {
-  id           Int                 @id @default(autoincrement())
-  uniqueId     String              @unique
-  name         String
-  channel      Channel             @relation(fields: [channelId], references: [uniqueId], onDelete: Cascade) // Room of Channel Id
-  channelId    String              @default("")
-  accessRoles  AccessRole[]
-  roomChat     Message[]
-  createdAt    DateTime            @default(now())
-  updatedAt    DateTime            @updatedAt
+  id          Int          @id @default(autoincrement())
+  uniqueId    String       @unique
+  name        String
+  channel     Channel      @relation(fields: [channelId], references: [uniqueId], onDelete: Cascade) // Room of Channel Id
+  channelId   String       @default("")
+  accessRoles AccessRole[]
+  roomChat    Message[]
+  roomType    RoomType
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 }
 
 model Friends {

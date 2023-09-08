@@ -9,10 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/react-icons": "^3.0.0",
     "next": "^13.4.1",
     "next-auth": "^4.23.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-icons": "^4.11.0",
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.2"
   },

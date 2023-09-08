@@ -1,24 +1,39 @@
-import React from "react";
-import Image from "next/image";
+import React, { FunctionComponent } from "react";
+import { BsChatLeftTextFill } from "react-icons/bs";
+import { HiUserGroup } from "react-icons/hi";
+import { RiCompassDiscoverFill } from "react-icons/ri";
 
-const Section3 = () => {
+const Section3: FunctionComponent = () => {
   let data: Array<any> = [
     {
-      image: "/images/message.png",
+      image: (
+        <>
+          <BsChatLeftTextFill className='text-green-600 text-lg' />
+        </>
+      ),
       name: "Easy Communication",
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam reiciendis alias molestias, nulla, velit sint, tempora perspiciatis architecto explicabo.",
       color: "bg-green-200",
     },
     {
-      image: "/images/community.png",
+      image: (
+        <>
+          <HiUserGroup className='text-yellow-600 text-lg' />
+        </>
+      ),
       name: "Community Support",
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam reiciendis alias molestias, nulla, velit sint, tempora perspiciatis architecto explicabo.",
       color: "bg-yellow-200",
     },
     {
-      image: "/images/discover.png",
+      image: (
+        <>
+          {" "}
+          <RiCompassDiscoverFill className='text-blue-600 text-lg' />
+        </>
+      ),
       name: "Discover Channel",
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam reiciendis alias molestias, nulla, velit sint, tempora perspiciatis architecto explicabo.",
@@ -36,17 +51,12 @@ const Section3 = () => {
           return (
             <div className='pt-5 w-[30%]'>
               <p className={`p-1.5 ${el.color} rounded-lg w-[2rem] mt-3`}>
-                <Image
-                  src={el.image}
-                  alt={el.name}
-                  width={50}
-                  height={50}
-                />
+                {el.image}
               </p>
-              <h4 className="text-xl font-medium text-gray-600 mt-3">{el.name}</h4>
-              <p className="text-gray-500 mt-3">
-                {el.description}
-              </p>
+              <h4 className='text-xl font-medium text-gray-600 mt-3'>
+                {el.name}
+              </h4>
+              <p className='text-gray-500 mt-3'>{el.description}</p>
             </div>
           );
         })}

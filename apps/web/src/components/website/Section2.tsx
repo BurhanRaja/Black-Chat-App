@@ -1,7 +1,7 @@
-import React from "react";
+import React, { FunctionComponent } from "react";
 import Image from "next/image";
 
-const Section2 = () => {
+const Section2: FunctionComponent = () => {
   return (
     <section className='pt-96 mt-9'>
       <div className='w-[65%] mx-auto'>
