@@ -1,4 +1,8 @@
 import z from "zod";
+import { _userModel } from "database/src/zod";
+import { ChannelType } from "@prisma/client";
+
+type user = typeof _userModel;
 
 // User Input Validation
 export const userInputVal = z.object({
@@ -19,4 +23,11 @@ export const userInputVal = z.object({
     .string()
     .min(8, "Min 8 characters are required.")
     .max(15, "Only 15 characters limit."),
+});
+
+type channelType = (typeof ChannelType)[keyof typeof ChannelType];
+export const createchannelInputVal = z.object({
+  name: z.string().min(5).max(25),
+  channelType: z.custom<channelType>(),
+  channelFor: z.number(),
 });

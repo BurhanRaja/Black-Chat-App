@@ -65,6 +65,6 @@ export const isAuthed = middlewares(async ({ ctx, next }) => {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
   return next({
-    ctx: { user, session },
+    ctx: { ...ctx, user, session },
   });
 });

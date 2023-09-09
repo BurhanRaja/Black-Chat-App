@@ -21,8 +21,7 @@
     "generate": "prisma generate",
     "lint": "eslint \"src/**/*.ts\"",
     "prebuild": "npm run generate",
-    "predev": "npm run generate",
-    "studio": "prisma studio"
+    "predev": "npm run generate"
   },
   "dependencies": {
     "@prisma/client": "5.0.0",

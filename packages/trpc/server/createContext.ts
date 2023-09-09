@@ -4,7 +4,8 @@ import { type Session } from "next-auth";
 import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { inferAsyncReturnType } from "@trpc/server";
 import { GetServerSidePropsContext } from "next";
-import { getSession } from "lib/getSession";
+import { getServerSession } from "lib";
+import { UserFromSession } from "./middleware/sessionMiddleware";
 
 type CreateContextOptions =
   | CreateNextContextOptions
@@ -23,7 +24,7 @@ export async function createInnerContext(opts: CreateInnerContextOptions) {
 }
 
 export async function createContext(opts: CreateContextOptions) {
-  const session = await getSession(opts);
+  const session = await getServerSession(opts);
   const innerContext = await createInnerContext({ session });
   return {
     ...innerContext,
@@ -35,3 +36,4 @@ export async function createContext(opts: CreateContextOptions) {
 
 export type TRPCInnerContext = inferAsyncReturnType<typeof createInnerContext>;
 export type TRPCContext = inferAsyncReturnType<typeof createContext>;
+export type TrpcSessionUser = UserFromSession;
