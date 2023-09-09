@@ -17,6 +17,7 @@ export type InpType = {
   value: string | number;
   bgColor?: string;
   textColor?: string;
+  labelColor?: string;
   placeHolder?: string;
   border?: string;
   setValue: Function;

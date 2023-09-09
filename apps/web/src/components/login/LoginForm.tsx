@@ -51,7 +51,8 @@ const LoginForm: FunctionComponent = () => {
                   value={email}
                   setValue={(val) => setEmail(val)}
                   bgColor="gray"
-                  textColor="text-gray-50"
+                  textColor="text-gray-900"
+                  labelColor="text-gray-50"
                 />
               </div>
               <div>
@@ -62,7 +63,8 @@ const LoginForm: FunctionComponent = () => {
                   value={password}
                   setValue={(val) => setPassword(val)}
                   bgColor="gray"
-                  textColor="text-gray-50"
+                  textColor="text-gray-900"
+                  labelColor="text-gray-50"
                 />
               </div>
               <div></div>

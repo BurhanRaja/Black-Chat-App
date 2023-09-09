@@ -32,7 +32,7 @@ const RoomPanel = () => {
               bgColor="bg-gray-900"
               textColor="text-gray-100"
               border="border-none"
-              placeHolder="Search Room"
+              placeHolder="Browse Room"
             />
             <FiSearch className="text-gray-400 text-lg cursor-pointer hover:text-white" />
           </div>

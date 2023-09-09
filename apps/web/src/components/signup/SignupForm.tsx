@@ -61,7 +61,8 @@ const SignupForm: FunctionComponent = () => {
                   value={username}
                   setValue={(val) => setUsername(val)}
                   bgColor='gray'
-                  textColor='text-gray-50'
+                  textColor='text-gray-900'
+                  labelColor="text-gray-50"
                 />
               </div>
               <div>
@@ -72,7 +73,8 @@ const SignupForm: FunctionComponent = () => {
                   value={email}
                   setValue={(val) => setEmail(val)}
                   bgColor='gray'
-                  textColor='text-gray-50'
+                  textColor='text-gray-900'
+                  labelColor="text-gray-50"
                 />
               </div>
             </div>
@@ -83,7 +85,8 @@ const SignupForm: FunctionComponent = () => {
                   label='Country'
                   value={country}
                   setValue={(val) => setCountry(val)}
-                  textColor='text-gray-50'
+                  textColor='text-gray-900'
+                  labelColor="text-gray-50"
                   mappedData={
                     <>
                       <option value='India'>India</option>
@@ -103,7 +106,8 @@ const SignupForm: FunctionComponent = () => {
                   value={phone}
                   setValue={(val) => setPhone(val)}
                   bgColor='gray'
-                  textColor='text-gray-50'
+                  textColor='text-gray-900'
+                  labelColor="text-gray-50"
                 />
               </div>
             </div>
@@ -116,7 +120,8 @@ const SignupForm: FunctionComponent = () => {
                   value={password}
                   setValue={(val) => setPassword(val)}
                   bgColor='gray'
-                  textColor='text-gray-50'
+                  textColor='text-gray-900'
+                  labelColor="text-gray-50"
                 />
               </div>
               <div>
@@ -127,7 +132,8 @@ const SignupForm: FunctionComponent = () => {
                   value={confirmPassword}
                   setValue={(val) => setConfirmPassword(val)}
                   bgColor='gray'
-                  textColor='text-gray-50'
+                  textColor='text-gray-900'
+                  labelColor="text-gray-50"
                 />
               </div>
             </div>

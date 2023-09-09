@@ -12,6 +12,7 @@ const Select: FunctionComponent<SelectType> = ({
   setValue,
   bgColor = "gray",
   textColor = "text-gray-900",
+  labelColor,
   mappedData,
 }) => {
   const cssInputColor = `bg-${bgColor}-50 border border-gray-300 ${textColor} sm:text-sm rounded-lg focus:outline-gray-400 block w-full p-2.5`;
@@ -20,7 +21,7 @@ const Select: FunctionComponent<SelectType> = ({
     <>
       <label
         htmlFor={name}
-        className={`block mb-2 text-sm font-medium ${textColor}`}
+        className={`block mb-2 text-sm font-medium ${labelColor}`}
       >
         {label}
       </label>

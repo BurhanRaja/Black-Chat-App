@@ -9,6 +9,7 @@ const Input: FunctionComponent<InpType> = ({
   setValue,
   bgColor = "gray",
   textColor,
+  labelColor,
   placeHolder,
   border,
 }) => {
@@ -18,7 +19,7 @@ const Input: FunctionComponent<InpType> = ({
     <>
       <label
         htmlFor={name}
-        className={`block mb-2 text-sm font-medium ${textColor}`}
+        className={`block mb-2 text-sm font-medium ${labelColor}`}
       >
         {label}
       </label>
