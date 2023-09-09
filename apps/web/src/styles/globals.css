@@ -21,6 +21,10 @@
   display: none;
 }
 
+.chat-list::-webkit-scrollbar {
+  display: none;
+}
+
 .hero-download-btn::before {
   content: "";
   position: absolute;

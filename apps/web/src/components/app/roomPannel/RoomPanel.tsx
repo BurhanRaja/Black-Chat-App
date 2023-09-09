@@ -20,7 +20,12 @@ const RoomPanel = () => {
   ];
   return (
     <>
-      <div className="flex flex-col bg-gray-900 w-[22%] p-3 pb-0 pr-0 ms-16 h-[100vh]">
+      <div className="flex flex-col bg-gray-900 w-[390px] p-3 pb-0 pr-0 ms-16 h-[100vh]">
+      <div className="px-1 bg-gray-900">
+          <div className="mb-3">
+            <ProfileItem />
+          </div>
+        </div>
         <div className="bg-gray-900">
           <div className="mx-2 mr-3 flex justify-between items-center">
             <Input
@@ -37,15 +42,11 @@ const RoomPanel = () => {
             <FiSearch className="text-gray-400 text-lg cursor-pointer hover:text-white" />
           </div>
         </div>
-        <div className="px-1 bg-gray-900">
-          <div className="mb-3">
-            <ProfileItem />
-          </div>
-        </div>
+        <hr className="w-[90%] mx-auto border-gray-600" />
         <div className="flex flex-col bg-gray-900 w-[100%] overflow-y-scroll overflow-x-hidden room-panel-container p-1">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((el) => {
             return (
-              <RoomItem type="chat" name="Room Name Anyy" notifications={10} />
+              <RoomItem type="chat" name="Room Name Anyy" notifications={0} />
             );
           })}
         </div>

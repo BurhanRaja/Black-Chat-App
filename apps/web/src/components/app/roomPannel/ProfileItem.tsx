@@ -6,7 +6,7 @@ import { LuMoreHorizontal } from "react-icons/lu";
 const ProfileItem = () => {
   return (
     <>
-      <div className="p-4 bg-gray-700 rounded-2xl mx-2 my-3">
+      <div className="p-4 bg-gray-700 cursor-pointer hover:bg-gray-800 rounded-2xl mx-2 my-3">
         <div className="flex">
           <Image
             src="/images/sideImage.jpg"

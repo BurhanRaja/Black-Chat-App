@@ -6,11 +6,11 @@ import { BiSolidGroup } from "react-icons/bi";
 const Header = () => {
   return (
     <>
-      <div className="flex items-center justify-between bg-gray-800 p-4 py-2">
+      <div className="flex items-center justify-between fixed w-[1170px] z-50 shadow-xl bg-gray-800 p-4 py-2">
         <h2 className="text-white">Channel Name</h2>
-        <div className="flex items-center w-[22%]">
+        <div className="flex items-center w-[25%]">
           <BiSolidGroup className="text-gray-400 hover:text-white cursor-pointer text-2xl mr-3" />
-          <div className="flex items-center relative w-[85%]">
+          <div className="flex items-center relative w-[90%]">
             <Input
               type="text"
               value={""}

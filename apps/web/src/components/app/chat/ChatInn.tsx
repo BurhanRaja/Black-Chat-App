@@ -3,9 +3,9 @@ import React from "react";
 const ChatInn = () => {
   return (
     <>
-      <div className="flex w-full my-3 max-w-xl">
+      <div className="flex w-full my-2 p-3 hover:bg-gray-900 rounded-md">
         <div
-          className="flex-shrink-0 h-12 w-12 rounded-full"
+          className="flex-shrink-0 h-10 w-10 rounded-full"
           style={{
             backgroundImage: `url(/images/sideImage.jpg)`,
             backgroundSize: "cover",

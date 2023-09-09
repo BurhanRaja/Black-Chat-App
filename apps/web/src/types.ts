@@ -34,3 +34,8 @@ export interface DropdownProps {
   name: string;
   mappedData: any;
 }
+
+export interface ButtonBadgeProps {
+  icon?: any;
+  bgColor?: string;
+}
