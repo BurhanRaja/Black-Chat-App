@@ -20,7 +20,7 @@ const RoomPanel = () => {
   ];
   return (
     <>
-      <div className="flex flex-col bg-gray-900 w-[390px] p-3 pb-0 pr-0 ms-16 h-[100vh]">
+      <div className="flex flex-col bg-gray-900 w-[566px] p-3 pb-0 pr-0 ms-16 h-[100vh]">
       <div className="px-1 bg-gray-900">
           <div className="mb-3">
             <ProfileItem />

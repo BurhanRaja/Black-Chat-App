@@ -1,7 +1,7 @@
 import { CreateUserInputType } from "./createUser.schema";
 import { prisma } from "database/src/client";
 import { TRPCError } from "@trpc/server";
-import { hashPassword, randomIdGenerator } from "lib";
+import { hashPassword, randomIdGenerator, encodeHex, sendEmail } from "lib";
 
 export const createUserHandler = async ({
   input,
@@ -47,6 +47,12 @@ export const createUserHandler = async ({
       uniqueId: randomId,
     },
   });
+
+  // Send Email
+  const tokenCombine = user?.uniqueId + ":" + user?.email;
+  const token = encodeHex(tokenCombine);
+  const html = `Login by Clicking <a href="http://localhost:3000/login/verify?${token}"></a>`;
+  await sendEmail(user?.email, "Blackchat - Login Verify", html);
 
   return {
     success: true,

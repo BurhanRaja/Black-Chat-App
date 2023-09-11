@@ -24,6 +24,7 @@ model User {
   country               String              @default("India")
   phone                 String              @unique
   uniqueId              String              @unique
+  image                 String              @unique
   password              String              @default("")
   emailVerified         Boolean             @default(false)
   phoneVerified         Boolean             @default(false)
@@ -32,8 +33,8 @@ model User {
   disable               Boolean             @default(false)
   channel               UsersChannel[] // many Channels does a User have Or Included
   allChannelUserDetails ChannelUserDetail[] // Many User Details in Channels
-    userMessages          Message[]           @relation(name: "userMessage")
-    // userReplyMessages     Message[]           @relation(name: "replyUserMessage")
+  userMessages          Message[]           @relation(name: "userMessage")
+  // userReplyMessages     Message[]           @relation(name: "replyUserMessage")
   senderRequest         Friends[]           @relation(name: "SenderRequest") // Sender Request Friends
   receiverRequest       Friends[]           @relation(name: "ReceiverRequest") // Receiver Request Friends
   notifications         Notifications[]
@@ -78,7 +79,6 @@ model VerificationToken {
 
 enum AccessRole {
   ADMIN
-  MODERATOR
   MEMBER
   GUEST
 }
@@ -111,12 +111,14 @@ enum ChannelType {
   EDUCATION
   SCIENCEANDTECH
   ENTERTAINMENT
+  GENERAL
 }
 
 model Channel {
   id             Int                 @id @default(autoincrement())
   uniqueId       String              @unique
   name           String              @unique
+  image          String              @unique
   rooms          Room[] // No of Rooms in Channel
   userDetails    ChannelUserDetail[] // Number Users in a Channel
   inviteCode     String              @unique

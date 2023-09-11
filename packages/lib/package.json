@@ -12,9 +12,11 @@
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.7",
+    "@types/nodemailer": "^6.4.10",
     "bcrypt": "^5.1.1",
+    "database": "*",
     "next": "^13.4.19",
     "next-auth": "^4.23.1",
-    "database": "*"
+    "nodemailer": "^6.9.5"
   }
 }

@@ -4,7 +4,7 @@ import { ChannelType } from "@prisma/client";
 
 type user = typeof _userModel;
 
-// User Input Validation
+// Create User
 export const userInputVal = z.object({
   username: z
     .string()
@@ -25,6 +25,7 @@ export const userInputVal = z.object({
     .max(15, "Only 15 characters limit."),
 });
 
+// Create Channel
 type channelType = (typeof ChannelType)[keyof typeof ChannelType];
 export const createchannelInputVal = z.object({
   name: z.string().min(5).max(25),
