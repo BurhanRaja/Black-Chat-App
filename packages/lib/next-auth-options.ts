@@ -1,14 +1,13 @@
-import { NextAuthOptions } from "next-auth";
+import { DefaultSession, NextAuthOptions, DefaultUser } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "database/src/client";
 import Credentials from "next-auth/providers/credentials";
 import { verifyPassword } from "./verifyPassword";
-import { DefaultSession, DefaultUser } from "next-auth";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user?: {
-      uniqueId: string;
+      uniqueId: any;
     } & DefaultSession["user"];
   }
 
@@ -16,20 +15,6 @@ declare module "next-auth" {
     uniqueId: string;
   }
 }
-
-//   interface User {
-//     uniqueId: string;
-//     id?: any;
-//   }
-// }
-
-// declare module "next-auth/jwt" {
-//   interface JWT {
-//     uniqueId: string;
-//     id: number;
-//     token: string;
-//   }
-// }
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -79,26 +64,55 @@ export const authOptions: NextAuthOptions = {
           throw new Error("password-incorrect.");
         }
 
-        return {
+        return Promise.resolve({
           id: user?.id,
           uniqueId: user?.uniqueId,
           username: user?.username,
           email: user?.email,
-          emailVerified: user?.emailVerified,
-          phoneVerified: user?.phoneVerified,
-          disable: user?.disable,
-          twoFactorEnable: user?.twoFactorEnable,
-        };
+        });
       },
     }),
   ],
   callbacks: {
-    jwt: async ({ token, user }) => {
+    jwt: async ({ token, user, account, session, trigger }) => {
+      if (trigger === "update") {
+        return {
+          ...token,
+          username: session?.username ?? token.username,
+          email: session?.email ?? token.email,
+        };
+      }
+      const autoMergeIdentities = async () => {
+        const existingUser = await prisma.user.findUnique({
+          where: {
+            email: token.email!,
+          },
+          select: {
+            uniqueId: true,
+            email: true,
+            username: true,
+          },
+        });
+
+        if (!existingUser) {
+          return token;
+        }
+
+        return {
+          ...token,
+          user: existingUser,
+        };
+      };
+
+      if (!user) {
+        return await autoMergeIdentities();
+      }
+
       return { ...token, ...user };
     },
-    session: async ({ user, session }) => {
+    session: async ({ user, session, token }) => {
       if (session.user) {
-        session.user.uniqueId = user?.uniqueId;
+        session.user.uniqueId = token.uniqueId;
       }
 
       return session;

@@ -8,6 +8,7 @@ export const getUserFromSession = async (
   ctx: TRPCInnerContext,
   session: Maybe<Session>
 ) => {
+  // return;
   const user = await ctx?.prisma.user.findUnique({
     where: {
       uniqueId: session?.user?.uniqueId,
@@ -29,7 +30,7 @@ export const getUserFromSession = async (
     return null;
   }
 
-  if (!user.email || !user.id || user.uniqueId) {
+  if (!user.email || !user.id || !user.uniqueId) {
     return null;
   }
 

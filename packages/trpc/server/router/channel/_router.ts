@@ -13,8 +13,7 @@ import { createchannelInput } from "./createChannel.schema";
 export const channelRouter = routers({
   // createChannel
   createChannel: authedProcedure
-    .input(createchannelInput)
-    .mutation(async ({ input, ctx }) => {
+    .input(createchannelInput).mutation(async ({ input, ctx }) => {
       return await createChannel({ input, ctx });
     }),
 });

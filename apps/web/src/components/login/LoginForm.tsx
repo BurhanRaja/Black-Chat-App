@@ -1,20 +1,21 @@
-import React, { FunctionComponent, useState } from "react";
+import React, { FormEvent, FunctionComponent, useState } from "react";
 import Input from "../forms/Input";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { GrFormClose } from "react-icons/gr";
 
 const LoginForm: FunctionComponent = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    await signIn("credentials", {
+    console.log("Hello");
+    const res = await signIn("credentials", {
       email,
       password,
       redirect: false,
     });
+    console.log(res);
   };
 
   return (
@@ -42,7 +43,7 @@ const LoginForm: FunctionComponent = () => {
                 </Link>
               </p>
             </h1>
-            <form className="space-y-4 md:space-y-6" onChange={handleSubmit}>
+            <form className="space-y-4 md:space-y-6" onSubmit={(e) => handleSubmit(e)}>
               <div>
                 <Input
                   type="text"
