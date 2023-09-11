@@ -1,5 +1,13 @@
-import { createchannelInputVal } from "../../../types";
 import { ChannelType } from "@prisma/client";
+import z from "zod";
+
+// Create Channel
+type channelTypeInput = (typeof ChannelType)[keyof typeof ChannelType];
+export const createchannelInputVal = z.object({
+  name: z.string().min(5).max(25),
+  channelType: z.custom<channelTypeInput>(),
+  channelFor: z.number(),
+});
 
 const createChannel = createchannelInputVal;
 

@@ -31,7 +31,7 @@ model User {
   twoFactorEnable       Boolean             @default(false)
   about                 String              @default("")
   disable               Boolean             @default(false)
-  forgetPasswordToken   String
+  forgetPasswordToken   String              @unique
   channel               UsersChannel[] // many Channels does a User have Or Included
   allChannelUserDetails ChannelUserDetail[] // Many User Details in Channels
   userMessages          Message[]           @relation(name: "userMessage")

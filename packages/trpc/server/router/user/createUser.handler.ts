@@ -45,13 +45,15 @@ export const createUserHandler = async ({
       country,
       password: securePassword,
       uniqueId: randomId,
+      forgetPasswordToken: "",
+      image: "",
     },
   });
 
   // Send Email
   const tokenCombine = user?.uniqueId + ":" + user?.email;
   const token = encodeHex(tokenCombine);
-  const html = `Login by Clicking <a href="http://localhost:3000/login/verify?${token}"></a>`;
+  const html = `Login by Clicking <a href="http://localhost:3000/login/verify?${token}">HERE</a>`;
   await sendEmail(user?.email, "Blackchat - Login Verify", html);
 
   return {
