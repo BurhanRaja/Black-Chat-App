@@ -31,6 +31,7 @@ model User {
   twoFactorEnable       Boolean             @default(false)
   about                 String              @default("")
   disable               Boolean             @default(false)
+  forgetPasswordToken   String
   channel               UsersChannel[] // many Channels does a User have Or Included
   allChannelUserDetails ChannelUserDetail[] // Many User Details in Channels
   userMessages          Message[]           @relation(name: "userMessage")
@@ -174,8 +175,6 @@ model Message {
   allReplyMessages Message[]     @relation("MessageReply")
   user             User          @relation(fields: [userId], references: [uniqueId], name: "userMessage", onDelete: Cascade)
   userId           String
-  // replyUser        User          @relation(fields: [replyUserId], references: [uniqueId], name: "replyUserMessage", onDelete: Cascade)
-  // replyUserId      String
   room             Room          @relation(fields: [roomId], references: [uniqueId], onDelete: Cascade)
   roomId           String        @default("")
   dMessage         DirectMessage @relation(fields: [dMessageId], references: [uniqueId], onDelete: Cascade)
