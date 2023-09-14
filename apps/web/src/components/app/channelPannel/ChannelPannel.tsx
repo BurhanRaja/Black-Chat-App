@@ -1,18 +1,17 @@
 import React from "react";
-import ChannelCon from "./ChannelCon";
+import ChannelIcon from "./ChannelIcon";
+import ChannelProfileIcon from "./ChannelProfileIcon";
 
 const ChannelPannel = () => {
   return (
     <>
-      <div className='flex flex-col py-2 px-3 bg-gray-950 w-[70px] channel-list-container'>
-        <ChannelCon />
-        <hr className='px-3' />
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].map((el) => {
-          return <ChannelCon />;
-        })}
-        <hr className='px-3' />
-        <ChannelCon />
-        <ChannelCon />
+      <div className='fixed bg-gray-950 p-3 pt-5 h-[100vh] w-[70px] overflow-x-hidden overflow-y-scroll channel-icon-container'>
+        <ChannelIcon icon={""} />
+        <hr className='mb-5' />
+        <ChannelProfileIcon image={""} />
+        <hr className='mb-5' />
+        <ChannelIcon icon={""} />
+        <ChannelIcon icon={""} />
       </div>
     </>
   );

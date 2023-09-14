@@ -1,11 +1,11 @@
 import React from "react";
 
-const ProfileItem = () => {
+const MemberItem = () => {
   return (
     <>
-      <div className='rounded-lg bg-gray-800 p-3 pt-4 mt-4 flex items-center justify-evenly'>
+      <div className='flex items-center p-2 hover:bg-gray-800'>
         <button className='bg-white rounded-lg w-[16%] mr-3'>
-          <img src='./polygon.png' className='w-[100%]' alt='profile' />
+          <img src='./polygon.png' className='w-[100%]' alt='' />
         </button>
         <div className='w-[70%] text-white' style={{ lineHeight: "20px" }}>
           <p className='mb-0'>Burhan Raja</p>
@@ -16,12 +16,9 @@ const ProfileItem = () => {
             <span>Online</span>
           </p>
         </div>
-        <button>
-          <i className='fa-solid fa-ellipsis font-bold text-xl text-gray-400'></i>
-        </button>
       </div>
     </>
   );
 };
 
-export default ProfileItem;
+export default MemberItem;

@@ -1,38 +1,25 @@
-import React, { FunctionComponent } from "react";
-import { BiHash } from "react-icons/bi";
-import { HiOutlineSpeakerWave } from "react-icons/hi2";
-import { AiFillNotification, AiOutlineSearch } from "react-icons/ai";
-import { RoomItemProps } from "../../../types";
+import React from "react";
 
-const RoomItem: FunctionComponent<RoomItemProps> = ({
-  type = "chat",
-  notifications = 0,
-  name,
-}) => {
+const RoomItem = () => {
   return (
     <>
-      <div className="flex my-0.5 mx-2 justify-between group/roomitem items-center cursor-pointer rounded-md p-3 hover:bg-gray-700">
-        <div className="flex items-center justify-start w-[85%] font-medium text-gray-300 group-hover/roomitem:text-gray-200">
-          {type === "chat" ? (
-            <BiHash className="mr-3" />
-          ) : type === "anouncement" ? (
-            <AiFillNotification className="mr-3" />
-          ) : type === "search" ? (
-            <AiOutlineSearch className="mr-3" />
-          ) : (
-            <HiOutlineSpeakerWave className="mr-3" />
-          )}
-          <p className="text-sm">
-            {name.length > 15 ? name.substring(0, 15) + "..." : name}
-          </p>
+      <div className='flex justify-between items-center cursor-pointer mt-1 p-2 px-3 rounded-lg hover:bg-gray-800 group/roomname'>
+        <p className='text-sm text-gray-400'>
+          <span>
+            {/* Hash Icon */}
+            <i className='fa-solid fa-hashtag mr-2'></i>
+          </span>
+          <span>Name of Room</span>
+        </p>
+        <div className='flex items-center'>
+          <button className='text-xs p-0.5 px-1.5 bg-red-500 text-white rounded-lg block group-hover/roomname:hidden'>
+            3
+          </button>
+          <button className='text-xs p-0.5 px-1 text-gray-500 hover:bg-gray-700 hover:text-gray-100 rounded-lg hidden group-hover/roomname:block'>
+            {/* Settings icon */}
+            <i className='fa-solid fa-gear'></i>
+          </button>
         </div>
-        {notifications === 0 ? (
-          ""
-        ) : (
-          <div className="text-xs p-0.5 px-1 text-white font-medium rounded-full bg-red-500">
-            {notifications}
-          </div>
-        )}
       </div>
     </>
   );
