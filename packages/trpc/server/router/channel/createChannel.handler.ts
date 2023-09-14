@@ -73,6 +73,8 @@ export const createChannel = async ({ input, ctx }: ChangePasswordOptions) => {
     });
   }
 
+  // Create Room Category and add it to room
+
   // Create General Default Room
   let roomUniqueId = randomIdGenerator();
   let room = await prisma.room.findFirst({

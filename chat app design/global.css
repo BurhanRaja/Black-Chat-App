@@ -2,6 +2,11 @@
   display: none;
 }
 
+.room-container::-webkit-scrollbar {
+  display: none;
+}
+
+
 /* .channel-icon {
   position: relative;
 }
@@ -57,8 +62,4 @@
 .channel-icon:hover {
   cursor: pointer;
   border-radius: 50%;
-}
-
-input::placeholder {
-  color: rgb(86, 86, 86);
 }

@@ -1,6 +1,6 @@
 import * as z from "zod"
 import { ChannelType } from "@prisma/client"
-import { CompleteRoom, roomModel, CompleteChannelUserDetail, channelUserDetailModel, CompleteUsersChannel, usersChannelModel } from "./index"
+import { CompleteRoom, roomModel, CompleteChannelUserDetail, channelUserDetailModel, CompleteUsersChannel, usersChannelModel, CompleteRoomCategory, roomCategoryModel } from "./index"
 
 export const _channelModel = z.object({
   id: z.number().int(),
@@ -19,6 +19,7 @@ export interface CompleteChannel extends z.infer<typeof _channelModel> {
   rooms: CompleteRoom[]
   userDetails: CompleteChannelUserDetail[]
   usersChannel?: CompleteUsersChannel | null
+  RoomCategory: CompleteRoomCategory[]
 }
 
 /**
@@ -30,4 +31,5 @@ export const channelModel: z.ZodSchema<CompleteChannel> = z.lazy(() => _channelM
   rooms: roomModel.array(),
   userDetails: channelUserDetailModel.array(),
   usersChannel: usersChannelModel.nullish(),
+  RoomCategory: roomCategoryModel.array(),
 }))

@@ -129,6 +129,15 @@ model Channel {
   updatedAt      DateTime            @updatedAt
   channelType    ChannelType
   channelFor     Int
+  RoomCategory   RoomCategory[]
+}
+
+model RoomCategory {
+  id        Int     @id @default(autoincrement())
+  uniqueId  String  @unique
+  channel   Channel @relation(fields: [channelId], references: [uniqueId])
+  channelId String
+  rooms     Room[]
 }
 
 enum RoomType {
@@ -144,8 +153,10 @@ model Room {
   channel     Channel      @relation(fields: [channelId], references: [uniqueId], onDelete: Cascade) // Room of Channel Id
   channelId   String       @default("")
   accessRoles AccessRole[]
-  roomChat    Message[]
   roomType    RoomType
+  roomChat    Message[]
+  roomCat     RoomCategory @relation(fields: [roomCatId], references: [uniqueId])
+  roomCatId   String
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 }
