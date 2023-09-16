@@ -1,228 +1,290 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="global.css" />
+    <title>Chat App Design</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-    integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="global.css" />
-  <title>Chat App Design</title>
-</head>
-
-<body>
-  <div class="flex">
+  <body>
     <div class="flex">
-      <!-- Channels Container Start -->
-      <div
-        class="fixed bg-gray-950 p-3 pt-5 h-[100vh] w-[70px] overflow-x-hidden overflow-y-scroll channel-icon-container">
-        <button class="channel-icon bg-blue-700 p-3 py-2.5 mb-5 mx-auto rounded-lg cursor-pointer text-center">
-          <i class="fa-brands fa-discord font-bold text-xl text-white"></i>
-        </button>
-        <hr class="mb-5" />
-        <!-- Channels Start -->
-        <button class="channel-icon mb-5 bg-white p-1.5 rounded-lg">
-          <img src="./etherum.png" class="w-[100%]" alt="" />
-        </button>
-        <button class="channel-icon mb-5 bg-white p-1.5 rounded-lg">
-          <img src="./github.png" class="w-[100%]" alt="" />
-        </button>
-        <button class="channel-icon mb-5 bg-white p-1.5 rounded-lg">
-          <img src="./mozilla.png" class="w-[100%]" alt="" />
-        </button>
-        <button class="channel-icon mb-5 bg-white p-1.5 rounded-lg">
-          <img src="./polygon.png" class="w-[100%]" alt="" />
-        </button>
-        <button class="channel-icon mb-5 bg-white p-1.5 rounded-lg">
-          <img src="./etherum.png" class="w-[100%]" alt="" />
-        </button>
-        <button class="channel-icon mb-5 bg-white p-1.5 rounded-lg">
-          <img src="./github.png" class="w-[100%]" alt="" />
-        </button>
-        <button class="channel-icon mb-5 bg-white p-1.5 rounded-lg">
-          <img src="./mozilla.png" class="w-[100%]" alt="" />
-        </button>
-        <button class="channel-icon mb-5 bg-white p-1.5 rounded-lg">
-          <img src="./polygon.png" class="w-[100%]" alt="" />
-        </button>
-        <button class="channel-icon mb-5 bg-white p-1.5 rounded-lg">
-          <img src="./etherum.png" class="w-[100%]" alt="" />
-        </button>
-        <button class="channel-icon mb-5 bg-white p-1.5 rounded-lg">
-          <img src="./github.png" class="w-[100%]" alt="" />
-        </button>
-        <button class="channel-icon mb-5 bg-white p-1.5 rounded-lg">
-          <img src="./mozilla.png" class="w-[100%]" alt="" />
-        </button>
-        <button class="channel-icon mb-5 bg-white p-1.5 rounded-lg">
-          <img src="./polygon.png" class="w-[100%]" alt="" />
-        </button>
-        <!-- Channels End -->
-        <hr class="mb-5" />
-        <button class="channel-icon bg-blue-700 p-4 py-2.5 mb-5 mx-auto rounded-lg cursor-pointer text-center">
-          <i class="fa-solid fa-plus font-bold text-lg text-white"></i>
-        </button>
-        <button class="channel-icon bg-blue-700 p-3 py-2 mb-5 mx-auto rounded-lg cursor-pointer text-center">
-          <i class="fa-regular fa-compass font-bold text-2xl text-white"></i>
-        </button>
-      </div>
-
-      <!-- Channels Container End -->
-
-      <!-- Second Panel Container Start -->
-      <div class="flex flex-col w-[270px] p-3 ml-[70px] bg-gray-900 h-[100vh]">
-        <!-- Search Box -->
-        <div class="flex bg-gray-900 p-1 border-b-2 border-gray-800">
-          <input class="text-gray-400 text-sm bg-transparent placeholder:text-gray-600 w-[90%] outline-none"
-            placeholder="Search for Rooms" />
-          <button class="p-1">
-            <i class="fa-solid fa-magnifying-glass text-gray-600"></i>
+      <div class="flex">
+        <!-- Channels Container Start -->
+        <div
+          class="fixed bg-gray-950 p-3 pt-5 h-[100vh] w-[70px] overflow-x-hidden overflow-y-scroll channel-icon-container"
+        >
+          <button
+            class="channel-icon bg-blue-700 p-3 py-2.5 mb-5 mx-auto rounded-lg cursor-pointer text-center"
+          >
+            <i class="fa-brands fa-discord font-bold text-xl text-white"></i>
           </button>
-        </div>
-        <!-- Search Box -->
-
-        <!-- User Card -->
-        <div class="rounded-lg bg-gray-800 p-3 pt-4 mt-4 flex items-center justify-evenly">
-          <button class="bg-white rounded-lg w-[16%] mr-3">
+          <hr class="mb-5" />
+          <!-- Channels Start -->
+          <button class="channel-icon mb-5 bg-white p-1.5 rounded-lg">
+            <img src="./etherum.png" class="w-[100%]" alt="" />
+          </button>
+          <button class="channel-icon mb-5 bg-white p-1.5 rounded-lg">
+            <img src="./github.png" class="w-[100%]" alt="" />
+          </button>
+          <button class="channel-icon mb-5 bg-white p-1.5 rounded-lg">
+            <img src="./mozilla.png" class="w-[100%]" alt="" />
+          </button>
+          <button class="channel-icon mb-5 bg-white p-1.5 rounded-lg">
             <img src="./polygon.png" class="w-[100%]" alt="" />
           </button>
-          <div class="w-[70%] text-white" style="line-height: 20px;">
-            <p class="mb-0">Burhan Raja</p>
-            <p class="text-xs text-gray-400">
-              <span class="mr-1"><i class="fa-solid fa-circle text-green-500"></i></span><span>Online</span>
-            </p>
-          </div>
-          <button><i class="fa-solid fa-ellipsis font-bold text-xl text-gray-400"></i></button>
+          <button class="channel-icon mb-5 bg-white p-1.5 rounded-lg">
+            <img src="./etherum.png" class="w-[100%]" alt="" />
+          </button>
+          <button class="channel-icon mb-5 bg-white p-1.5 rounded-lg">
+            <img src="./github.png" class="w-[100%]" alt="" />
+          </button>
+          <button class="channel-icon mb-5 bg-white p-1.5 rounded-lg">
+            <img src="./mozilla.png" class="w-[100%]" alt="" />
+          </button>
+          <button class="channel-icon mb-5 bg-white p-1.5 rounded-lg">
+            <img src="./polygon.png" class="w-[100%]" alt="" />
+          </button>
+          <button class="channel-icon mb-5 bg-white p-1.5 rounded-lg">
+            <img src="./etherum.png" class="w-[100%]" alt="" />
+          </button>
+          <button class="channel-icon mb-5 bg-white p-1.5 rounded-lg">
+            <img src="./github.png" class="w-[100%]" alt="" />
+          </button>
+          <button class="channel-icon mb-5 bg-white p-1.5 rounded-lg">
+            <img src="./mozilla.png" class="w-[100%]" alt="" />
+          </button>
+          <button class="channel-icon mb-5 bg-white p-1.5 rounded-lg">
+            <img src="./polygon.png" class="w-[100%]" alt="" />
+          </button>
+          <!-- Channels End -->
+          <hr class="mb-5" />
+          <button
+            class="channel-icon bg-blue-700 p-4 py-2.5 mb-5 mx-auto rounded-lg cursor-pointer text-center"
+          >
+            <i class="fa-solid fa-plus font-bold text-lg text-white"></i>
+          </button>
+          <button
+            class="channel-icon bg-blue-700 p-3 py-2 mb-5 mx-auto rounded-lg cursor-pointer text-center"
+          >
+            <i class="fa-regular fa-compass font-bold text-2xl text-white"></i>
+          </button>
         </div>
-        <!-- User Card -->
 
-        <!-- Room Container -->
-        <div class="flex flex-col w-[100%] overflow-y-scroll overflow-x-hidden px-1 room-container">
-          <!-- Room Category -->
-          <div class="mt-4 p-1 cursor-pointer flex items-center justify-between">
-            <p class="text-xs text-gray-500">
-              <span><i class="fa-solid fa-chevron-down mr-2"></i></span>
-              <span>Room Category</span>
-            </p>
-            <button><i
-                class="fa-solid fa-plus text-xs p-1 px-2 text-gray-500 hover:bg-gray-700 hover:text-gray-100 rounded-lg"></i></button>
-          </div>
-          <!-- Room Category -->
+        <!-- Channels Container End -->
 
-          <!-- Room Name -->
-          <div
-            class="flex justify-between items-center cursor-pointer mt-1 p-2 px-3 rounded-lg hover:bg-gray-800 group/roomname">
-            <p class="text-sm text-gray-400">
-              <span><i class="fa-solid fa-hashtag mr-2"></i></span>
-              <span>Name of Room</span>
-            </p>
-            <div class="flex items-center">
-              <button
-                class="text-xs p-0.5 px-1.5 bg-red-500 text-white rounded-lg block group-hover/roomname:hidden">3</button>
-              <button
-                class="text-xs p-0.5 px-1 text-gray-500 hover:bg-gray-700 hover:text-gray-100 rounded-lg hidden group-hover/roomname:block"><i
-                  class="fa-solid fa-gear"></i></button>
-            </div>
-          </div>
-          <!-- Room Name -->
-          <!-- Room Name -->
-          <div
-            class="flex justify-between items-center cursor-pointer mt-1 p-2 px-3 rounded-lg hover:bg-gray-800 group/roomname">
-            <p class="text-sm text-gray-400">
-              <span><i class="fa-solid fa-hashtag mr-2"></i></span>
-              <span>Name of Room</span>
-            </p>
-            <div class="flex items-center">
-              <button
-                class="text-xs p-0.5 px-1.5 bg-red-500 text-white rounded-lg block group-hover/roomname:hidden">3</button>
-              <button
-                class="text-xs p-0.5 px-1 text-gray-500 hover:bg-gray-700 hover:text-gray-100 rounded-lg hidden group-hover/roomname:block"><i
-                  class="fa-solid fa-gear"></i></button>
-            </div>
-          </div>
-          <!-- Room Name -->
-        </div>
-        <!-- Room Container -->
-
-      </div>
-      <!-- Second Panel Container End -->
-    </div>
-
-    <div class="w-[100%]">
-      <div class="w-[100%] bg-gray-800 p-3 flex justify-between items-center">
-        <p class="text-gray-400">
-          <span><i class="fa-solid fa-hashtag mr-2"></i></span>
-          <span>Name of Room</span>
-        </p>
-        <div class="w-[40%] flex items-center justify-between">
-          <button class="text-xl text-gray-400 p-1 w-[10%]"><i class="fa-solid fa-user-group"></i></button>
-          <div class="flex bg-gray-900 p-1 border-b-2 border-gray-800 w-[85%]">
-            <input class="text-gray-400 ps-2 text-sm bg-transparent placeholder:text-gray-600 w-[90%] outline-none"
-              placeholder="Search for Rooms" />
+        <!-- Second Panel Container Start -->
+        <div
+          class="flex flex-col w-[270px] p-3 ml-[70px] bg-gray-900 h-[100vh]"
+        >
+          <!-- Search Box -->
+          <div class="flex bg-gray-900 p-1 border-b-2 border-gray-800">
+            <input
+              class="text-gray-400 text-sm bg-transparent placeholder:text-gray-600 w-[90%] outline-none"
+              placeholder="Search for Rooms"
+            />
             <button class="p-1">
               <i class="fa-solid fa-magnifying-glass text-gray-600"></i>
             </button>
           </div>
-        </div>
-      </div>
-      <div class="flex h-[89.5%]">
-        <!-- Chat Container -->
-        <div class="flex flex-col bg-gray-950 w-[75%]">
+          <!-- Search Box -->
 
-          <!-- Chat Area -->
-          <div class="flex flex-col h-[88%]">
-              <div>
-              </div>
-          </div>
-          <!-- Chat Area -->
-
-          <!-- Chat Input -->
-          <div class="flex justify-center bg-gray-900 p-1 py-2 border-gray-800 w-[90%] mx-auto rounded-md">
-            <button class="p-1 text-gray-600 hover:text-gray-400 font-extrabold rounded-md">
-              <i class="fa-solid fa-plus font-extrabold text-xl"></i>
+          <!-- User Card -->
+          <div
+            class="rounded-lg bg-gray-800 p-3 pt-4 mt-4 flex items-center justify-evenly"
+          >
+            <button class="bg-white rounded-lg w-[16%] mr-3">
+              <img src="./polygon.png" class="w-[100%]" alt="" />
             </button>
-            <input class="text-gray-400 ps-2 text-sm bg-transparent placeholder:text-gray-600 w-[90%] outline-none"
-              placeholder="Search for Rooms" />
-            <button class="p-1 px-1.5 text-gray-600 hover:text-gray-500 font-extrabold rounded-md">
-              GIF
-            </button>
-            <button class="p-1 px-1.5 text-gray-600 hover:text-yellow-500 rounded-md">
-              <i class="fa-solid fa-face-smile text-lg"></i>
-            </button>
-          </div>
-          <!-- Chat Input -->
-        </div>
-        <!-- Chat Container -->
-
-        <!-- Channel Details Container -->
-        <div class="bg-gray-900 w-[25%] p-3">
-          <div class="flex justify-between mb-3">
-            <p class="text-gray-300">Users</p>
-            <button class="text-gray-300 rounded-full px-1"><i class="fa-solid fa-xmark"></i></button>
-          </div>
-          <div class="flex flex-col">
-            <div class="flex mb-2">
-              <p class="text-gray-500 text-sm"><span>Admin -</span><span> 9</span></p>
+            <div class="w-[70%] text-white" style="line-height: 20px">
+              <p class="mb-0">Burhan Raja</p>
+              <p class="text-xs text-gray-400">
+                <span class="mr-1"
+                  ><i class="fa-solid fa-circle text-green-500"></i></span
+                ><span>Online</span>
+              </p>
             </div>
-            <div class="flex items-center p-2 hover:bg-gray-800">
-              <button class="bg-white rounded-lg w-[16%] mr-3">
-                <img src="./polygon.png" class="w-[100%]" alt="" />
+            <button>
+              <i
+                class="fa-solid fa-ellipsis font-bold text-xl text-gray-400"
+              ></i>
+            </button>
+          </div>
+          <!-- User Card -->
+
+          <!-- Room Container -->
+          <div
+            class="flex flex-col w-[100%] overflow-y-scroll overflow-x-hidden px-1 room-container"
+          >
+            <!-- Room Category -->
+            <div
+              class="mt-4 p-1 cursor-pointer flex items-center justify-between"
+            >
+              <p class="text-xs text-gray-500">
+                <span><i class="fa-solid fa-chevron-down mr-2"></i></span>
+                <span>Room Category</span>
+              </p>
+              <button>
+                <i
+                  class="fa-solid fa-plus text-xs p-1 px-2 text-gray-500 hover:bg-gray-700 hover:text-gray-100 rounded-lg"
+                ></i>
               </button>
-              <div class="w-[70%] text-white" style="line-height: 20px;">
-                <p class="mb-0">Burhan Raja</p>
-                <p class="text-xs text-gray-400">
-                  <span class="mr-1"><i class="fa-solid fa-circle text-green-500"></i></span><span>Online</span>
+            </div>
+            <!-- Room Category -->
+
+            <!-- Room Name -->
+            <div
+              class="flex justify-between items-center cursor-pointer mt-1 p-2 px-3 rounded-lg hover:bg-gray-800 group/roomname"
+            >
+              <p class="text-sm text-gray-400">
+                <span><i class="fa-solid fa-hashtag mr-2"></i></span>
+                <span>Name of Room</span>
+              </p>
+              <div class="flex items-center">
+                <button
+                  class="text-xs p-0.5 px-1.5 bg-red-500 text-white rounded-lg block group-hover/roomname:hidden"
+                >
+                  3
+                </button>
+                <button
+                  class="text-xs p-0.5 px-1 text-gray-500 hover:bg-gray-700 hover:text-gray-100 rounded-lg hidden group-hover/roomname:block"
+                >
+                  <i class="fa-solid fa-gear"></i>
+                </button>
+              </div>
+            </div>
+            <!-- Room Name -->
+            <!-- Room Name -->
+            <div
+              class="flex justify-between items-center cursor-pointer mt-1 p-2 px-3 rounded-lg hover:bg-gray-800 group/roomname"
+            >
+              <p class="text-sm text-gray-400">
+                <span><i class="fa-solid fa-hashtag mr-2"></i></span>
+                <span>Name of Room</span>
+              </p>
+              <div class="flex items-center">
+                <button
+                  class="text-xs p-0.5 px-1.5 bg-red-500 text-white rounded-lg block group-hover/roomname:hidden"
+                >
+                  3
+                </button>
+                <button
+                  class="text-xs p-0.5 px-1 text-gray-500 hover:bg-gray-700 hover:text-gray-100 rounded-lg hidden group-hover/roomname:block"
+                >
+                  <i class="fa-solid fa-gear"></i>
+                </button>
+              </div>
+            </div>
+            <!-- Room Name -->
+          </div>
+          <!-- Room Container -->
+        </div>
+        <!-- Second Panel Container End -->
+      </div>
+
+      <div class="w-[100%]">
+        <!-- Header -->
+        <div class="w-[100%] bg-gray-800 p-3 flex justify-between items-center">
+          <p class="text-gray-400">
+            <span><i class="fa-solid fa-hashtag mr-2"></i></span>
+            <span>Name of Room</span>
+          </p>
+          <div class="w-[40%] flex items-center justify-between">
+            <button class="text-xl text-gray-400 p-1 w-[10%]">
+              <i class="fa-solid fa-user-group"></i>
+            </button>
+            <div
+              class="flex bg-gray-900 p-1 border-b-2 border-gray-800 w-[85%]"
+            >
+              <input
+                class="text-gray-400 ps-2 text-sm bg-transparent placeholder:text-gray-600 w-[90%] outline-none"
+                placeholder="Search for Rooms"
+              />
+              <button class="p-1">
+                <i class="fa-solid fa-magnifying-glass text-gray-600"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Header -->
+
+        <div class="flex h-[89.5%]">
+          <!-- Chat Container -->
+          <div class="flex flex-col bg-gray-950 w-[75%]">
+            <!-- Chat Area -->
+            <div class="flex flex-col h-[88%]">
+              <div></div>
+            </div>
+            <!-- Chat Area -->
+
+            <!-- Chat Input -->
+            <div
+              class="flex justify-center bg-gray-900 p-1 py-2 border-gray-800 w-[90%] mx-auto rounded-md"
+            >
+              <button
+                class="p-1 text-gray-600 hover:text-gray-400 font-extrabold rounded-md"
+              >
+                <i class="fa-solid fa-plus font-extrabold text-xl"></i>
+              </button>
+              <input
+                class="text-gray-400 ps-2 text-sm bg-transparent placeholder:text-gray-600 w-[90%] outline-none"
+                placeholder="Search for Rooms"
+              />
+              <button
+                class="p-1 px-1.5 text-gray-600 hover:text-gray-500 font-extrabold rounded-md"
+              >
+                GIF
+              </button>
+              <button
+                class="p-1 px-1.5 text-gray-600 hover:text-yellow-500 rounded-md"
+              >
+                <i class="fa-solid fa-face-smile text-lg"></i>
+              </button>
+            </div>
+            <!-- Chat Input -->
+          </div>
+          <!-- Chat Container -->
+
+          <!-- Channel Details Container -->
+          <div class="bg-gray-900 w-[25%] p-3">
+            <div class="flex justify-between mb-3">
+              <p class="text-gray-300">Users</p>
+              <button class="text-gray-300 rounded-full px-1">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <div class="flex flex-col">
+              <div class="flex mb-2">
+                <p class="text-gray-500 text-sm">
+                  <span>Admin -</span><span> 9</span>
                 </p>
               </div>
+              <div class="flex items-center p-2 hover:bg-gray-800">
+                <button class="bg-white rounded-lg w-[16%] mr-3">
+                  <img src="./polygon.png" class="w-[100%]" alt="" />
+                </button>
+                <div class="w-[70%] text-white" style="line-height: 20px">
+                  <p class="mb-0">Burhan Raja</p>
+                  <p class="text-xs text-gray-400">
+                    <span class="mr-1"
+                      ><i class="fa-solid fa-circle text-green-500"></i></span
+                    ><span>Online</span>
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
+          <!-- Channel Details Container -->
         </div>
-        <!-- Channel Details Container -->
       </div>
     </div>
-  </div>
-</body>
-
+  </body>
 </html>

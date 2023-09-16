@@ -1,15 +1,18 @@
 import React from "react";
+import { FiSearch } from "react-icons/fi";
 
-const SearchBox = ({ placeholder }) => {
+const SearchBox = ({ placeholder, width }) => {
   return (
     <>
-      <div className='flex bg-gray-900 p-1 border-b-2 border-gray-800'>
+      <div
+        className={`flex bg-gray-900 ${width} p-1.5 ps-2 border-b-2 border-gray-800 rounded-md`}
+      >
         <input
-          className='text-gray-400 text-sm bg-transparent placeholder:text-gray-600 w-[90%] outline-none'
+          className="text-gray-400 text-sm bg-transparent placeholder:text-gray-600 w-[95%] outline-none"
           placeholder={placeholder}
         />
-        <button className='p-1'>
-          <i className='fa-solid fa-magnifying-glass text-gray-600'></i>
+        <button className="p-1">
+          <FiSearch className="text-gray-600" />
         </button>
       </div>
     </>

@@ -1,19 +1,21 @@
 import React from "react";
+import { AiOutlinePlus } from "react-icons/ai";
+import { BiSolidChevronDown } from "react-icons/bi";
 
-const RoomCategory = () => {
+const RoomCategory = ({ roomname }) => {
   return (
     <>
-      <div className='mt-4 p-1 cursor-pointer flex items-center justify-between'>
-        <p className='text-xs text-gray-500'>
+      <div className="mt-4 p-1 cursor-pointer flex items-center justify-between">
+        <p className="text-xs text-gray-500 flex items-center">
           <span>
             {/* Down Chevron Icon */}
-            <i className='fa-solid fa-chevron-down mr-2'></i>
+            <BiSolidChevronDown className="mr-2 text-xl" />
           </span>
-          <span>Room Category</span>
+          <span className="font-bold">{roomname}</span>
         </p>
-        <button>
+        <button className=" p-1 text-gray-500 hover:bg-gray-700 hover:text-gray-100 rounded-lg">
           {/* Plus Icon */}
-          <i className='fa-solid fa-plus text-xs p-1 px-2 text-gray-500 hover:bg-gray-700 hover:text-gray-100 rounded-lg'></i>
+          <AiOutlinePlus />
         </button>
       </div>
     </>

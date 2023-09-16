@@ -1,24 +1,20 @@
 import React from "react";
-import Input from "../forms/Input";
-import { FiSearch } from "react-icons/fi";
-import { BiSolidGroup } from "react-icons/bi";
+import { FaUserGroup } from "react-icons/fa6";
 import SearchBox from "./SearchBox";
 
-const Header = ({ memberIcon, searchIcon }) => {
+const Header = ({ roomName, roomIcon }) => {
   return (
     <>
-      <div className='w-[100%] bg-gray-800 p-3 flex justify-between items-center'>
-        <p className='text-gray-400'>
-          <span>
-            <i className='fa-solid fa-hashtag mr-2'></i>
-          </span>
-          <span>Name of Room</span>
+      <div className="w-[100%] bg-gray-800 p-3 flex justify-between items-center">
+        <p className="text-gray-400 flex items-center">
+          <span>{roomIcon}</span>
+          <span>{roomName}</span>
         </p>
-        <div className='w-[40%] flex items-center justify-between'>
-          <button className='text-xl text-gray-400 p-1 w-[10%]'>
-            {memberIcon}
+        <div className="w-[40%] flex items-center justify-between">
+          <button className="text-xl text-gray-400 p-1 w-[10%]">
+            <FaUserGroup />
           </button>
-          <SearchBox placeholder={"Search"} />
+          <SearchBox width={"w-[90%]"} placeholder={"Search"} />
         </div>
       </div>
     </>
