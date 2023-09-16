@@ -9,7 +9,6 @@ const LoginForm: FunctionComponent = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log("Hello");
     const res = await signIn("credentials", {
       email,
       password,
@@ -43,7 +42,10 @@ const LoginForm: FunctionComponent = () => {
                 </Link>
               </p>
             </h1>
-            <form className="space-y-4 md:space-y-6" onSubmit={(e) => handleSubmit(e)}>
+            <form
+              className="space-y-4 md:space-y-6"
+              onSubmit={(e) => handleSubmit(e)}
+            >
               <div>
                 <Input
                   type="text"

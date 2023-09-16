@@ -17,7 +17,7 @@ export const createUserHandler = async ({
   });
 
   if (user) {
-    throw new TRPCError({
+    return new TRPCError({
       code: "BAD_REQUEST",
       message: "User already exists.",
     });
@@ -56,8 +56,8 @@ export const createUserHandler = async ({
   const html = `Login by Clicking <a href="http://localhost:3000/login/verify?${token}">HERE</a>`;
   await sendEmail(user?.email, "Blackchat - Login Verify", html);
 
-  return {
+  return Promise.resolve({
     success: true,
     message: "User created successfully.",
-  };
+  });
 };

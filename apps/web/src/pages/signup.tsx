@@ -16,11 +16,6 @@ const Signup = () => {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="flex justify-end absolute right-10 top-5">
-          <Link href="/">
-            <AiOutlineClose className="text-black text-5xl font-bold" />
-          </Link>
-        </div>
         <div className="flex items-center justify-center mx-auto md:h-screen">
           {/* Validation is remaining */}
           <SignupForm />
