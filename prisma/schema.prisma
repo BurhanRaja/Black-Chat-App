@@ -1,0 +1,216 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator zod {
+  provider      = "zod-prisma"
+  output        = "../src/db/zod"
+  relationModel = "default"
+  modelCase     = "camelCase"
+}
+
+model User {
+  id                    Int                 @id @default(autoincrement())
+  username              String              @unique
+  email                 String              @unique
+  dob                   String              
+  phone                 String              @unique
+  uniqueId              String              @unique
+  image                 String              @unique
+  password              String              @default("")
+  emailVerified         Boolean             @default(false)
+  about                 String              @default("")
+  disable               Boolean             @default(false)
+  forgetPasswordToken   String              @unique
+  channel               UsersChannel[] // many Channels does a User have Or Included
+  allChannelUserDetails ChannelUserDetail[] // Many User Details in Channels
+  userMessages          Message[]           @relation(name: "userMessage")
+  // userReplyMessages     Message[]           @relation(name: "replyUserMessage")
+  senderRequest         Friends[]           @relation(name: "SenderRequest") // Sender Request Friends
+  receiverRequest       Friends[]           @relation(name: "ReceiverRequest") // Receiver Request Friends
+  notifications         Notifications[]
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+  account               Account?
+  session               Session?
+  dMUserOne             DirectMessage[]     @relation(name: "userOne")
+  dMUserTwo             DirectMessage[]     @relation(name: "userTwo")
+}
+
+model Account {
+  id                       String  @id @default(cuid())
+  user                     User    @relation(fields: [userId], references: [uniqueId], onDelete: Cascade)
+  userId                   String  @unique
+  type                     String  @default("")
+  provider                 String  @default("")
+  providerAccountId        String  @default("")
+  refresh_token            String? @db.Text
+  refresh_token_expires_in Int?
+  access_token             String? @db.Text
+  expires_at               Int?
+  token_type               String?
+  scope                    String?
+  id_token                 String? @db.Text
+  session_state            String?
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  user         User     @relation(fields: [userId], references: [uniqueId], onDelete: Cascade)
+  userId       String   @unique
+  expires      DateTime
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+}
+
+enum AccessRole {
+  ADMIN
+  MEMBER
+  GUEST
+}
+
+model ChannelUserDetail {
+  id         Int        @id @default(autoincrement())
+  user       User       @relation(fields: [userId], references: [uniqueId], onDelete: Cascade) // User Id for User Details in Channel
+  userId     String
+  accessRole AccessRole @default(GUEST)
+  join_type  Int
+  channel    Channel?   @relation(fields: [channelId], references: [uniqueId], onDelete: Cascade) // Single Channel Id for Multiple Room 
+  channelId  String     @default("")
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model UsersChannel {
+  id        Int       @id @default(autoincrement())
+  user      User      @relation(fields: [userId], references: [uniqueId], onDelete: Cascade) // User Id for Channels under User
+  userId    String    @default("")
+  uniqueId  String    @unique
+  channels  Channel[] // All Channels created by a User
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+enum ChannelType {
+  GAMING
+  MUSIC
+  EDUCATION
+  SCIENCEANDTECH
+  ENTERTAINMENT
+  GENERAL
+}
+
+model Channel {
+  id             Int                 @id @default(autoincrement())
+  uniqueId       String              @unique
+  name           String              @unique
+  image          String              @unique
+  rooms          Room[] // No of Rooms in Channel
+  userDetails    ChannelUserDetail[] // Number Users in a Channel
+  inviteCode     String              @unique
+  usersChannel   UsersChannel?       @relation(fields: [usersChannelId], references: [uniqueId], onDelete: Cascade) // If a part of User's Channel
+  usersChannelId String              @default("")
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  channelType    ChannelType
+  channelFor     Int
+  RoomCategory   RoomCategory[]
+}
+
+model RoomCategory {
+  id        Int     @id @default(autoincrement())
+  uniqueId  String  @unique
+  channel   Channel @relation(fields: [channelId], references: [uniqueId])
+  channelId String
+  rooms     Room[]
+}
+
+enum RoomType {
+  CHAT
+  ANOUNCEMENT
+  VOICE
+}
+
+model Room {
+  id          Int          @id @default(autoincrement())
+  uniqueId    String       @unique
+  name        String
+  channel     Channel      @relation(fields: [channelId], references: [uniqueId], onDelete: Cascade) // Room of Channel Id
+  channelId   String       @default("")
+  accessRoles AccessRole[]
+  roomType    RoomType
+  roomChat    Message[]
+  roomCat     RoomCategory @relation(fields: [roomCatId], references: [uniqueId])
+  roomCatId   String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Friends {
+  id         Int      @id @default(autoincrement())
+  sender     User     @relation(fields: [senderId], references: [uniqueId], name: "SenderRequest", onDelete: Cascade) // Friend Request Sender Id
+  senderId   String   @default("")
+  reciever   User     @relation(fields: [receiverId], references: [uniqueId], name: "ReceiverRequest", onDelete: Cascade) // Friend Request Receiver Id
+  receiverId String   @default("")
+  status     Boolean  @default(false)
+  uniqueId   String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Message {
+  id               Int           @id @default(autoincrement())
+  uniqueId         String        @unique
+  content          String
+  file             String
+  type             String
+  read             Boolean
+  reply            Boolean
+  replyMessageId   String
+  replyMessage     Message?      @relation(fields: [replyMessageId], references: [uniqueId], name: "MessageReply")
+  allReplyMessages Message[]     @relation("MessageReply")
+  user             User          @relation(fields: [userId], references: [uniqueId], name: "userMessage", onDelete: Cascade)
+  userId           String
+  room             Room          @relation(fields: [roomId], references: [uniqueId], onDelete: Cascade)
+  roomId           String        @default("")
+  dMessage         DirectMessage @relation(fields: [dMessageId], references: [uniqueId], onDelete: Cascade)
+  dMessageId       String        @default("")
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+}
+
+model Notifications {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  read        Boolean
+  user        User     @relation(fields: [userId], references: [uniqueId], onDelete: Cascade)
+  userId      String   @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model DirectMessage {
+  id        Int       @id @default(autoincrement())
+  uniqueId  String    @unique
+  userOne   User      @relation(fields: [userOneId], references: [uniqueId], name: "userOne", onDelete: Cascade)
+  userOneId String
+  userTwo   User      @relation(fields: [userTwoId], references: [uniqueId], name: "userTwo", onDelete: Cascade)
+  userTwoId String
+  Message   Message[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
