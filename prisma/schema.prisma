@@ -1,0 +1,153 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+enum SUserRole {
+  MEMBER
+  ADMIN
+  MODERATOR
+}
+
+enum RoomType {
+  TEXT
+  VIDEO
+  AUDIO
+}
+
+model Profile {
+  id         String @id @default(uuid())
+  userId     String @unique
+  uniqueName String @unique
+  username   String
+  imageUrl   String
+  bio        String
+
+  serverUsers            SUser[]
+  servers                Server[]
+  conversationsInitiated Conversation[] @relation(name: "POneId")
+  conversationsReceived  Conversation[] @relation(name: "PTwoId")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SUser {
+  id      String    @id @default(uuid())
+  sUserId String    @unique
+  type    SUserRole
+
+  user     Profile   @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId   String
+  server   Server    @relation(fields: [serverId], references: [serverId])
+  serverId String
+  messages Message[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([serverId])
+}
+
+model Server {
+  id         String @id @default(uuid())
+  serverId   String @unique
+  name       String @unique
+  imageUrl   String
+  inviteCode String @unique
+
+  owner   Profile @relation(fields: [ownerId], references: [userId])
+  ownerId String
+
+  sUsers SUser[]
+  rooms  Room[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([ownerId])
+}
+
+model Room {
+  id        String   @id @default(uuid())
+  roomId    String   @unique
+  name      String
+  type      RoomType
+  isPrivate Boolean
+
+  createPermission  SUserRole[]
+  updatePermission  SUserRole[]
+  deletePermission  SUserRole[]
+  messagePermission SUserRole[]
+  privatePermission SUserRole[]
+  messages          Message[]
+
+  server   Server @relation(fields: [serverId], references: [serverId])
+  serverId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([serverId])
+}
+
+model Message {
+  id        String  @id @default(uuid())
+  messageId String  @unique
+  content   String
+  file      String?
+  isDelete  Boolean @default(false)
+
+  user    SUser  @relation(fields: [sUserId], references: [sUserId])
+  sUserId String
+  room    Room   @relation(fields: [roomId], references: [roomId], onDelete: Cascade)
+  roomId  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([roomId])
+  @@index([sUserId])
+}
+
+model Conversation {
+  id String @id @default(uuid())
+
+  profileOne   Profile @relation(fields: [profileOneId], references: [userId], name: "POneId")
+  profileOneId String
+  profileTwo   Profile @relation(fields: [profileTwoId], references: [userId], name: "PTwoId")
+  profileTwoId String
+
+  directMessages DirectMessage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([profileOneId])
+  @@index([profileTwoId])
+}
+
+model DirectMessage {
+  id              String  @id @default(uuid())
+  directMessageId String  @unique
+  content         String
+  file            String?
+  isDelete        Boolean @default(false)
+
+  conversation   Conversation? @relation(fields: [conversationId], references: [id])
+  conversationId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([conversationId])
+}
