@@ -1,11 +1,12 @@
 "use client";
 import * as AvatarPrimitive from "@radix-ui/react-avatar";
+import { ReactNode } from "react";
 
 interface AvatarProps {
-  image: string;
-  altname: string;
+  image?: string;
+  altname?: string;
   radius?: string;
-  fallback?: string;
+  fallback?: string | ReactNode;
   fallbackColor?: string;
   fallbackBackgroundColor?: string;
   transition?: boolean;
