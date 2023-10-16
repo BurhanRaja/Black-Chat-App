@@ -5,7 +5,7 @@ import Tooltip from "@/components/ui/tooltip";
 const ServerPanel = () => {
   return (
     <>
-      <section className="bg-slate-800 w-[75px] h-[100vh] p-3">
+      <section className="bg-zinc-900 w-[75px] h-[100vh] p-3">
         <div className="my-3">
           <Tooltip
             trigger={
