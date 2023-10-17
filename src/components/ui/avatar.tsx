@@ -32,7 +32,7 @@ const Avatar = ({
           ? "rounded-md"
           : radius == "large"
           ? "rounded-lg"
-          : "rounded-full"
+          : "rounded-3xl"
       } align-middle`}
     >
       <AvatarPrimitive.Image
