@@ -2,6 +2,7 @@
 
 import * as DropdownPrimitive from "@radix-ui/react-dropdown-menu";
 import { ReactNode } from "react";
+import { Settings } from "lucide-react";
 
 type ItemArray = {
   content: string;
@@ -35,6 +36,7 @@ const Dropdown = ({
             {items?.map((el) => {
               return (
                 <DropdownPrimitive.Item
+                  key={el.content}
                   className={`leading-none select-none outline-none p-2.5 cursor-pointer ${
                     el.hoverBackgroundColor
                       ? el.hoverBackgroundColor

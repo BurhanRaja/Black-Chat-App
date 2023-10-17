@@ -38,3 +38,8 @@ body {
   cursor: pointer;
   border-radius: 20%;
 }
+
+.channel-search::placeholder {
+  color: rgb(100, 100, 100) !important;
+  font-size: 15px;
+}
