@@ -1,8 +1,43 @@
 "use client";
 import Dropdown from "../ui/dropdown";
 4;
-import { ChevronDown, Settings, UserPlus2, Trash2 } from "lucide-react";
+import {
+  ChevronDown,
+  Settings,
+  UserPlus2,
+  Trash2,
+  Plus,
+  Hash,
+} from "lucide-react";
 import ChannelSearch from "./channel-search";
+import Collapsible from "../ui/collapsible";
+import ChannelItem from "./channel-item";
+
+const ChannelCollapsible = () => {
+  return (
+    <>
+      <Collapsible
+        triggerText="TEXT CHANNEL"
+        triggerIcon={
+          <Plus
+            size={25}
+            className="hover:bg-zinc-800 p-1 rounded-sm text-white"
+          />
+        }
+        content={
+          <>
+            <ChannelItem
+              title="announcement"
+              mainIcon={<Hash size={18} />}
+              icons={<Settings size={16} />}
+              backgroundHover="hover:bg-zinc-800 cursor-pointer hover:text-white"
+            />
+          </>
+        }
+      />
+    </>
+  );
+};
 
 const ChannelPanel = () => {
   return (
@@ -38,7 +73,10 @@ const ChannelPanel = () => {
         contentWidth="w-[225px]"
       />
       <div className="mt-2 p-1">
-            <ChannelSearch />
+        <ChannelSearch />
+        <div className="mt-2">
+          <ChannelCollapsible />
+        </div>
       </div>
     </div>
   );
