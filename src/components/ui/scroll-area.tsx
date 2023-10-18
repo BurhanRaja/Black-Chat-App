@@ -6,12 +6,22 @@ interface ScrollAreaProps {
   width: string;
   height: string;
   content: string | ReactNode;
+  backgroundColor?: string;
+  padding: boolean;
 }
 
-const ScrollArea = ({ width, content, height }: ScrollAreaProps) => {
+const ScrollArea = ({
+  width,
+  content,
+  height,
+  backgroundColor,
+  padding,
+}: ScrollAreaProps) => {
   return (
-    <ScrollAreaPrimite.Root className={`${width} ${height}`}>
-      <ScrollAreaPrimite.Viewport className="w-full h-full p-2.5">
+    <ScrollAreaPrimite.Root className={`${width} ${height} ${backgroundColor}`}>
+      <ScrollAreaPrimite.Viewport
+        className={`w-full h-full ${padding ? "p-2.5" : ""}`}
+      >
         {content}
       </ScrollAreaPrimite.Viewport>
       <ScrollAreaPrimite.Scrollbar

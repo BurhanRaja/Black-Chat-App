@@ -17,13 +17,13 @@ const ChannelItem = ({
   return (
     <>
       <div
-        className={`flex justify-between items-center p-2 ${backgroundHover} rounded-md`}
+        className={`flex justify-between items-center p-2 ${backgroundHover} rounded-md group`}
       >
         <div className="flex items-center text-sm">
           {mainIcon}
           <p className="ml-1">{title}</p>
         </div>
-        <div className="flex justify-between items-center">{icons}</div>
+        <div className="justify-between items-center hidden group-hover:flex">{icons}</div>
       </div>
     </>
   );

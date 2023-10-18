@@ -12,6 +12,7 @@ import {
 import ChannelSearch from "./channel-search";
 import Collapsible from "../ui/collapsible";
 import ChannelItem from "./channel-item";
+import ScrollArea from "../ui/scroll-area";
 
 const ChannelCollapsible = () => {
   return (
@@ -39,9 +40,9 @@ const ChannelCollapsible = () => {
   );
 };
 
-const ChannelPanel = () => {
+const ChannelPannelContent = () => {
   return (
-    <div className="w-[250px] bg-zinc-700">
+    <>
       <Dropdown
         trigger={
           <button className="flex justify-between items-center p-3 shadow-md focus:outline-0 w-[100%] rounded-sm hover:bg-zinc-600">
@@ -78,7 +79,19 @@ const ChannelPanel = () => {
           <ChannelCollapsible />
         </div>
       </div>
-    </div>
+    </>
+  );
+};
+
+const ChannelPanel = () => {
+  return (
+    <ScrollArea
+      width="w-[250px]"
+      backgroundColor="bg-zinc-700"
+      height="h-[100vh]"
+      content={<ChannelPannelContent />}
+      padding={false}
+    />
   );
 };
 

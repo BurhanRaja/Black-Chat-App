@@ -82,6 +82,7 @@ const ServerPanel = () => {
             </div>
           </>
         }
+        padding={true}
       ></ScrollArea>
       {/* </section> */}
     </>
