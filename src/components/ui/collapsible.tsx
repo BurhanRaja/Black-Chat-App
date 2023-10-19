@@ -23,17 +23,17 @@ const Collapsible = ({
         className="w-[100%]"
       >
         <CollapsiblePrimitive.Trigger className=" w-[100%] hover:cursor-pointer">
-          <button className="flex items-center justify-between text-xs text-zinc-400 hover:text-zinc-300 w-[100%] p-2 px-1">
+          <div className="flex items-center justify-between text-xs text-zinc-400 hover:text-zinc-300 w-[100%] p-2 px-1">
             <div className="flex items-center">
               {open ? (
                 <ChevronDown size={14} className="mr-1" />
               ) : (
                 <ChevronRight size={14} className="mr-1" />
               )}
-              <p>{triggerText.toUpperCase()}</p>
+              <div>{triggerText.toUpperCase()}</div>
             </div>
             {triggerIcon}
-          </button>
+          </div>
         </CollapsiblePrimitive.Trigger>
         <CollapsiblePrimitive.Content className="px-1">{content}</CollapsiblePrimitive.Content>
       </CollapsiblePrimitive.Root>
