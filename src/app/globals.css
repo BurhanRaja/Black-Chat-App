@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@300;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -40,6 +42,11 @@ body {
 }
 
 .channel-search::placeholder {
+  color: rgb(100, 100, 100) !important;
+  font-size: 15px;
+}
+
+.chat-input::placeholder {
   color: rgb(100, 100, 100) !important;
   font-size: 15px;
 }

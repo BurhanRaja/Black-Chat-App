@@ -10,6 +10,8 @@ interface AvatarProps {
   fallbackColor?: string;
   fallbackBackgroundColor?: string;
   transition?: boolean;
+  width?: string;
+  height?: string;
 }
 
 const Avatar = ({
@@ -20,10 +22,14 @@ const Avatar = ({
   fallbackColor,
   fallbackBackgroundColor,
   transition,
+  width,
+  height,
 }: AvatarProps) => {
   return (
     <AvatarPrimitive.Root
-      className={`bg-slate-100 inline-flex h-[50px] w-[50px] select-none items-center justify-center overflow-hidden ${
+      className={`bg-slate-100 inline-flex ${height ? height : "h-[50px]"} ${
+        width ? width : "w-[50px]"
+      } select-none items-center justify-center overflow-hidden ${
         transition ? "avatar" : ""
       } ${
         radius == "small"

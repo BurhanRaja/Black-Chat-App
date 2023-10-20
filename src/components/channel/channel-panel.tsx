@@ -53,7 +53,7 @@ const ChannelPannelContent = () => {
 
 const ChannelPanel = () => {
   return (
-    <div className="h-[100vh] bg-zinc-700 pb-2">
+    <div className="h-[100vh] bg-[rgb(71,71,79)] pb-2">
       <Dropdown
         trigger={
           <button className="flex justify-between items-center p-3 shadow-md focus:outline-0 w-[100%] rounded-sm hover:bg-zinc-600">
@@ -89,7 +89,7 @@ const ChannelPanel = () => {
       </div>
       <ScrollArea
         width="w-[260px]"
-        backgroundColor="bg-zinc-700"
+        backgroundColor="bg-[rgb(71,71,79)]"
         height="h-[75%]"
         content={<ChannelPannelContent />}
         padding={false}
