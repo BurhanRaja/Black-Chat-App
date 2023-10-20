@@ -1,6 +1,8 @@
 "use client";
 
 import { Hash, Users2 } from "lucide-react";
+import MemberSearch from "../members/member-search";
+import Tooltip from "../ui/tooltip";
 
 const Header = () => {
   return (
@@ -9,8 +11,9 @@ const Header = () => {
         <Hash size={18} className="mr-1" />
         <p>announcement</p>
       </div>
-      <div>
-        <Users2 className="cursor-pointer" />
+      <div className="flex items-center">
+        <MemberSearch />
+        <Tooltip trigger={<Users2 className="cursor-pointer" />} content="User's List" side="bottom" />
       </div>
     </div>
   );

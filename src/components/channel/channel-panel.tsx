@@ -81,7 +81,7 @@ const ChannelPanel = () => {
             icon: <Trash2 size={16} />,
           },
         ]}
-        contentColor="bg-gray-950"
+        contentColor="bg-gray-950 mt-2"
         contentWidth="w-[225px]"
       />
       <div className="mt-2 p-1">

@@ -17,6 +17,7 @@ interface DropdownProps {
   items: Array<ItemArray>;
   contentColor?: string;
   contentWidth: string;
+  side?: "left" | "right" | "top" | "bottom";
 }
 
 const Dropdown = ({
@@ -24,6 +25,7 @@ const Dropdown = ({
   items,
   contentColor,
   contentWidth,
+  side,
 }: DropdownProps) => {
   return (
     <>
@@ -31,7 +33,8 @@ const Dropdown = ({
         <DropdownPrimitive.Trigger asChild>{trigger}</DropdownPrimitive.Trigger>
         <DropdownPrimitive.Portal>
           <DropdownPrimitive.Content
-            className={`p-1 py-2 ${contentColor} ${contentWidth} rounded-sm mt-2`}
+            className={`p-1 py-2 ${contentColor} ${contentWidth} rounded-sm`}
+            side={side ? side : "bottom"}
           >
             {items?.map((el) => {
               return (
