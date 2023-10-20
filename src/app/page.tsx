@@ -5,6 +5,8 @@ import Image from "next/image";
 import { Settings } from "lucide-react";
 import ChannelPanel from "@/components/channel/channel-panel";
 import Header from "@/components/defaults/header";
+import ChatArea from "@/components/chat/chat-area";
+import MemberPanel from "@/components/members/member-panel";
 
 export default function Home() {
   return (
@@ -14,6 +16,10 @@ export default function Home() {
         <ChannelPanel />
         <div className="content w-[79%]">
           <Header />
+          <div className="flex">
+            <ChatArea />
+            <MemberPanel />
+          </div>
         </div>
       </div>
     </>

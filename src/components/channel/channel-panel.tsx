@@ -88,7 +88,7 @@ const ChannelPanel = () => {
         <ChannelSearch />
       </div>
       <ScrollArea
-        width="w-[250px]"
+        width="w-[260px]"
         backgroundColor="bg-zinc-700"
         height="h-[75%]"
         content={<ChannelPannelContent />}
