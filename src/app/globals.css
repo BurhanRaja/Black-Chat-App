@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@300;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Yuji+Hentaigana+Akari&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -49,4 +50,15 @@ body {
 .chat-input::placeholder {
   color: rgb(100, 100, 100) !important;
   font-size: 15px;
+}
+
+.main-logo {
+    font-size: 25px;
+    margin-top: 0;
+    padding: 2px 10px 4px 10px;
+    color: white;
+    background: rgb(109,109,109);
+    background: linear-gradient(-45deg, rgba(109,109,109,1) 0%, rgba(37,37,37,1) 49%, rgba(1,1,23,1) 100%);
+    border: none;
+    border-radius: 10px;
 }

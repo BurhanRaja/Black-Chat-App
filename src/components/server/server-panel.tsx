@@ -4,6 +4,7 @@ import Tooltip from "@/components/ui/tooltip";
 import ScrollArea from "../ui/scroll-area";
 import { Plus } from "lucide-react";
 import ServerIcon from "./server-icon";
+import Logo from "../logo";
 
 const ServerPanel = () => {
   return (
@@ -14,8 +15,8 @@ const ServerPanel = () => {
         content={
           <>
             <ServerIcon
-              fallbackBackgroundColor={"bg-slate-900 hover:bg-white"}
-              fallbackColor={"text-white hover:text-slate-900"}
+              fallbackBackgroundColor={"font-yuji bg-logo-gradient hover:bg-white"}
+              fallbackColor={"text-white text-xl"}
             />
             <hr className="border-gray-500" />
             <ServerIcon
@@ -34,6 +35,7 @@ const ServerPanel = () => {
             />
           </>
         }
+        backgroundColor="bg-zinc-900"
         padding={true}
       ></ScrollArea>
     </>

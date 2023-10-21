@@ -13,9 +13,12 @@ const config: Config = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "logo-gradient":
+          "linear-gradient(0deg, rgba(173,173,173,1) 0%, rgba(136,136,136,1) 22%, rgba(41,41,41,1) 100%)",
       },
       fontFamily: {
         assistant: "'Assistant', sans-serif",
+        yuji: "'Yuji Hentaigana Akari', cursive",
       },
       colors: {
         ...violet,
