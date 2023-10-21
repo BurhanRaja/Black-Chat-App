@@ -36,12 +36,12 @@ const ChatAreaItem = () => {
 const ChatArea = () => {
   return (
     // <ChatAreaImageItem />
-    <div className="w-[80%]">
+    <div className="w-[80%] h-[665px]">
       <ScrollArea
         width="w-[100%]"
         backgroundColor="bg-zinc-700"
         content={<ChatAreaItem />}
-        height="h-[81.5vh]"
+        height="h-[88%]"
         padding={true}
       />
       <div className="bg-zinc-700 w-[100%] pb-8">

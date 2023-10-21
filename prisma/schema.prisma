@@ -33,11 +33,13 @@ model Profile {
 
   serverUsers            SUser[]
   servers                Server[]
-  conversationsInitiated Conversation[] @relation(name: "POneId")
-  conversationsReceived  Conversation[] @relation(name: "PTwoId")
+  conversationsInitiated Conversation[]  @relation(name: "POneId")
+  conversationsReceived  Conversation[]  @relation(name: "PTwoId")
+  directMessages          DirectMessage[]
+  reactions  Reaction[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
 
 model SUser {
@@ -45,11 +47,14 @@ model SUser {
   sUserId String    @unique
   type    SUserRole
 
-  user     Profile   @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  user     Profile @relation(fields: [userId], references: [userId], onDelete: Cascade)
   userId   String
-  server   Server    @relation(fields: [serverId], references: [serverId])
+  server   Server  @relation(fields: [serverId], references: [serverId])
   serverId String
-  messages Message[]
+
+  messages      Message[]  @relation(name: "user")
+  replymessages Message[]  @relation(name: "replyUser")
+  reactions     Reaction[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -84,6 +89,9 @@ model Room {
   type      RoomType
   isPrivate Boolean
 
+  server   Server @relation(fields: [serverId], references: [serverId])
+  serverId String
+
   createPermission  SUserRole[]
   updatePermission  SUserRole[]
   deletePermission  SUserRole[]
@@ -91,32 +99,57 @@ model Room {
   privatePermission SUserRole[]
   messages          Message[]
 
-  server   Server @relation(fields: [serverId], references: [serverId])
-  serverId String
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([serverId])
 }
 
+model Reaction {
+  id       String @id @default(uuid())
+  reaction String
+  count    Int
+
+  suser           SUser         @relation(fields: [sUserId], references: [sUserId])
+  sUserId         String
+  user            Profile       @relation(fields: [userId], references: [userId])
+  userId          String
+  message         Message       @relation(fields: [messageId], references: [messageId])
+  messageId       String
+  directMessage   DirectMessage @relation(fields: [directMessageId], references: [directMessageId])
+  directMessageId String
+
+  @@index([sUserId])
+  @@index([messageId])
+  @@index([directMessageId])
+  @@index([userId])
+}
+
 model Message {
-  id        String  @id @default(uuid())
-  messageId String  @unique
+  id        String     @id @default(uuid())
+  messageId String     @unique
   content   String
   file      String?
-  isDelete  Boolean @default(false)
+  isDelete  Boolean    @default(false)
+  isReply   Boolean
 
-  user    SUser  @relation(fields: [sUserId], references: [sUserId])
-  sUserId String
-  room    Room   @relation(fields: [roomId], references: [roomId], onDelete: Cascade)
-  roomId  String
+  // The one who is replied to
+  replyuser   SUser  @relation(fields: [replyuserId], references: [sUserId], name: "replyUser")
+  replyuserId String
+  // The who replied
+  user        SUser  @relation(fields: [sUserId], references: [sUserId], name: "user")
+  sUserId     String
+  room        Room   @relation(fields: [roomId], references: [roomId], onDelete: Cascade)
+  roomId      String
+
+  reactions Reaction[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([roomId])
   @@index([sUserId])
+  @@index([replyuserId])
 }
 
 model Conversation {
@@ -137,17 +170,22 @@ model Conversation {
 }
 
 model DirectMessage {
-  id              String  @id @default(uuid())
-  directMessageId String  @unique
+  id              String     @id @default(uuid())
+  directMessageId String     @unique
   content         String
   file            String?
-  isDelete        Boolean @default(false)
+  isDelete        Boolean    @default(false)
 
+  user   Profile @relation(fields: [userId], references: [userId])
+  userId String
   conversation   Conversation? @relation(fields: [conversationId], references: [id])
   conversationId String?
+
+  reactions       Reaction[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([conversationId])
+  @@index([userId])
 }

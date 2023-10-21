@@ -13,7 +13,7 @@ const ChatItem = () => {
         <div className="absolute right-10 top-[-6px] bg-zinc-800 px-2 py-0.5 hidden group-hover:block">
           <Tooltip
             trigger={
-              <button className="mr-1 p-1">
+              <button className="mr-1 p-1 rounded-sm hover:bg-zinc-700">
                 <BsFillReplyFill className="text-xl" />
               </button>
             }
@@ -22,8 +22,8 @@ const ChatItem = () => {
           />
           <Tooltip
             trigger={
-              <button className="p-1">
-                <SmilePlus size={19} />
+              <button className="p-1.5 rounded-sm hover:bg-zinc-700">
+                <SmilePlus size={20} />
               </button>
             }
             side="top"
@@ -51,7 +51,7 @@ const ChatItem = () => {
         <div className="ml-2">
           <p className="text-sm text-zinc-400">
             <span className="text-green-400">BurhanRaja </span> -{" "}
-            <span className="text-xs ">2023/04/05</span>
+            <span className="text-xs ">2023/04/05 {"  "} 4:05 PM</span>
           </p>
           <p>Content written here. More is on the way</p>
           <button className="flex items-center justify-between bg-zinc-800 p-0.5 px-1 text-xs mt-1 rounded-md">

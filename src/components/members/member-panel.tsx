@@ -8,7 +8,7 @@ const MemberPanel = () => {
     <>
       <ScrollArea
         width="w-[20%]"
-        height="h-[92.7vh]"
+        height="h-[93.3vh]"
         content={
           <>
             <MemberItem />
