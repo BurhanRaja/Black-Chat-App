@@ -24,15 +24,17 @@ enum RoomType {
 }
 
 model Profile {
-  id            String  @id @default(uuid())
-  userId        String  @unique
-  uniqueName    String  @unique
-  username      String
-  email         String
-  emailVerified Boolean
-  imageUrl      String
-  bio           String
-  forgetPasswordToken String
+  id                  String  @id @default(uuid())
+  userId              String  @unique
+  displayname         String  @unique
+  username            String
+  email               String  @unique
+  password            String
+  emailVerified       Boolean @default(false)
+  imageUrl            String  @default("none")
+  bio                 String  @default("")
+  gender              Int
+  forgetPasswordToken String  @default("")
 
   serverUsers            SUser[]
   servers                Server[]
@@ -48,7 +50,7 @@ model Profile {
 model SUser {
   id      String    @id @default(uuid())
   sUserId String    @unique
-  type    SUserRole
+  type    SUserRole @default(MEMBER)
 
   user     Profile @relation(fields: [userId], references: [userId], onDelete: Cascade)
   userId   String
@@ -89,7 +91,7 @@ model Room {
   id        String   @id @default(uuid())
   roomId    String   @unique
   name      String
-  type      RoomType
+  type      RoomType @default(TEXT)
   isPrivate Boolean
 
   server   Server @relation(fields: [serverId], references: [serverId])

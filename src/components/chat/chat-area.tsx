@@ -7,7 +7,7 @@ import ChatItem from "./chat-item";
 const ChatAreaImageItem = () => {
   return (
     <>
-      <div className="flex items-center justify-center h-[92.7vh] bg-[rgb(71,71,79)] w-[80%]">
+      <div className="flex items-center justify-center h-[93.3vh] bg-zinc-700 w-[80%]">
         <div className="flex flex-col justify-between items-center">
           <Image
             src={"/welcome-page.png"}

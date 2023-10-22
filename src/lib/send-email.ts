@@ -1,5 +1,7 @@
+import { NextResponse } from "next/server";
 import nodemailer, { SendMailOptions } from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
+import template, { EmailTemplateParams } from "./email-template";
 
 const smtpHost = process.env.NEXT_SMTP_HOST!;
 const smtpUsername = process.env.NEXT_SMTP_USERNAME;
@@ -18,22 +20,39 @@ const options: SMTPTransport.Options = {
 
 const transporter = nodemailer.createTransport(options);
 
+export interface NewSendEmailOptions
+  extends SendMailOptions,
+    EmailTemplateParams {}
+
 const sendEmail = async ({
   from,
   to,
   subject,
-  text,
-  html,
-}: SendMailOptions) => {
-  const info = await transporter.sendMail({
-    from,
-    to,
-    subject,
-    text,
-    html,
-  });
+  content,
+  link,
+  linkText,
+}: NewSendEmailOptions) => {
+  transporter.sendMail(
+    {
+      from,
+      to,
+      subject,
+      html: template({ content, link, linkText }),
+    },
+    (err) => {
+      if (err) {
+        return NextResponse.json(
+          { error: "Email was not sent." },
+          { status: 417 }
+        );
+      }
 
-  
+      return NextResponse.json(
+        { message: "Email sent successfully." },
+        { status: 200 }
+      );
+    }
+  );
 };
 
 export default sendEmail;

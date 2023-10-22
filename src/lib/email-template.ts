@@ -1,9 +1,10 @@
-interface EmailTemplateParams {
-  text: string;
-  verifyLink: string;
+export interface EmailTemplateParams {
+  content: string;
+  link: string;
+  linkText: string;
 }
 
-const emailTemplate = ({ text, verifyLink }: EmailTemplateParams) => `
+export default ({ content, link, linkText }: EmailTemplateParams) => `
 <!DOCTYPE html>
 <html>
 
@@ -220,7 +221,7 @@ const emailTemplate = ({ text, verifyLink }: EmailTemplateParams) => `
                             margin: 0;
                             margin-bottom: 15px;
                           ">
-                                               ${text}
+                                               ${content}
                                             </p>
                                             <table role="presentation" border="0" cellpadding="0" cellspacing="0"
                                                 class="btn btn-primary" style="
@@ -255,7 +256,7 @@ const emailTemplate = ({ text, verifyLink }: EmailTemplateParams) => `
                                           text-align: center;
                                           background-color: #3498db;
                                         " valign="top" align="center" bgcolor="#3498db">
-                                                                            <a href="${verifyLink}" target="_blank"
+                                                                            <a href="${link}" target="_blank"
                                                                                 style="
                                             border: solid 1px #3498db;
                                             border-radius: 5px;
@@ -271,7 +272,7 @@ const emailTemplate = ({ text, verifyLink }: EmailTemplateParams) => `
                                             background-color: #000000;
                                             border-color: #4b4b4b;
                                             color: #ffffff;
-                                          ">Verify Link</a>
+                                          ">${linkText}</a>
                                                                         </td>
                                                                     </tr>
                                                                 </tbody>

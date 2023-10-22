@@ -3,6 +3,7 @@ import { prisma } from "@/db/client";
 
 const currentProfile = async () => {
   const { data } = useSession();
+
   if (!data?.user) {
     return null;
   }
@@ -12,6 +13,7 @@ const currentProfile = async () => {
       userId: data?.user?.userId,
     },
   });
+
   return profile;
 };
 
