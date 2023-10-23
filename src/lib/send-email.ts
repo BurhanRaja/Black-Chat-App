@@ -41,16 +41,9 @@ const sendEmail = async ({
     },
     (err) => {
       if (err) {
-        return NextResponse.json(
-          { error: "Email was not sent." },
-          { status: 417 }
-        );
+        return false;
       }
-
-      return NextResponse.json(
-        { message: "Email sent successfully." },
-        { status: 200 }
-      );
+      return true;
     }
   );
 };

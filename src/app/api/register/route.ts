@@ -2,22 +2,27 @@ import { prisma } from "@/db/client";
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import sendEmail, { NewSendEmailOptions } from "@/lib/send-email";
+import hashPassword from "@/lib/hash-password";
 
 const mainURL = process.env.NEXT_APP_URL!;
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest): Promise<
+  | NextResponse<{
+      success: boolean;
+      message: string;
+    }>
+  | undefined
+> {
   let success = false;
   try {
     const { username, email, password, gender, imageUrl } = await req.json();
 
-    console.log(await prisma.profile.findMany({}));
-
+    // Email Check
     let user = await prisma.profile.findUnique({
       where: {
         email,
       },
     });
-
     if (user) {
       return NextResponse.json(
         { success, message: "User Already Exists." },
@@ -25,24 +30,27 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Generate User ID
     let uniqueId = crypto.randomBytes(6).toString("hex");
-
     user = await prisma.profile.findUnique({
       where: {
         userId: uniqueId,
       },
     });
-
     if (user) {
       uniqueId += crypto.randomBytes(4).toString("hex");
     }
 
+    // Hash Password
+    const securePassword = await hashPassword(password as string);
+
+    // Create User
     let data = {
       userId: uniqueId,
       displayname: username,
       username: username.toLowerCase(),
       email,
-      password,
+      password: securePassword,
       imageUrl: imageUrl
         ? imageUrl
         : gender == 0
@@ -62,19 +70,32 @@ export async function POST(req: NextRequest) {
         subject: "Email Verification",
         content:
           "Thank you for registering as our user. Kindly click on the button below to activate your account.",
-        link: "Verify Link",
-        linkText: "",
+        link: "http://localhost:3000/verify/login",
+        linkText: "Verify Link",
       };
 
-      sendEmail(emailSend);
+      const emailCheck = sendEmail(emailSend);
+
+      if (!emailCheck) {
+        return NextResponse.json(
+          {
+            success,
+            message: "User Registered successfully. But email not sent.",
+          },
+          { status: 200 }
+        );
+      }
+
       success = true;
       return NextResponse.json(
-        { success, message: "User Registered successfully." },
+        {
+          success,
+          message: "User Registered successfully. Please verify your email.",
+        },
         { status: 200 }
       );
     }
   } catch (err) {
-    console.log(err);
     return NextResponse.json(
       { success, message: "Internal Server Error." },
       { status: 500 }
