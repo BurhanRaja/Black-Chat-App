@@ -31,9 +31,9 @@ model Profile {
   email               String  @unique
   password            String
   emailVerified       Boolean @default(false)
-  imageUrl            String  @default("none")
+  imageUrl            String  @default("")
   bio                 String  @default("")
-  gender              Int
+  gender              Int     @default(-1)
   forgetPasswordToken String  @default("")
 
   serverUsers            SUser[]
@@ -42,9 +42,29 @@ model Profile {
   conversationsReceived  Conversation[]  @relation(name: "PTwoId")
   directMessages         DirectMessage[]
   reactions              Reaction[]
+  Account                Account[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  type              String
+  provider          String  @unique
+  providerAccountId String  @unique
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user   Profile @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId String
+
+  @@index([userId])
 }
 
 model SUser {

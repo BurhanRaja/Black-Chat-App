@@ -1,6 +1,6 @@
 import { prisma } from "@/db/client";
 import { NextRequest, NextResponse } from "next/server";
-import crypto from "crypto";
+import { randomBytes } from "crypto";
 import sendEmail, { NewSendEmailOptions } from "@/lib/send-email";
 import hashPassword from "@/lib/hash-password";
 
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest): Promise<
 > {
   let success = false;
   try {
-    const { username, email, password, gender, imageUrl } = await req.json();
+    const { username, email, password, gender } = await req.json();
 
     // Email Check
     let user = await prisma.profile.findUnique({
@@ -31,14 +31,14 @@ export async function POST(req: NextRequest): Promise<
     }
 
     // Generate User ID
-    let uniqueId = crypto.randomBytes(6).toString("hex");
+    let uniqueId = randomBytes(6).toString("hex");
     user = await prisma.profile.findUnique({
       where: {
         userId: uniqueId,
       },
     });
     if (user) {
-      uniqueId += crypto.randomBytes(4).toString("hex");
+      uniqueId += randomBytes(4).toString("hex");
     }
 
     // Hash Password
@@ -51,11 +51,10 @@ export async function POST(req: NextRequest): Promise<
       username: username.toLowerCase(),
       email,
       password: securePassword,
-      imageUrl: imageUrl
-        ? imageUrl
-        : gender == 0
-        ? mainURL + `male-profile.png`
-        : mainURL + "female-profile.png",
+      imageUrl:
+        gender == 0
+          ? mainURL + `male-profile.png`
+          : mainURL + "female-profile.png",
       gender,
     };
 
