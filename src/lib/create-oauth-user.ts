@@ -21,7 +21,7 @@ const createOauthUser = async ({ profile, account }: CreateOauthUserParams) => {
     uniqueId += randomBytes(4).toString("hex");
   }
 
-  let = {
+  let userData = {
     email: profile.email as string,
     imageUrl: profile.image,
     displayname,
@@ -34,14 +34,25 @@ const createOauthUser = async ({ profile, account }: CreateOauthUserParams) => {
     data: userData,
   });
 
+  let accountData = {
+    type: account.type,
+    provider: account.provider,
+    providerAccountId: account.providerAccountId,
+    refresh_token: account.refresh_token,
+    access_token: account.access_token,
+    expires_at: account.expires_at,
+    token_type: account.token_type,
+    scope: account.scope,
+    id_token: account.id_token,
+    session_state: account.session_state,
+    userId: uniqueId,
+  };
+
+  let accountCreate = await prisma.account.create({
+    data: accountData,
+  });
+
   return true;
-  // let accountData = {
-  //   type: "GOOGLE",
-  //   provider: account.provider,
-  //   providerAccountId: account.providerAccountId
-  // }
-
-  // let account = await prisma.account.create({
-
-  // })
 };
+
+export default createOauthUser;

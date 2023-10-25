@@ -3,15 +3,25 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "@/db/client";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+import createOauthUser from "./create-oauth-user";
+import { DefaultJWT } from "next-auth/jwt";
+import refreshToken from "./refresh-token";
+import { Account } from "@prisma/client";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
-    user?: {
-      userId: any;
+    user: {
+      userId: string;
     } & DefaultSession["user"];
+    error: "RefreshAccessTokenError";
   }
-
   interface User extends DefaultUser {
+    userId: string;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT extends DefaultJWT {
     userId: string;
   }
 }
@@ -21,6 +31,9 @@ const googleClientSecret = process.env.NEXT_GOOGLE_CLIENT_SECRET!;
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
+  session: {
+    strategy: "jwt",
+  },
   providers: [
     GoogleProvider({
       clientId: googleClientId,
@@ -47,7 +60,6 @@ export const authOptions: NextAuthOptions = {
         if (!user) {
           return null;
         }
-
         return user;
       },
     }),
@@ -66,19 +78,53 @@ export const authOptions: NextAuthOptions = {
         } else {
           return true;
         }
+      } else {
+        let userProfile = await prisma.profile.findUnique({
+          where: {
+            email: profile?.email,
+          },
+        });
+        if (!userProfile && profile && account) {
+          await createOauthUser({ profile, account });
+        }
+        return true;
       }
-
-      let userProfile = await prisma.profile.findUnique({
+    },
+    jwt: async ({ user, profile, token }) => {
+      if (user.userId) {
+        token.userId = user.userId;
+        return token;
+      } else {
+        let userProfile = await prisma.profile.findUnique({
+          where: {
+            email: profile?.email,
+          },
+        });
+        token.userId = userProfile?.userId!;
+        return token;
+      }
+    },
+    session: async ({ session, token }) => {
+      const userAccount = (await prisma.account.findFirst({
         where: {
-          email: profile?.email,
+          userId: token.userId,
         },
-      });
+      })) as Account;
 
-      if (!userProfile) {
-        await createOauthUser({ profile, account });
+      if (userAccount?.expires_at! * 1000 < Date.now()) {
+        let successToken = await refreshToken({ userAccount, session });
+        if (!successToken) {
+          return session;
+        }
       }
-      return true;
+      session.user.userId = token.userId;
+      return session;
     },
   },
-  pages: {},
+  pages: {
+    signIn: "/auth/dashbaord", // on successfully signin
+    signOut: "/auth/login", // on signout redirects users to a custom login page.
+    error: "/auth/error", // displays authentication errors
+    newUser: "/auth/signup", // New users will be directed here on first sign in (leave the property out if not of interest)
+  },
 };
