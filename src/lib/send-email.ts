@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import nodemailer, { SendMailOptions } from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
 import template, { EmailTemplateParams } from "./email-template";

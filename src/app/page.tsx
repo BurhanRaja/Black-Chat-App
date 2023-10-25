@@ -7,11 +7,12 @@ import ChannelPanel from "@/components/channel/channel-panel";
 import Header from "@/components/defaults/header";
 import ChatArea from "@/components/chat/chat-area";
 import MemberPanel from "@/components/members/member-panel";
+import Register from "@/components/register";
 
 export default function Home() {
   return (
     <>
-      <div className="flex">
+      {/* <div className="flex">
         <ServerPanel />
         <ChannelPanel />
         <div className="content w-[79%]">
@@ -21,7 +22,8 @@ export default function Home() {
             <MemberPanel />
           </div>
         </div>
-      </div>
+      </div> */}
+      <Register />
     </>
   );
 }
