@@ -21,7 +21,6 @@ const Input = ({
   labelTextColor,
   inputTextColor,
   inputBackgroundColor,
-  width,
 }: InputProps) => {
   return (
     <>

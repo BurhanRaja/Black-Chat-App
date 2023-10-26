@@ -1,7 +1,8 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Modal from "@/components/ui/modal";
+import AuthSessionProvider from "@/components/provider/session-provider";
+import ReactQueryProvider from "@/components/provider/query-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +19,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {children}
+        <AuthSessionProvider>
+          <ReactQueryProvider>{children}</ReactQueryProvider>
+        </AuthSessionProvider>
       </body>
     </html>
   );
