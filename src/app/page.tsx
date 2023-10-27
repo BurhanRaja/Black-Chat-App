@@ -24,8 +24,8 @@ export default function Home() {
           </div>
         </div>
       </div> */}
-      {/* <Login /> */}
-      <Register />
+      <Login />
+      {/* <Register /> */}
     </>
   );
 }

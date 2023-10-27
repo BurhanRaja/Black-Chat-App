@@ -2,12 +2,27 @@
 
 import Link from "next/link";
 import Input from "./ui/input";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import GoogleButton from "./google-button";
+import { signIn, useSession } from "next-auth/react";
 
 const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+
+  const { data, status } = useSession();
+  console.log(data);
+  console.log(status);
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    const res = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+    console.log(res);
+  };
 
   return (
     <>
@@ -27,7 +42,7 @@ const Login = () => {
               <p className="bg-black p-1 w-[15%] text-center">or</p>
             </div>
           </div>
-          <form className="p-2 w-[80%]">
+          <form className="p-2 w-[80%]" onSubmit={handleSubmit}>
             <div className="mb-3">
               <Input
                 value={email}

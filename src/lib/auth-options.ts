@@ -32,7 +32,10 @@ const googleClientSecret = process.env.NEXT_GOOGLE_CLIENT_SECRET!;
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
-  secret: process.env.NEXTAUTH_SECRET,
+  jwt: {
+    secret: process.env.NEXTAUTH_SECRET as any,
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
   session: {
     strategy: "jwt",
   },
@@ -47,7 +50,12 @@ export const authOptions: NextAuthOptions = {
         email: { label: "email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials): Promise<any> {
+        if (!credentials) {
+          console.log("For some reason credentials are missing.");
+          throw new Error("missing-credentials.");
+        }
+
         const user = await prisma.profile.findUnique({
           where: {
             email: credentials?.email,
@@ -61,21 +69,34 @@ export const authOptions: NextAuthOptions = {
           },
         });
         if (!user) {
-          return null;
+          throw new Error("user-not-found.");
         }
 
         let check = comparePassword(credentials?.password!, user.password);
 
         if (!check) {
-          return null;
+          return Error("invalid-password.");
         }
 
-        return user;
+        return Promise.resolve({
+          userId: user?.userId,
+          username: user?.username,
+          email: user?.email,
+        });
       },
     }),
   ],
+  logger: {
+    error(code, metadata) {
+      console.log(code);
+      console.log(metadata);
+    },
+    warn(code) {
+      console.log(code);
+    },
+  },
   callbacks: {
-    signIn: async ({ profile, account }) => {
+    signIn: async ({ profile, account, credentials }) => {
       if (account?.provider === "google") {
         let userProfile = await prisma.profile.findUnique({
           where: {
@@ -87,9 +108,13 @@ export const authOptions: NextAuthOptions = {
         }
         return true;
       }
+      if (credentials) {
+        return true;
+      }
       return false;
     },
     jwt: async ({ user, profile, token }) => {
+      console.log("hello");
       if (user.userId) {
         token.userId = user.userId;
         return token;
@@ -120,5 +145,12 @@ export const authOptions: NextAuthOptions = {
       session.user.userId = token.userId;
       return session;
     },
+  },
+  pages: {
+    signIn: "/auth/signin",
+    signOut: "/auth/signout",
+    error: "/auth/error", // Error code passed in query string as ?error=
+    verifyRequest: "/auth/verify-request", // (used for check email message)
+    newUser: "/auth/new-user", // New users will be directed here on first sign in (leave the property out if not of interest)
   },
 };
