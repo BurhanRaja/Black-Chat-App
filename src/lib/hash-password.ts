@@ -1,4 +1,3 @@
-"use client";
 import { hash, genSalt, compare } from "bcrypt";
 
 export default async (password: string) => {

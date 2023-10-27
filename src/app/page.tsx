@@ -8,6 +8,7 @@ import Header from "@/components/defaults/header";
 import ChatArea from "@/components/chat/chat-area";
 import MemberPanel from "@/components/members/member-panel";
 import Register from "@/components/register";
+import Login from "@/components/login";
 
 export default function Home() {
   return (
@@ -23,6 +24,7 @@ export default function Home() {
           </div>
         </div>
       </div> */}
+      {/* <Login /> */}
       <Register />
     </>
   );

@@ -8,11 +8,10 @@ interface RegisterData {
 }
 
 export const registerUser = async (data: RegisterData) => {
-  const response = await axios.post("/api/register", {
+  const response = await axios.post("/api/register", data, {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(data),
   });
 
   return response.data;

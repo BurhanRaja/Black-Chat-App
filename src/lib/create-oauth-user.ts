@@ -1,6 +1,7 @@
 import { prisma } from "@/db/client";
 import { randomBytes } from "crypto";
 import { Account, Profile } from "next-auth";
+import sendEmail, { NewSendEmailOptions } from "@/lib/send-email";
 
 interface CreateOauthUserParams {
   profile: Profile;
@@ -34,6 +35,19 @@ const createOauthUser = async ({ profile, account }: CreateOauthUserParams) => {
     data: userData,
   });
 
+  if (user.id) {
+    let emailSend: NewSendEmailOptions = {
+      from: "BlackChat <hello@blackchat.com>",
+      to: profile.email as string,
+      subject: "Email Verification",
+      content:
+        "Thank you for registering as our user. Kindly click on the button below to activate your account.",
+      link: "http://localhost:3000/verify/login",
+      linkText: "Verify Link",
+    };
+    sendEmail(emailSend);
+  }
+
   let accountData = {
     type: account.type,
     provider: account.provider,
@@ -48,7 +62,7 @@ const createOauthUser = async ({ profile, account }: CreateOauthUserParams) => {
     userId: uniqueId,
   };
 
-  let accountCreate = await prisma.account.create({
+  await prisma.account.create({
     data: accountData,
   });
 

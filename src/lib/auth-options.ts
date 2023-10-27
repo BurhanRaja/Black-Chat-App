@@ -7,6 +7,7 @@ import createOauthUser from "./create-oauth-user";
 import { DefaultJWT } from "next-auth/jwt";
 import refreshToken from "./refresh-token";
 import { Account } from "@prisma/client";
+import { comparePassword } from "./hash-password";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -31,6 +32,7 @@ const googleClientSecret = process.env.NEXT_GOOGLE_CLIENT_SECRET!;
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
+  secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
   },
@@ -55,30 +57,26 @@ export const authOptions: NextAuthOptions = {
             userId: true,
             email: true,
             username: true,
+            password: true,
           },
         });
         if (!user) {
           return null;
         }
+
+        let check = comparePassword(credentials?.password!, user.password);
+
+        if (!check) {
+          return null;
+        }
+
         return user;
       },
     }),
   ],
   callbacks: {
-    signIn: async ({ user, profile, account, credentials }) => {
-      if (credentials) {
-        let userProfile = await prisma.profile.findUnique({
-          where: {
-            email: user.email!,
-            userId: user.userId,
-          },
-        });
-        if (!userProfile) {
-          return false;
-        } else {
-          return true;
-        }
-      } else {
+    signIn: async ({ profile, account }) => {
+      if (account?.provider === "google") {
         let userProfile = await prisma.profile.findUnique({
           where: {
             email: profile?.email,
@@ -89,6 +87,7 @@ export const authOptions: NextAuthOptions = {
         }
         return true;
       }
+      return false;
     },
     jwt: async ({ user, profile, token }) => {
       if (user.userId) {
@@ -110,21 +109,16 @@ export const authOptions: NextAuthOptions = {
           userId: token.userId,
         },
       })) as Account;
-
-      if (userAccount?.expires_at! * 1000 < Date.now()) {
-        let successToken = await refreshToken({ userAccount, session });
-        if (!successToken) {
-          return session;
+      if (userAccount) {
+        if (userAccount?.expires_at! * 1000 < Date.now()) {
+          let successToken = await refreshToken({ userAccount, session });
+          if (!successToken) {
+            return session;
+          }
         }
       }
       session.user.userId = token.userId;
       return session;
     },
-  },
-  pages: {
-    signIn: "/auth/dashbaord", // on successfully signin
-    signOut: "/auth/login", // on signout redirects users to a custom login page.
-    error: "/auth/error", // displays authentication errors
-    newUser: "/auth/signup", // New users will be directed here on first sign in (leave the property out if not of interest)
   },
 };

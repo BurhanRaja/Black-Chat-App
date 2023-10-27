@@ -95,6 +95,7 @@ export async function POST(req: NextRequest): Promise<
       );
     }
   } catch (err) {
+    console.log(err);
     return NextResponse.json(
       { success, message: "Internal Server Error." },
       { status: 500 }
