@@ -73,17 +73,7 @@ export async function POST(req: NextRequest): Promise<
         linkText: "Verify Link",
       };
 
-      const emailCheck = sendEmail(emailSend);
-
-      if (!emailCheck) {
-        return NextResponse.json(
-          {
-            success,
-            message: "User Registered successfully. But email not sent.",
-          },
-          { status: 200 }
-        );
-      }
+      sendEmail(emailSend);
 
       success = true;
       return NextResponse.json(

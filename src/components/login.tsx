@@ -2,16 +2,17 @@
 
 import Link from "next/link";
 import Input from "./ui/input";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import GoogleButton from "./google-button";
 import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const { data, status } = useSession();
-  console.log(data);
+  const { status } = useSession();
+  const router = useRouter();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -21,6 +22,16 @@ const Login = () => {
       redirect: false,
     });
   };
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/channels/@me");
+    }
+  }, [status]);
+
+  useEffect(() => {
+    
+  }, []);
 
   return (
     <>

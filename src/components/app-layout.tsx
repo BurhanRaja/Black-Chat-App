@@ -8,7 +8,7 @@ import MemberPanel from "@/components/members/member-panel";
 const AppLayout = () => {
   return (
     <>
-      {/* <div className="flex">
+      <div className="flex">
         <ServerPanel />
         <ChannelPanel />
         <div className="content w-[79%]">
@@ -18,7 +18,9 @@ const AppLayout = () => {
             <MemberPanel />
           </div>
         </div>
-      </div> */}
+      </div>
     </>
   );
 };
+
+export default AppLayout;

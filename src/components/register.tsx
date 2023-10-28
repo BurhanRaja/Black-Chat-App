@@ -1,39 +1,41 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useContext, useEffect, useState } from "react";
 import Input from "./ui/input";
 import Link from "next/link";
 import Select from "./ui/select";
 import useMutationData from "@/hooks/useMutationData";
 import { registerUser } from "@/utils/user";
 import GoogleButton from "./google-button";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { AlertContext } from "@/context/createContext";
 
 const Register = () => {
   const [email, setEmail] = useState<string>("");
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [gender, setGender] = useState<string>("");
-  const [message, setMessage] = useState<string>("0");
+  const [error, setError] = useState<string>("");
 
-  const { data, mutate, isSuccess, isError, error } = useMutationData({
+  const { mutate, isSuccess } = useMutationData({
     func: registerUser,
-    setMessage,
   });
+  const { status } = useSession();
+  const router = useRouter();
 
   useEffect(() => {
     if (isSuccess) {
-      console.log(data);
+      router.push("/auth/signin");
     }
   }, [isSuccess]);
 
-  useEffect(() => {
-    if (isError) {
-      console.log(data);
-      console.log(error);
-    }
-  }, [isError]);
-
   const handleSubmit = (e: FormEvent) => {
+    if (email.length === 0 || username.length === 0 || password.length === 0) {
+      setError("The above field is empty.");
+      return;
+    }
+
     e.preventDefault();
     let data = {
       email,
@@ -43,6 +45,12 @@ const Register = () => {
     };
     mutate(data);
   };
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/channels/@me");
+    }
+  }, [status]);
 
   return (
     <>

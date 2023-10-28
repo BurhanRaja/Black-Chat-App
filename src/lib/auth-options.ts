@@ -108,9 +108,9 @@ export const authOptions: NextAuthOptions = {
         }
         return Promise.resolve(true);
       }
-      // if (credentials) {
-      //   return Promise.resolve(true);
-      // }
+      if (credentials) {
+        return Promise.resolve(true);
+      }
       return Promise.resolve(false);
     },
     jwt: async ({ user, profile, token, account }) => {
