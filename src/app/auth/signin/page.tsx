@@ -7,11 +7,3 @@ export default function Signin() {
     </>
   );
 }
-
-// export async function getServerSideProps(context: GetServerSidePropsContext) {
-//   return {
-//     props: {
-//       csrfToken: await getCsrfToken(context),
-//     },
-//   };
-// }

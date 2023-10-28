@@ -1,6 +1,7 @@
 import { Account } from "@prisma/client";
 import axios from "axios";
 import { Session, TokenSet } from "next-auth";
+import { JWT } from "next-auth/jwt";
 
 const googleTokenApi = process.env.NEXT_GOOGLE_TOKEN_API!;
 const googleClientId = process.env.NEXT_GOOGLE_CLIENT_ID!;
@@ -8,21 +9,24 @@ const googleClientSecret = process.env.NEXT_GOOGLE_CLIENT_SECRET!;
 
 interface RefreshTokenParams {
   userAccount: Account;
-  session: Session;
+  token: JWT;
 }
 
-const refreshToken = async ({ userAccount, session }: RefreshTokenParams) => {
+const refreshToken = async ({ userAccount, token }: RefreshTokenParams) => {
   try {
-    const response = await axios.post(googleTokenApi, {
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
+    const response = await axios.post(
+      googleTokenApi,
+      new URLSearchParams({
         client_id: googleClientId,
         client_secret: googleClientSecret,
         grant_type: "refresh_token",
         refresh_token: userAccount.refresh_token!,
       }),
-      method: "POST",
-    });
+      {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        method: "POST",
+      }
+    );
 
     const token: TokenSet = await response.data;
 
@@ -38,14 +42,12 @@ const refreshToken = async ({ userAccount, session }: RefreshTokenParams) => {
 
     await prisma?.account.update({
       data,
-      where: {
-        provider: userAccount.provider,
-        providerAccountId: userAccount.providerAccountId,
-      },
+      where: { id: userAccount.id },
     });
     return true;
   } catch (err) {
-    session.error = "RefreshAccessTokenError";
+    console.log(err);
+    token.error = "RefreshAccessTokenError";
     return false;
   }
 };

@@ -12,16 +12,14 @@ const Login = () => {
 
   const { data, status } = useSession();
   console.log(data);
-  console.log(status);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const res = await signIn("credentials", {
+    await signIn("credentials", {
       email,
       password,
       redirect: false,
     });
-    console.log(res);
   };
 
   return (
@@ -31,7 +29,10 @@ const Login = () => {
           <h1 className="text-3xl font-bold">Login</h1>
           <p className="my-2 mb-3 text-sm text-gray-400">
             Don't have an Account?{" "}
-            <Link className="text-blue-600 hover:underline" href={""}>
+            <Link
+              className="text-blue-600 hover:underline"
+              href={"/auth/signup"}
+            >
               SignUp
             </Link>{" "}
           </p>

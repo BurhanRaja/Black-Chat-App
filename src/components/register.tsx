@@ -51,7 +51,10 @@ const Register = () => {
           <h1 className="text-3xl font-bold">SignUp</h1>
           <p className="my-2 mb-3 text-sm text-gray-400">
             Already have an Account?{" "}
-            <Link className="text-blue-600 hover:underline" href={""}>
+            <Link
+              className="text-blue-600 hover:underline"
+              href={"/auth/signin"}
+            >
               Login
             </Link>{" "}
           </p>

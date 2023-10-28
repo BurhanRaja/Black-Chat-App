@@ -13,17 +13,22 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       userId: string;
+      emailVerified: boolean;
     } & DefaultSession["user"];
-    error: "RefreshAccessTokenError";
+    error: string;
   }
   interface User extends DefaultUser {
     userId: string;
+    emailVerified: boolean;
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWT extends DefaultJWT {
     userId: string;
+    emailVerified: boolean;
+    imageUrl: string;
+    error: "RefreshAccessTokenError";
   }
 }
 
@@ -33,17 +38,13 @@ const googleClientSecret = process.env.NEXT_GOOGLE_CLIENT_SECRET!;
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   jwt: {
-    secret: process.env.NEXTAUTH_SECRET as any,
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
+  secret: process.env.NEXTAUTH_SECRET as any,
   session: {
     strategy: "jwt",
   },
   providers: [
-    GoogleProvider({
-      clientId: googleClientId,
-      clientSecret: googleClientSecret,
-    }),
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -64,8 +65,10 @@ export const authOptions: NextAuthOptions = {
             id: true,
             userId: true,
             email: true,
-            username: true,
             password: true,
+            username: true,
+            imageUrl: true,
+            emailVerified: true,
           },
         });
         if (!user) {
@@ -82,21 +85,18 @@ export const authOptions: NextAuthOptions = {
           userId: user?.userId,
           username: user?.username,
           email: user?.email,
+          image: user?.imageUrl,
+          emailVerified: user?.emailVerified,
         });
       },
     }),
+    GoogleProvider({
+      clientId: googleClientId,
+      clientSecret: googleClientSecret,
+    }),
   ],
-  logger: {
-    error(code, metadata) {
-      console.log(code);
-      console.log(metadata);
-    },
-    warn(code) {
-      console.log(code);
-    },
-  },
   callbacks: {
-    signIn: async ({ profile, account, credentials }) => {
+    signIn: async ({ profile, account, user, credentials }) => {
       if (account?.provider === "google") {
         let userProfile = await prisma.profile.findUnique({
           where: {
@@ -104,53 +104,62 @@ export const authOptions: NextAuthOptions = {
           },
         });
         if (!userProfile && profile && account) {
-          await createOauthUser({ profile, account });
+          await createOauthUser({ profile, account, user });
         }
-        return true;
+        return Promise.resolve(true);
       }
-      if (credentials) {
-        return true;
-      }
-      return false;
+      // if (credentials) {
+      //   return Promise.resolve(true);
+      // }
+      return Promise.resolve(false);
     },
-    jwt: async ({ user, profile, token }) => {
-      console.log("hello");
-      if (user.userId) {
+    jwt: async ({ user, profile, token, account }) => {
+      if (user?.userId) {
         token.userId = user.userId;
-        return token;
-      } else {
+        token.emailVerified = user.emailVerified as boolean;
+        token.imageUrl = user.image!;
+      }
+      if (profile?.email && account?.access_token) {
         let userProfile = await prisma.profile.findUnique({
           where: {
-            email: profile?.email,
+            email: profile?.email || user?.email!,
           },
         });
-        token.userId = userProfile?.userId!;
-        return token;
-      }
-    },
-    session: async ({ session, token }) => {
-      const userAccount = (await prisma.account.findFirst({
-        where: {
-          userId: token.userId,
-        },
-      })) as Account;
-      if (userAccount) {
-        if (userAccount?.expires_at! * 1000 < Date.now()) {
-          let successToken = await refreshToken({ userAccount, session });
-          if (!successToken) {
-            return session;
+
+        const userAccount = (await prisma.account.findFirst({
+          where: {
+            userId: userProfile?.userId,
+          },
+        })) as Account;
+
+        if (userAccount) {
+          if (userAccount?.expires_at! * 1000 < Date.now()) {
+            let successToken = await refreshToken({ userAccount, token });
+            if (successToken) {
+              token.userId = userProfile?.userId!;
+              token.emailVerified = userProfile?.emailVerified!;
+              token.imageUrl = userProfile?.imageUrl!;
+            }
+          } else {
+            token.userId = userProfile?.userId!;
+            token.emailVerified = userProfile?.emailVerified!;
+            token.imageUrl = userProfile?.imageUrl!;
           }
         }
       }
+      // }
+      return Promise.resolve(token);
+    },
+    session: async ({ session, token }) => {
       session.user.userId = token.userId;
-      return session;
+      session.user.emailVerified = token.emailVerified;
+      session.user.image = token.imageUrl;
+      return Promise.resolve(session);
     },
   },
   pages: {
     signIn: "/auth/signin",
-    signOut: "/auth/signout",
-    error: "/auth/error", // Error code passed in query string as ?error=
-    verifyRequest: "/auth/verify-request", // (used for check email message)
-    newUser: "/auth/new-user", // New users will be directed here on first sign in (leave the property out if not of interest)
+    verifyRequest: "/auth/verify", // (used for check email message)
+    newUser: "/auth/signup", // New users will be directed here on first sign in (leave the property out if not of interest)
   },
 };

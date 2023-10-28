@@ -51,8 +51,8 @@ model Profile {
 model Account {
   id                String  @id @default(cuid())
   type              String
-  provider          String  @unique
-  providerAccountId String  @unique
+  provider          String  
+  providerAccountId String  
   refresh_token     String? @db.Text
   access_token      String? @db.Text
   expires_at        Int?
@@ -64,7 +64,9 @@ model Account {
   user   Profile @relation(fields: [userId], references: [userId], onDelete: Cascade)
   userId String
 
+  @@unique([provider, providerAccountId])
   @@index([userId])
+  @@map("accounts")
 }
 
 model SUser {
