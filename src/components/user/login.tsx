@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import Input from "./ui/input";
+import Input from "../ui/input";
 import { FormEvent, useEffect, useState } from "react";
-import GoogleButton from "./google-button";
+import GoogleButton from "../google-button";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -29,9 +29,7 @@ const Login = () => {
     }
   }, [status]);
 
-  useEffect(() => {
-    
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <>

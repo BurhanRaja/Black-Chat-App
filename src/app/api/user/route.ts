@@ -5,6 +5,7 @@ export async function GET(): Promise<
   | NextResponse<{
       success: boolean;
       data?: any;
+      message?: string;
     }>
   | undefined
 > {
@@ -14,7 +15,6 @@ export async function GET(): Promise<
     success = true;
     return NextResponse.json({ success, data: users }, { status: 200 });
   } catch (err) {
-    console.log(err);
     return NextResponse.json(
       { success, message: "Internal Server Error." },
       { status: 500 }

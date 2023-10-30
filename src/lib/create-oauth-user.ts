@@ -15,7 +15,8 @@ const createOauthUser = async ({
   account,
   user,
 }: CreateOauthUserParams) => {
-  let displayname = profile.name + "#" + randomBytes(3).toString("hex");
+  let displayname =
+    profile.name?.split(" ")[0] + randomBytes(3).toString("hex");
 
   // Generate User ID
   let uniqueId = randomBytes(6).toString("hex");

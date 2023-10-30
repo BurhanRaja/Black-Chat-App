@@ -44,7 +44,7 @@ const useMutationData = ({ func }: MutationParams) => {
       setDescription(error.response.data.message);
       setTitleTextColor("text-white");
       setDescriptionTextColor("text-gray-200");
-      setBackgroundColor("bg-red-600");
+      setBackgroundColor("bg-green-600");
     },
   });
 

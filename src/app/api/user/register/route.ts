@@ -3,8 +3,27 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomBytes } from "crypto";
 import sendEmail, { NewSendEmailOptions } from "@/lib/send-email";
 import hashPassword from "@/lib/hash-password";
+import z from "zod";
+import { encryptToken } from "@/lib/encrypt-decrypt";
 
 const mainURL = process.env.NEXT_APP_URL!;
+
+const schemaBody = z.object({
+  username: z
+    .string()
+    .min(5)
+    .max(20)
+    .regex(/^[a-zA-Z0-9]/),
+  email: z.string().email(),
+  password: z
+    .string()
+    .min(5)
+    .max(20)
+    .regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])./),
+  gender: z.number(),
+});
+
+type RegisterBodyType = z.infer<typeof schemaBody>;
 
 export async function POST(req: NextRequest): Promise<
   | NextResponse<{
@@ -15,7 +34,8 @@ export async function POST(req: NextRequest): Promise<
 > {
   let success = false;
   try {
-    const { username, email, password, gender } = await req.json();
+    const { username, email, password, gender } =
+      req.body as unknown as RegisterBodyType;
 
     // Email Check
     let user = await prisma.profile.findUnique({
@@ -62,6 +82,9 @@ export async function POST(req: NextRequest): Promise<
       data,
     });
 
+    const userData = user.userId + "-" + user.email;
+    const encryptedToken = encryptToken(userData);
+
     if (user.id) {
       let emailSend: NewSendEmailOptions = {
         from: "BlackChat <hello@blackchat.com>",
@@ -69,7 +92,7 @@ export async function POST(req: NextRequest): Promise<
         subject: "Email Verification",
         content:
           "Thank you for registering as our user. Kindly click on the button below to activate your account.",
-        link: "http://localhost:3000/verify/login",
+        link: `http://localhost:3000/verify/login/${encryptedToken}`,
         linkText: "Verify Link",
       };
 

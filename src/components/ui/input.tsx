@@ -10,6 +10,8 @@ interface InputProps {
   inputTextColor?: string;
   inputBackgroundColor?: string;
   width?: string;
+  setFocus: (val: boolean) => void;
+  setBlur: (val: boolean) => void;
 }
 
 const Input = ({
@@ -21,6 +23,8 @@ const Input = ({
   labelTextColor,
   inputTextColor,
   inputBackgroundColor,
+  setBlur,
+  setFocus,
 }: InputProps) => {
   return (
     <>
@@ -42,6 +46,8 @@ const Input = ({
           } channel-search text-sm`}
           value={value}
           onChange={(e) => setVal(e.target.value)}
+          onFocus={() => setFocus(true)}
+          onBlur={() => setBlur(false)}
         />
       </div>
     </>

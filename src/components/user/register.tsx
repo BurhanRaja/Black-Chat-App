@@ -1,15 +1,19 @@
 "use client";
 
 import { FormEvent, useContext, useEffect, useState } from "react";
-import Input from "./ui/input";
+import Input from "../ui/input";
 import Link from "next/link";
-import Select from "./ui/select";
+import Select from "../ui/select";
 import useMutationData from "@/hooks/useMutationData";
 import { registerUser } from "@/utils/user";
-import GoogleButton from "./google-button";
+import GoogleButton from "../google-button";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { AlertContext } from "@/context/createContext";
+import { AiFillInfoCircle } from "react-icons/ai";
+
+const USERNAME_REGEX = /^[a-zA-Z0-9]{5,20}$/;
+const EMAIL_REGEX = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,5}$/;
+const PASSWORD_REGEX = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
 
 const Register = () => {
   const [email, setEmail] = useState<string>("");
@@ -17,6 +21,15 @@ const Register = () => {
   const [password, setPassword] = useState<string>("");
   const [gender, setGender] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const [usernameError, setUsernameError] = useState<string>("");
+
+  const [checkUsername, setCheckUsername] = useState<boolean>(false);
+  const [checkEmail, setCheckEmail] = useState<boolean>(false);
+  const [checkPassword, setCheckPassword] = useState<boolean>(false);
+
+  const [usernameFocus, setUsernameFocus] = useState<boolean>(false);
+  const [emailFocus, setEmailFocus] = useState<boolean>(false);
+  const [passwordFocus, setPasswordFocus] = useState<boolean>(false);
 
   const { mutate, isSuccess } = useMutationData({
     func: registerUser,
@@ -25,18 +38,49 @@ const Register = () => {
   const router = useRouter();
 
   useEffect(() => {
+    if (USERNAME_REGEX.test(username)) {
+      setCheckUsername(true);
+    }
+  }, [username]);
+
+  useEffect(() => {
+    if (EMAIL_REGEX.test(email)) {
+      setCheckEmail(true);
+    }
+  }, [email]);
+
+  useEffect(() => {
+    if (PASSWORD_REGEX.test(password)) {
+      setCheckPassword(true);
+    }
+  }, [password]);
+
+  useEffect(() => {
     if (isSuccess) {
       router.push("/auth/signin");
     }
   }, [isSuccess]);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
     if (email.length === 0 || username.length === 0 || password.length === 0) {
       setError("The above field is empty.");
       return;
     }
 
-    e.preventDefault();
+    const response = await fetch(
+      `/api/user/checkusername?username=${username}`
+    );
+    let nextRes = await response.json();
+
+    if (nextRes?.usernameUsed) {
+      setUsernameError(
+        "Username already Exists. Please try a different username."
+      );
+      return;
+    }
+
     let data = {
       email,
       username,
@@ -81,7 +125,30 @@ const Register = () => {
                 name="username"
                 type="text"
                 label="Username"
+                setFocus={(val) => setUsernameFocus(val)}
+                setBlur={(val) => setUsernameFocus(val)}
               />
+              {usernameError && !usernameFocus ? (
+                <p className="mt-1 text-xs text-red-500">{usernameError}</p>
+              ) : (
+                ""
+              )}
+              {username.length === 0 && error && !usernameFocus ? (
+                <p className="mt-1 text-xs text-red-500">{error}</p>
+              ) : (
+                ""
+              )}
+              {!checkUsername && usernameFocus ? (
+                <p className="text-white mt-1 text-xs flex items-start p-1 bg-gray-900 rounded-sm">
+                  <AiFillInfoCircle className="text-white mr-2" />
+                  <span>
+                    No special characters. Only lowercase, UPPERCASE letters and
+                    digits
+                  </span>
+                </p>
+              ) : (
+                ""
+              )}
             </div>
             <div className="mb-3">
               <Input
@@ -90,7 +157,22 @@ const Register = () => {
                 name="email"
                 type="email"
                 label="Email"
+                setFocus={(val) => setEmailFocus(val)}
+                setBlur={(val) => setEmailFocus(val)}
               />
+              {email.length === 0 && error ? (
+                <p className="mt-1 text-xs text-red-500">{error}</p>
+              ) : (
+                ""
+              )}
+              {!checkEmail && emailFocus && !emailFocus ? (
+                <p className="text-white mt-1 text-xs flex items-start p-1 bg-gray-900 rounded-sm">
+                  <AiFillInfoCircle className="text-white mr-2" />
+                  <span>Example: example@email.com</span>
+                </p>
+              ) : (
+                ""
+              )}
             </div>
             <div className="mb-3">
               <Input
@@ -99,7 +181,25 @@ const Register = () => {
                 name="password"
                 type="text"
                 label="Password"
+                setFocus={(val) => setPasswordFocus(val)}
+                setBlur={(val) => setPasswordFocus(val)}
               />
+              {password.length === 0 && error && !passwordFocus ? (
+                <p className="mt-1 text-xs text-red-500">{error}</p>
+              ) : (
+                ""
+              )}
+              {!checkPassword && passwordFocus ? (
+                <p className="text-white mt-1 text-xs flex items-start p-1 bg-gray-900 rounded-sm">
+                  <AiFillInfoCircle className="text-white mr-2" />
+                  <span>
+                    Strong password should contain lowercase letters, UPPERCASE
+                    letters, digits and one special character.
+                  </span>
+                </p>
+              ) : (
+                ""
+              )}
             </div>
             <div className="mb-3">
               <Select

@@ -23,10 +23,7 @@ const Toast = ({
   titleTextColor,
   descriptionTextColor,
 }: ToastProps) => {
-  console.log(open);
-  console.log(title);
-  console.log(description);
-  console.log(duration);
+  console.log(backgroundColor);
   return (
     <>
       <ToolPrimitive.Provider swipeDirection="right" duration={duration}>
