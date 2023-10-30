@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import Input from "../ui/input";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useContext, useEffect, useState } from "react";
 import GoogleButton from "../google-button";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { AlertContext } from "@/context/createContext";
 
 const Login = () => {
   const [email, setEmail] = useState<string>("");
@@ -13,14 +14,38 @@ const Login = () => {
 
   const { status } = useSession();
   const router = useRouter();
+  const {
+    setAlertOpen,
+    setTitle,
+    setDescription,
+    setDuration,
+    setTitleTextColor,
+    setDescriptionTextColor,
+    setBackgroundColor,
+  } = useContext(AlertContext);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    await signIn("credentials", {
+    signIn("credentials", {
       email,
       password,
       redirect: false,
-    });
+    })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        if (error.error === "user-not-found") {
+          setAlertOpen(true);
+          setTitle("Error");
+          setDuration(3000);
+          setDescription("User not found.");
+          setTitleTextColor("text-white");
+          setDescriptionTextColor("text-gray-200");
+          setBackgroundColor("bg-green-600");
+        }
+        console.log(error);
+      });
   };
 
   useEffect(() => {
@@ -60,6 +85,8 @@ const Login = () => {
                 name="email"
                 type="email"
                 label="Email"
+                setFocus={() => {}}
+                setBlur={() => {}}
               />
             </div>
             <div className="mb-3">
@@ -69,6 +96,8 @@ const Login = () => {
                 name="password"
                 type="text"
                 label="Password"
+                setFocus={() => {}}
+                setBlur={() => {}}
               />
             </div>
             <div className="flex items-center justify-center mt-8">

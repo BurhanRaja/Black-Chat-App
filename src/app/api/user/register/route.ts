@@ -8,23 +8,6 @@ import { encryptToken } from "@/lib/encrypt-decrypt";
 
 const mainURL = process.env.NEXT_APP_URL!;
 
-const schemaBody = z.object({
-  username: z
-    .string()
-    .min(5)
-    .max(20)
-    .regex(/^[a-zA-Z0-9]/),
-  email: z.string().email(),
-  password: z
-    .string()
-    .min(5)
-    .max(20)
-    .regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])./),
-  gender: z.number(),
-});
-
-type RegisterBodyType = z.infer<typeof schemaBody>;
-
 export async function POST(req: NextRequest): Promise<
   | NextResponse<{
       success: boolean;
@@ -34,8 +17,7 @@ export async function POST(req: NextRequest): Promise<
 > {
   let success = false;
   try {
-    const { username, email, password, gender } =
-      req.body as unknown as RegisterBodyType;
+    const { username, email, password, gender } = await req.json();
 
     // Email Check
     let user = await prisma.profile.findUnique({
@@ -108,6 +90,7 @@ export async function POST(req: NextRequest): Promise<
       );
     }
   } catch (err) {
+    console.log(err);
     return NextResponse.json(
       { success, message: "Internal Server Error." },
       { status: 500 }

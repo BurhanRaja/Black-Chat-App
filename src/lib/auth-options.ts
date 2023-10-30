@@ -54,7 +54,7 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials): Promise<any> {
         if (!credentials) {
           console.log("For some reason credentials are missing.");
-          throw new Error("missing-credentials.");
+          throw new Error("missing-credentials");
         }
 
         const user = await prisma.profile.findUnique({
@@ -72,13 +72,13 @@ export const authOptions: NextAuthOptions = {
           },
         });
         if (!user) {
-          throw new Error("user-not-found.");
+          throw new Error("user-not-found");
         }
 
         let check = comparePassword(credentials?.password!, user.password);
 
         if (!check) {
-          return Error("invalid-password.");
+          return Error("invalid-password");
         }
 
         return Promise.resolve({
