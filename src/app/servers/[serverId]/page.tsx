@@ -1,9 +1,9 @@
-import AppLayout from "@/components/app-layout";
+import MainAppLayout from "@/components/main-app-layout";
 
 const Channel = () => {
   return (
     <>
-      <AppLayout />
+      <MainAppLayout />
     </>
   );
 };

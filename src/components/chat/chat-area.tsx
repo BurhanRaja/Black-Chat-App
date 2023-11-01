@@ -4,7 +4,7 @@ import Image from "next/image";
 import ChatInput from "./chat-input";
 import ChatItem from "./chat-item";
 
-const ChatAreaImageItem = () => {
+export const ChatAreaImageItem = () => {
   return (
     <>
       <div className="flex items-center justify-center h-[93.3vh] bg-zinc-700 w-[80%]">
@@ -16,7 +16,7 @@ const ChatAreaImageItem = () => {
             height={500}
           />
           <h2 className="text-5xl font-assistant font-extrabold">
-            Welcome to Servername
+            Blackchat
           </h2>
         </div>
       </div>

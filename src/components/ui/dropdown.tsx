@@ -11,6 +11,7 @@ type ItemArray = {
   hoverBackgroundColor?: string;
   icon?: ReactNode;
   setOpenModal?: (val: boolean) => void;
+  handleFunction?: Function;
 };
 
 interface DropdownProps {
@@ -57,6 +58,9 @@ const Dropdown = ({
                   onClick={() => {
                     if (el.setOpenModal) {
                       el?.setOpenModal(true);
+                    }
+                    if (el.handleFunction) {
+                      el.handleFunction();
                     }
                   }}
                 >

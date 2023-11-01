@@ -7,7 +7,7 @@ import GoogleButton from "../google-button";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { AlertContext } from "@/context/createContext";
-import { comparePassword } from "@/lib/hash-password";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const Login = () => {
   const [email, setEmail] = useState<string>("");
@@ -48,7 +48,7 @@ const Login = () => {
 
   useEffect(() => {
     if (status === "authenticated") {
-      router.push("/channels/@me");
+      router.push("/servers/@me");
     }
   }, [status]);
 
@@ -98,7 +98,11 @@ const Login = () => {
             </div>
             <div className="flex items-center justify-center mt-8">
               <button className="p-2 w-[70%] rounded-md text-lg border border-gray-200 text-gray-200 hover:bg-gray-200 hover:text-gray-800 font-bold">
-                Login
+                {status === "loading" ? (
+                  <AiOutlineLoading3Quarters className="animate-spin text-lg text-white" />
+                ) : (
+                  "Login"
+                )}
               </button>
             </div>
           </form>

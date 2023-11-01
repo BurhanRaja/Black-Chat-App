@@ -1,12 +1,23 @@
 "use client";
-import { MoreHorizontal, UserCircle2, Pencil } from "lucide-react";
+import { MoreHorizontal, UserCircle2, Pencil, LogOut } from "lucide-react";
 import Avatar from "./ui/avatar";
 import Dropdown from "./ui/dropdown";
 import EditProfileModal from "./modals/edit-profile";
 import { useState } from "react";
+import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const ProfileItem = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const router = useRouter();
+  const { data: session } = useSession();
+
+  const handleSignOut = () => {
+    signOut({ redirect: false }).then(() => {
+      router.push("/auth/signin");
+    });
+  };
+
   return (
     <>
       <EditProfileModal
@@ -16,9 +27,10 @@ const ProfileItem = () => {
       <div className="flex justify-between items-center p-3 mx-2 bg-neutral-800 rounded-xl">
         <div className="flex items-center">
           <Avatar
-            image="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
+            image={session?.user.image!}
             altname="Profile-Item"
             transition={false}
+            fallbackBackgroundColor="bg-black"
           />
           <p className="ml-2">BurhanRaja</p>
         </div>
@@ -38,10 +50,18 @@ const ProfileItem = () => {
               textColor: "text-violet-400",
               icon: <UserCircle2 size={16} />,
             },
+            {
+              content: "Sign Out",
+              link: "",
+              textColor: "text-red-500",
+              icon: <LogOut size={16} />,
+              handleFunction: handleSignOut,
+            },
           ]}
           side="top"
-          contentWidth="w-[200px]"
-          contentColor="bg-gray-900 mb-3"
+          align="end"
+          contentWidth="w-[220px]"
+          contentColor="bg-gray-900 mb-7"
         />
       </div>
     </>

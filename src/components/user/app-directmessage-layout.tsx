@@ -1,17 +1,16 @@
 "use client";
+
 import ServerPanel from "@/components/server/server-panel";
 import ChannelPanel from "@/components/channel/channel-panel";
 import Header from "@/components/defaults/header";
-import ChatArea from "@/components/chat/chat-area";
+import ChatArea, { ChatAreaImageItem } from "@/components/chat/chat-area";
 import MemberPanel from "@/components/members/member-panel";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { X } from "lucide-react";
 
-const AppLayout = () => {
+const AppDMLayout = () => {
   const { data: session } = useSession();
-
-  console.log(session?.user.emailVerified);
 
   return (
     <>
@@ -35,7 +34,7 @@ const AppLayout = () => {
         <div className="content w-[79%]">
           <Header />
           <div className="flex">
-            <ChatArea />
+            <ChatAreaImageItem />
             <MemberPanel />
           </div>
         </div>
@@ -44,4 +43,4 @@ const AppLayout = () => {
   );
 };
 
-export default AppLayout;
+export default AppDMLayout;
