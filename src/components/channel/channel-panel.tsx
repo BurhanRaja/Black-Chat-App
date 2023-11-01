@@ -46,6 +46,20 @@ const ChannelPannelContent = () => {
     <>
       <div className="mt-2 p-1">
         <ChannelCollapsible />
+        <ChannelCollapsible />
+        <ChannelCollapsible />
+        <ChannelCollapsible />
+        <ChannelCollapsible />
+        <ChannelCollapsible />
+        <ChannelCollapsible />
+        <ChannelCollapsible />
+        <ChannelCollapsible />
+        <ChannelCollapsible />
+        <ChannelCollapsible />
+        <ChannelCollapsible />
+        <ChannelCollapsible />
+        <ChannelCollapsible />
+        <ChannelCollapsible />
       </div>
     </>
   );

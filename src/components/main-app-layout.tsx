@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import AppServerLayout from "./app-server-layout";
-import AppDMLayout from "./user/app-directmessage-layout";
+import AppDMLayout from "./app-directmessage-layout";
 
 const MainAppLayout = () => {
   const { serverId } = useParams();

@@ -8,6 +8,7 @@ import MemberPanel from "@/components/members/member-panel";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { X } from "lucide-react";
+import DMPannel from "./dm/dm-pannel";
 
 const AppDMLayout = () => {
   const { data: session } = useSession();
@@ -30,7 +31,7 @@ const AppDMLayout = () => {
       )}
       <div className="flex">
         <ServerPanel />
-        <ChannelPanel />
+        <DMPannel />
         <div className="content w-[79%]">
           <Header />
           <div className="flex">

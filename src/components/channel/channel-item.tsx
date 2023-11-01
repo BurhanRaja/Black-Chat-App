@@ -23,7 +23,9 @@ const ChannelItem = ({
           {mainIcon}
           <p className="ml-1">{title}</p>
         </div>
-        <div className="justify-between items-center hidden group-hover:flex">{icons}</div>
+        <div className="justify-between items-center hidden group-hover:flex">
+          {icons}
+        </div>
       </div>
     </>
   );
