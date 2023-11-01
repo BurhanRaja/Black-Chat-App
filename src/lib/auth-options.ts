@@ -52,8 +52,7 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials): Promise<any> {
-        if (!credentials) {
-          console.log("For some reason credentials are missing.");
+        if (!credentials?.email || !credentials.password) {
           throw new Error("missing-credentials");
         }
 
@@ -75,10 +74,10 @@ export const authOptions: NextAuthOptions = {
           throw new Error("user-not-found");
         }
 
-        let check = comparePassword(credentials?.password!, user.password);
+        let check = await comparePassword(credentials?.password, user.password);
 
         if (!check) {
-          return Error("invalid-password");
+          throw new Error("invalid-password");
         }
 
         return Promise.resolve({
@@ -113,41 +112,45 @@ export const authOptions: NextAuthOptions = {
       }
       return Promise.resolve(false);
     },
-    jwt: async ({ user, profile, token, account }) => {
-      if (user?.userId) {
-        token.userId = user.userId;
-        token.emailVerified = user.emailVerified as boolean;
-        token.imageUrl = user.image!;
-      }
-      if (profile?.email && account?.access_token) {
-        let userProfile = await prisma.profile.findUnique({
-          where: {
-            email: profile?.email || user?.email!,
-          },
-        });
+    jwt: async ({ user, profile, token, account, trigger, session }) => {
+      if (trigger === "signIn") {
+        if (user?.userId) {
+          token.userId = user.userId;
+          token.emailVerified = user.emailVerified as boolean;
+          token.imageUrl = user.image!;
+        }
+        if (profile?.email && account?.access_token) {
+          let userProfile = await prisma.profile.findUnique({
+            where: {
+              email: profile?.email || user?.email!,
+            },
+          });
 
-        const userAccount = (await prisma.account.findFirst({
-          where: {
-            userId: userProfile?.userId,
-          },
-        })) as Account;
+          const userAccount = (await prisma.account.findFirst({
+            where: {
+              userId: userProfile?.userId,
+            },
+          })) as Account;
 
-        if (userAccount) {
-          if (userAccount?.expires_at! * 1000 < Date.now()) {
-            let successToken = await refreshToken({ userAccount, token });
-            if (successToken) {
+          if (userAccount) {
+            if (userAccount?.expires_at! * 1000 < Date.now()) {
+              let successToken = await refreshToken({ userAccount, token });
+              if (successToken) {
+                token.userId = userProfile?.userId!;
+                token.emailVerified = userProfile?.emailVerified!;
+                token.imageUrl = userProfile?.imageUrl!;
+              }
+            } else {
               token.userId = userProfile?.userId!;
               token.emailVerified = userProfile?.emailVerified!;
               token.imageUrl = userProfile?.imageUrl!;
             }
-          } else {
-            token.userId = userProfile?.userId!;
-            token.emailVerified = userProfile?.emailVerified!;
-            token.imageUrl = userProfile?.imageUrl!;
           }
         }
       }
-      // }
+      if (trigger === "update" && session?.emailVerifySuccess) {
+        token.emailVerified = session?.emailVerifySuccess;
+      }
       return Promise.resolve(token);
     },
     session: async ({ session, token }) => {

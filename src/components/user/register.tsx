@@ -40,18 +40,24 @@ const Register = () => {
   useEffect(() => {
     if (USERNAME_REGEX.test(username)) {
       setCheckUsername(true);
+    } else {
+      setCheckUsername(false);
     }
   }, [username]);
 
   useEffect(() => {
     if (EMAIL_REGEX.test(email)) {
       setCheckEmail(true);
+    } else {
+      setCheckEmail(false);
     }
   }, [email]);
 
   useEffect(() => {
     if (PASSWORD_REGEX.test(password)) {
       setCheckPassword(true);
+    } else {
+      setCheckPassword(false);
     }
   }, [password]);
 
@@ -165,7 +171,7 @@ const Register = () => {
               ) : (
                 ""
               )}
-              {!checkEmail && emailFocus && !emailFocus ? (
+              {!checkEmail && emailFocus ? (
                 <p className="text-white mt-1 text-xs flex items-start p-1 bg-gray-900 rounded-sm">
                   <AiFillInfoCircle className="text-white mr-2" />
                   <span>Example: example@email.com</span>
@@ -179,7 +185,7 @@ const Register = () => {
                 value={password}
                 setVal={(val) => setPassword(val)}
                 name="password"
-                type="text"
+                type="password"
                 label="Password"
                 setFocus={(val) => setPasswordFocus(val)}
                 setBlur={(val) => setPasswordFocus(val)}

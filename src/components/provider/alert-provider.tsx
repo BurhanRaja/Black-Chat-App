@@ -1,6 +1,6 @@
 "use client";
 import { AlertContext } from "@/context/createContext";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import Toast from "../ui/toast";
 
 interface AlertProviderProps {
@@ -11,10 +11,18 @@ const AlertProvider = ({ children }: AlertProviderProps) => {
   const [alertOpen, setAlertOpen] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [duration, setDuration] = useState<number>(3000);
-  const [titleTextColor, setTitleTextColor] = useState<string>("");
-  const [descriptionTextColor, setDescriptionTextColor] = useState<string>("");
-  const [backgroundColor, setBackgroundColor] = useState<string>("");
+  const [type, setType] = useState<
+    "error" | "success" | "info" | "notification"
+  >("success");
+
+  useEffect(() => {
+    if (alertOpen) {
+      let timer = setTimeout(() => {
+        setAlertOpen(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [alertOpen]);
 
   return (
     <AlertContext.Provider
@@ -22,22 +30,18 @@ const AlertProvider = ({ children }: AlertProviderProps) => {
         setAlertOpen,
         setTitle,
         setDescription,
-        setDuration,
-        setTitleTextColor,
-        setDescriptionTextColor,
-        setBackgroundColor,
+        setType,
       }}
     >
-      <Toast
-        open={alertOpen}
-        setOpen={(val) => setAlertOpen(val)}
-        title={title}
-        description={description}
-        duration={duration}
-        titleTextColor={titleTextColor}
-        descriptionTextColor={descriptionTextColor}
-        backgroundColor={backgroundColor}
-      />
+      {alertOpen && (
+        <Toast
+          open={alertOpen}
+          setOpen={(val) => setAlertOpen(val)}
+          title={title}
+          description={description}
+          type={type}
+        />
+      )}
       {children}
     </AlertContext.Provider>
   );

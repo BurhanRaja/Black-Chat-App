@@ -1,4 +1,4 @@
-import { hash, genSalt, compare } from "bcrypt";
+import { hash, genSalt, compare } from "bcryptjs";
 
 export default async (password: string) => {
   const salt = await genSalt(10);
@@ -7,9 +7,9 @@ export default async (password: string) => {
 };
 
 export const comparePassword = async (
-  passwordOut: string,
-  passwordIn: string
+  password: string,
+  hashedPassword: string
 ) => {
-  const comparison = await compare(passwordOut, passwordIn);
-  return comparison;
+  const isValid = await compare(password, hashedPassword);
+  return isValid;
 };

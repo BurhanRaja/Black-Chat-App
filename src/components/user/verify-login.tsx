@@ -1,17 +1,20 @@
 "use client";
 
+import { useSession } from "next-auth/react";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect } from "react";
 
 const VerifyLogin = () => {
   const { token } = useParams();
   const router = useRouter();
+  const { update } = useSession();
 
   const handleVerifyToken = async () => {
     const response = await fetch(`/api/user/verify/${token}`);
     const res = await response.json();
     if (res.success) {
-      router.push("/channel/@me");
+      update({ emailVerifySuccess: true });
+      router.push("/auth/signin");
     }
   };
 

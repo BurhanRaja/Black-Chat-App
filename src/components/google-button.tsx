@@ -1,17 +1,17 @@
 "use client";
 
 import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 
 const GoogleButton = () => {
-  const { data, status } = useSession();
-
-  console.log(status);
+  const router = useRouter();
 
   const handleSubmit = async () => {
-    console.log("Hello");
     let res = await signIn("google");
-    console.log(res);
+    if (res?.ok) {
+      router.push("/channel/@me");
+    }
   };
 
   return (

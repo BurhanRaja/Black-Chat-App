@@ -15,36 +15,23 @@ interface Error {
 }
 
 const useMutationData = ({ func }: MutationParams) => {
-  const {
-    setAlertOpen,
-    setTitle,
-    setDescription,
-    setDuration,
-    setTitleTextColor,
-    setDescriptionTextColor,
-    setBackgroundColor,
-  } = useContext(AlertContext);
+  const { setAlertOpen, setTitle, setDescription, setType } =
+    useContext(AlertContext);
 
   const mutation = useMutation(func, {
     onSuccess: (data) => {
       if (data.success) {
         setAlertOpen(true);
         setTitle("Success");
-        setDuration(3000);
+        setType("success");
         setDescription(data.message);
-        setTitleTextColor("text-white");
-        setDescriptionTextColor("text-gray-300");
-        setBackgroundColor("bg-green-500");
       }
     },
     onError: (error: Error) => {
       setAlertOpen(true);
       setTitle("Error");
-      setDuration(3000);
+      setType("error");
       setDescription(error.response.data.message);
-      setTitleTextColor("text-white");
-      setDescriptionTextColor("text-gray-200");
-      setBackgroundColor("bg-green-600");
     },
   });
 

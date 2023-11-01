@@ -9,10 +9,7 @@ type AlertContextType = {
   setAlertOpen: Function;
   setTitle: Function;
   setDescription: Function;
-  setDuration: Function;
-  setBackgroundColor: Function;
-  setTitleTextColor: Function;
-  setDescriptionTextColor: Function;
+  setType: Function;
 };
 
 export const ThemeContext = createContext<ThemeContextType>({
@@ -24,8 +21,5 @@ export const AlertContext = createContext<AlertContextType>({
   setAlertOpen: (val: boolean) => {},
   setTitle: (val: string) => {},
   setDescription: (val: string) => {},
-  setDuration: (val: string) => {},
-  setTitleTextColor: (val: string) => {},
-  setDescriptionTextColor: (val: string) => {},
-  setBackgroundColor: (val: string) => {},
+  setType: (val: "error" | "success" | "info" | "notification") => {},
 });
