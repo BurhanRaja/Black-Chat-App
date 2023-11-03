@@ -14,7 +14,7 @@ const DMItem = ({ title, image, altname, backgroundHover }: DMItemProps) => {
   return (
     <>
       <div
-        className={`flex justify-between items-center p-3 ${backgroundHover} cursor-pointer rounded-md group`}
+        className={`flex justify-between items-center py-1.5 my-2 p-3 ${backgroundHover} cursor-pointer rounded-md group`}
       >
         <div className="flex items-center text-sm">
           <Avatar
@@ -25,9 +25,9 @@ const DMItem = ({ title, image, altname, backgroundHover }: DMItemProps) => {
           />
           <p className="ml-2">{title}</p>
         </div>
-        <div className="justify-between items-center hidden group-hover:flex">
+        {/* <div className="justify-between items-center hidden group-hover:flex">
           <X className="text-lg hover:cursor-pointer text-zinc-300" />
-        </div>
+        </div> */}
       </div>
     </>
   );

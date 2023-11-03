@@ -7,7 +7,7 @@ import AppDMLayout from "./app-directmessage-layout";
 const MainAppLayout = () => {
   const { serverId } = useParams();
 
-  return <>{serverId === "@me" ? <AppServerLayout /> : <AppDMLayout />}</>;
+  return <>{serverId === "%40me" ? <AppDMLayout /> : <AppServerLayout />}</>;
 };
 
 export default MainAppLayout;
