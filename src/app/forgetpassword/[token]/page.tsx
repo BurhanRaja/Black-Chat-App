@@ -1,7 +1,7 @@
 "use client";
 
 import Input from "@/components/ui/input";
-import { forgetPasswordEmail, resetPassword } from "@/handlers/user";
+import { resetPassword } from "@/handlers/user";
 import useMutationData from "@/hooks/useMutationData";
 import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
