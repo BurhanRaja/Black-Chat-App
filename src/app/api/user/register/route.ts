@@ -3,10 +3,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomBytes } from "crypto";
 import sendEmail, { NewSendEmailOptions } from "@/lib/send-email";
 import hashPassword from "@/lib/hash-password";
-import z from "zod";
 import { encryptToken } from "@/lib/encrypt-decrypt";
 
 const mainURL = process.env.NEXT_APP_URL!;
+const appName = process.env.NEXT_APP_NAME!;
+const appEmail = process.env.NEXT_APP_EMAIL!;
 
 export async function POST(req: NextRequest): Promise<
   | NextResponse<{
@@ -68,17 +69,17 @@ export async function POST(req: NextRequest): Promise<
     const encryptedToken = encryptToken(userData);
 
     if (user.id) {
-      let emailSend: NewSendEmailOptions = {
-        from: "BlackChat <hello@blackchat.com>",
+      let mailData: NewSendEmailOptions = {
+        from: `${appName} <${appEmail}>`,
         to: email as string,
         subject: "Email Verification",
         content:
           "Thank you for registering as our user. Kindly click on the button below to activate your account.",
-        link: `http://localhost:3000/verify/login/${encryptedToken}`,
+        link: `${mainURL}/verify/login/${encryptedToken}`,
         linkText: "Verify Link",
       };
 
-      sendEmail(emailSend);
+      await sendEmail(mailData);
 
       success = true;
       return NextResponse.json(
@@ -90,7 +91,6 @@ export async function POST(req: NextRequest): Promise<
       );
     }
   } catch (err) {
-    console.log(err);
     return NextResponse.json(
       { success, message: "Internal Server Error." },
       { status: 500 }

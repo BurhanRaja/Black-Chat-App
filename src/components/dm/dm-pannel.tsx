@@ -3,6 +3,7 @@
 import { Search } from "lucide-react";
 import ScrollArea from "../ui/scroll-area";
 import DMItem from "./dm-item";
+import ProfileItem from "../profile-item";
 
 const DMPannelContent = () => {
   return (
@@ -76,13 +77,13 @@ const DMPannel = () => {
           />
         </div>
         <ScrollArea
-          width="w-[25
-            backgroundHover0px]"
+          width="w-[250px]"
           backgroundColor="bg-[rgb(71,71,79)]"
           height="h-[75%]"
           content={<DMPannelContent />}
           padding={false}
         />
+        <ProfileItem />
       </div>
     </>
   );

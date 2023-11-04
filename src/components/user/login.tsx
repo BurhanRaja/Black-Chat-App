@@ -95,6 +95,12 @@ const Login = () => {
                 setFocus={() => {}}
                 setBlur={() => {}}
               />
+              <Link
+                href={"/forgetpassword"}
+                className="text-xs text-blue-500 flex justify-end items-center mt-0.5"
+              >
+                Forget Password?
+              </Link>
             </div>
             <div className="flex items-center justify-center mt-8">
               <button className="p-2 w-[70%] rounded-md text-lg border border-gray-200 text-gray-200 hover:bg-gray-200 hover:text-gray-800 font-bold">

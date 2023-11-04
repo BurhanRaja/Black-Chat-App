@@ -1,16 +1,16 @@
-import { useSession } from "next-auth/react";
 import { prisma } from "@/db/client";
+import { auth } from "./auth-options";
 
 const currentProfile = async () => {
-  const { data } = useSession();
+  const session = await auth();
 
-  if (!data?.user) {
+  if (!session?.user) {
     return null;
   }
 
   const profile = await prisma.profile.findUnique({
     where: {
-      userId: data?.user?.userId,
+      userId: session?.user?.userId,
     },
   });
 

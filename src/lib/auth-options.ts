@@ -8,6 +8,12 @@ import { DefaultJWT } from "next-auth/jwt";
 import refreshToken from "./refresh-token";
 import { Account } from "@prisma/client";
 import { comparePassword } from "./hash-password";
+import type {
+  GetServerSidePropsContext,
+  NextApiRequest,
+  NextApiResponse,
+} from "next";
+import { getServerSession } from "next-auth";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -166,3 +172,12 @@ export const authOptions: NextAuthOptions = {
     newUser: "/auth/signup", // New users will be directed here on first sign in (leave the property out if not of interest)
   },
 };
+
+export async function auth(
+  ...args:
+    | [GetServerSidePropsContext["req"], GetServerSidePropsContext["res"]]
+    | [NextApiRequest, NextApiResponse]
+    | []
+) {
+  return await getServerSession(...args, authOptions);
+}

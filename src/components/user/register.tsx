@@ -5,7 +5,7 @@ import Input from "../ui/input";
 import Link from "next/link";
 import Select from "../ui/select";
 import useMutationData from "@/hooks/useMutationData";
-import { registerUser } from "@/utils/user";
+import { registerUser } from "@/handlers/user";
 import GoogleButton from "../google-button";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -26,10 +26,12 @@ const Register = () => {
   const [checkUsername, setCheckUsername] = useState<boolean>(false);
   const [checkEmail, setCheckEmail] = useState<boolean>(false);
   const [checkPassword, setCheckPassword] = useState<boolean>(false);
+  const [emailError, setEmailError] = useState<string>("");
 
   const [usernameFocus, setUsernameFocus] = useState<boolean>(false);
   const [emailFocus, setEmailFocus] = useState<boolean>(false);
   const [passwordFocus, setPasswordFocus] = useState<boolean>(false);
+  const [passwordError, setPasswordError] = useState<string>("");
 
   const { mutate, isSuccess } = useMutationData({
     func: registerUser,
@@ -70,8 +72,27 @@ const Register = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
+    let emailTest = EMAIL_REGEX.test(email);
+    let usernameTest = USERNAME_REGEX.test(username);
+    let passwordTest = PASSWORD_REGEX.test(password);
+
     if (email.length === 0 || username.length === 0 || password.length === 0) {
       setError("The above field is empty.");
+      return;
+    }
+
+    if (!usernameTest) {
+      setUsernameError("Username does not match the instructions");
+      return;
+    }
+
+    if (!emailTest) {
+      setEmailError("Email does not match the instructions");
+      return;
+    }
+
+    if (!passwordTest) {
+      setPasswordError("Password does not match the instructions");
       return;
     }
 
@@ -134,7 +155,7 @@ const Register = () => {
                 setFocus={(val) => setUsernameFocus(val)}
                 setBlur={(val) => setUsernameFocus(val)}
               />
-              {usernameError && !usernameFocus ? (
+              {username.length !== 0 && usernameError && !usernameFocus ? (
                 <p className="mt-1 text-xs text-red-500">{usernameError}</p>
               ) : (
                 ""
@@ -166,6 +187,11 @@ const Register = () => {
                 setFocus={(val) => setEmailFocus(val)}
                 setBlur={(val) => setEmailFocus(val)}
               />
+              {email.length !== 0 && emailError && !emailFocus ? (
+                <p className="mt-1 text-xs text-red-500">{emailError}</p>
+              ) : (
+                ""
+              )}
               {email.length === 0 && error ? (
                 <p className="mt-1 text-xs text-red-500">{error}</p>
               ) : (
@@ -190,6 +216,11 @@ const Register = () => {
                 setFocus={(val) => setPasswordFocus(val)}
                 setBlur={(val) => setPasswordFocus(val)}
               />
+              {password.length !== 0 && passwordError && !passwordFocus ? (
+                <p className="mt-1 text-xs text-red-500">{passwordError}</p>
+              ) : (
+                ""
+              )}
               {password.length === 0 && error && !passwordFocus ? (
                 <p className="mt-1 text-xs text-red-500">{error}</p>
               ) : (

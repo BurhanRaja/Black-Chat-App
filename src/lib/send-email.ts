@@ -31,20 +31,18 @@ const sendEmail = async ({
   link,
   linkText,
 }: NewSendEmailOptions) => {
-  transporter.sendMail(
-    {
-      from,
-      to,
-      subject,
-      html: template({ content, link, linkText }),
-    },
-    (err) => {
-      if (err) {
-        return false;
-      }
-      return true;
-    }
-  );
+  let sendMailCheck = false;
+  let data = await transporter.sendMail({
+    from,
+    to,
+    subject,
+    html: template({ content, link, linkText }),
+  });
+
+  if (data.accepted) {
+    sendMailCheck = true;
+  }
+  return sendMailCheck;
 };
 
 export default sendEmail;

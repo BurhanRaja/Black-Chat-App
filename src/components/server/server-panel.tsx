@@ -1,10 +1,7 @@
 "use client";
-import Avatar from "@/components/ui/avatar";
-import Tooltip from "@/components/ui/tooltip";
 import ScrollArea from "../ui/scroll-area";
 import { Plus } from "lucide-react";
 import ServerIcon from "./server-icon";
-import Logo from "../logo";
 
 const ServerPanel = () => {
   return (
@@ -15,8 +12,8 @@ const ServerPanel = () => {
         content={
           <>
             <ServerIcon
-              fallbackBackgroundColor={"font-yuji bg-logo-gradient hover:bg-white"}
-              fallbackColor={"text-white text-xl"}
+              fallbackBackgroundColor={"font-yuji bg-white hover:bg-white"}
+              fallbackColor={"text-black font-extrabold text-xl"}
             />
             <hr className="border-gray-500" />
             <ServerIcon
