@@ -119,7 +119,8 @@ model Room {
   server   Server @relation(fields: [serverId], references: [serverId])
   serverId String
 
-  createPermission  SUserRole[]
+  default Boolean
+
   updatePermission  SUserRole[]
   deletePermission  SUserRole[]
   messagePermission SUserRole[]
