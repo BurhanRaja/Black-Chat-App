@@ -141,6 +141,11 @@ export async function GET(): Promise<
     let ownedServer = await prisma.server.findMany({
       where: {
         ownerId: user?.userId!,
+        rooms: {
+          some: {
+            default: true,
+          },
+        },
       },
       include: {
         rooms: true,

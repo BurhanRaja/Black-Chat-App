@@ -1,6 +1,4 @@
 "use client";
-
-import { useState } from "react";
 import Modal from "../ui/modal";
 
 interface EditProfileModalProps {
