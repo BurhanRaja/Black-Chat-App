@@ -72,7 +72,7 @@ export async function POST(req: NextRequest): Promise<
     let sUserData = {
       sUserId: userUniqueId,
       type: SUserRole["ADMIN"],
-      serverId: server.id,
+      serverId: server.serverId,
       userId: user?.userId!,
     };
 

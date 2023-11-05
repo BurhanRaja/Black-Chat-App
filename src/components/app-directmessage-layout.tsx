@@ -3,8 +3,10 @@
 import ChatArea from "@/components/chat/chat-area";
 import DMPannel from "./dm/dm-pannel";
 import MainCommonLayout from "./defaults/main-common-layout";
+import { useParams } from "next/navigation";
 
 const AppDMLayout = () => {
+  const { serverId, roomId } = useParams();
   return (
     <>
       <MainCommonLayout
@@ -12,6 +14,8 @@ const AppDMLayout = () => {
         chatarea={<ChatArea />}
         memberpannel={<></>}
         fullWidth={true}
+        serverId={serverId}
+        roomId={roomId}
       />
     </>
   );

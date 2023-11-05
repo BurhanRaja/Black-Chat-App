@@ -1,6 +1,8 @@
+"use client";
+
 import MainAppLayout from "@/components/main-app-layout";
 
-const Server = () => {
+const Room = () => {
   return (
     <>
       <MainAppLayout />
@@ -8,4 +10,4 @@ const Server = () => {
   );
 };
 
-export default Server;
+export default Room;

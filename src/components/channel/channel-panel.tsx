@@ -14,6 +14,12 @@ import Collapsible from "../ui/collapsible";
 import ChannelItem from "./channel-item";
 import ScrollArea from "../ui/scroll-area";
 import ProfileItem from "../profile-item";
+import { useParams } from "next/navigation";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { Server } from "@prisma/client";
+import useMutationData from "@/hooks/useMutationData";
+import { deleteServer } from "@/handlers/server";
 
 const ChannelCollapsible = () => {
   return (
@@ -53,12 +59,29 @@ const ChannelPannelContent = () => {
 };
 
 const ChannelPanel = () => {
+  const params = useParams();
+
+  const [serverDetails, setServerDetails] = useState<Server>();
+
+  const handleServerData = async () => {
+    const response = await axios.delete(`/api/server/${params?.serverId}`);
+    setServerDetails(response.data.data);
+  };
+
+  useEffect(() => {
+    handleServerData();
+  }, []);
+
+  const { isSuccess, isError, mutate } = useMutationData({
+    func: deleteServer,
+  });
+
   return (
     <div className="h-[100vh] bg-[rgb(71,71,79)] pb-2">
       <Dropdown
         trigger={
           <button className="flex justify-between items-center p-3 shadow-md focus:outline-0 w-[100%] rounded-sm hover:bg-zinc-600">
-            <span>ServeName</span>
+            <span>{serverDetails?.name}</span>
             <ChevronDown />
           </button>
         }

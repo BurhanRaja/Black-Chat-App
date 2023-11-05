@@ -20,6 +20,12 @@ const ServerPanel = () => {
     handleServerData();
   }, []);
 
+  useEffect(() => {
+    if (!openModal) {
+      handleServerData();
+    }
+  }, [openModal]);
+
   return (
     <>
       <CreateServerModal
@@ -43,6 +49,7 @@ const ServerPanel = () => {
                   image={el.imageUrl}
                   altName={el.name}
                   tooltipText={el.name}
+                  link={`/servers/${el?.serverId}/${el.rooms[0].roomId}`}
                 />
               );
             })}

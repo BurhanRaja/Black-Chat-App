@@ -14,15 +14,18 @@ interface MainCommonLayoutProps {
   memberpannel: ReactNode;
   chatarea: ReactNode;
   fullWidth?: boolean;
+  serverId: string;
+  roomId?: string;
 }
 
 const MainCommonLayout = ({
   sidepannel,
   memberpannel,
   chatarea,
+  serverId,
+  roomId,
 }: MainCommonLayoutProps) => {
   const { data: session } = useSession();
-  const { serverId, channelId } = useParams();
 
   const [resendEmail, setResentEmail] = useState<boolean>(true);
 
@@ -48,7 +51,7 @@ const MainCommonLayout = ({
         <div className="content w-[79%]">
           <Header />
           <div className="flex">
-            {serverId === "%40me" && channelId === undefined ? (
+            {serverId === "%40me" && roomId === undefined ? (
               <ChatAreaImageItem />
             ) : (
               chatarea

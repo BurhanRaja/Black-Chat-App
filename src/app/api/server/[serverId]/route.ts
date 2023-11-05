@@ -29,11 +29,6 @@ export async function GET(
     let server = await prisma.server.findUnique({
       where: {
         serverId,
-        sUsers: {
-          some: {
-            userId: user?.userId,
-          },
-        },
       },
       include: {
         rooms: true,
