@@ -6,7 +6,8 @@ import MainCommonLayout from "./defaults/main-common-layout";
 import { useParams } from "next/navigation";
 
 const AppDMLayout = () => {
-  const { serverId, roomId } = useParams();
+  const params = useParams();
+
   return (
     <>
       <MainCommonLayout
@@ -14,8 +15,8 @@ const AppDMLayout = () => {
         chatarea={<ChatArea />}
         memberpannel={<></>}
         fullWidth={true}
-        serverId={serverId}
-        roomId={roomId}
+        serverId={params?.serverId as string}
+        roomId={params?.roomId as string}
       />
     </>
   );

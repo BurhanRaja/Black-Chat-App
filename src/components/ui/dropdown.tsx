@@ -10,7 +10,7 @@ type ItemArray = {
   textColor: string;
   hoverBackgroundColor?: string;
   icon?: ReactNode;
-  setOpenModal?: (val: boolean) => void;
+  OpenModal?: () => void;
   handleFunction?: Function;
 };
 
@@ -56,8 +56,8 @@ const Dropdown = ({
                     el.textColor
                   }`}
                   onClick={() => {
-                    if (el.setOpenModal) {
-                      el?.setOpenModal(true);
+                    if (el.OpenModal) {
+                      el?.OpenModal();
                     }
                     if (el.handleFunction) {
                       el.handleFunction();

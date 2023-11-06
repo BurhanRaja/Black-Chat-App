@@ -31,33 +31,16 @@ const MainCommonLayout = ({
 
   return (
     <>
-      {!session?.user.emailVerified && resendEmail && (
-        <div className="bg-orange-600 text-white p-3 flex justify-between items-center">
-          <div className="flex">
-            <p>Please Verify your Email address.</p>
-            <Link className="underline ml-1" href={""}>
-              Resend Email
-            </Link>
-            <p className="ml-0.5">?</p>
-          </div>
-          <button onClick={() => setResentEmail(false)}>
-            <X />
-          </button>
-        </div>
-      )}
-      <div className="flex">
-        <ServerPanel />
-        {sidepannel}
-        <div className="content w-[79%]">
-          <Header />
-          <div className="flex">
-            {serverId === "%40me" && roomId === undefined ? (
-              <ChatAreaImageItem />
-            ) : (
-              chatarea
-            )}
-            {memberpannel}
-          </div>
+      {sidepannel}
+      <div className="content w-[79%]">
+        <Header />
+        <div className="flex">
+          {serverId === "%40me" && roomId === undefined ? (
+            <ChatAreaImageItem />
+          ) : (
+            chatarea
+          )}
+          {memberpannel}
         </div>
       </div>
     </>

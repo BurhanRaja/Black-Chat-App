@@ -1,37 +1,33 @@
-"use client";
 import ScrollArea from "../ui/scroll-area";
-import { Plus } from "lucide-react";
 import ServerIcon from "./server-icon";
-import { useEffect, useState } from "react";
-import axios from "axios";
 import CreateServerModal from "../modals/create-server";
+import { prisma } from "@/db/client";
+import currentProfile from "@/lib/current-profile";
+import CreateServerBtn from "./create-server-btn";
 
-const ServerPanel = () => {
-  const [servers, setServers] = useState<Array<any>>([]);
-  const [openModal, setOpenModal] = useState<boolean>(false);
+const ServerPanel = async () => {
+  const profile = await currentProfile();
 
-  const handleServerData = async () => {
-    const response = await axios.get("/api/server");
-    console.log(response.data);
-    setServers(response.data.data);
-  };
+  let servers: Array<any> = [];
 
-  useEffect(() => {
-    handleServerData();
-  }, []);
-
-  useEffect(() => {
-    if (!openModal) {
-      handleServerData();
-    }
-  }, [openModal]);
+  if (!profile) {
+    servers = [];
+  } else {
+    servers = await prisma.server.findMany({
+      where: {
+        sUsers: {
+          some: { userId: profile?.id },
+        },
+      },
+      include: {
+        rooms: true,
+      },
+    });
+  }
 
   return (
     <>
-      <CreateServerModal
-        openModal={openModal}
-        setOpenModal={(val) => setOpenModal(val)}
-      />
+      <CreateServerModal />
       <ScrollArea
         width="w-[75px]"
         height="h-[100vh]"
@@ -42,25 +38,19 @@ const ServerPanel = () => {
               fallbackColor={"text-black font-extrabold text-xl"}
             />
             <hr className="border-gray-500" />
-            {servers.map((el, index) => {
+            {servers?.map((el, index) => {
               return (
                 <ServerIcon
                   key={el.serverId}
                   image={el.imageUrl}
                   altName={el.name}
                   tooltipText={el.name}
-                  link={`/servers/${el?.serverId}/${el.rooms[0].roomId}`}
+                  link={`/servers/${el?.serverId}/${el?.rooms[0].roomId}`}
                 />
               );
             })}
             <hr className="border-gray-500" />
-            <div onClick={() => setOpenModal(true)}>
-              <ServerIcon
-                fallback={<Plus size={20} />}
-                fallbackBackgroundColor="bg-gray-800 hover:bg-green-600"
-                fallbackColor="text-green-600 hover:text-gray-800"
-              />
-            </div>
+            <CreateServerBtn />
           </>
         }
         backgroundColor="bg-zinc-900"

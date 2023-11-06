@@ -2,15 +2,15 @@
 import { MoreHorizontal, UserCircle2, Pencil, LogOut } from "lucide-react";
 import Avatar from "./ui/avatar";
 import Dropdown from "./ui/dropdown";
-import EditProfileModal from "./modals/edit-profile";
-import { useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useContext } from "react";
+import { ModalContext } from "@/context/createContext";
 
 const ProfileItem = () => {
-  const [openModal, setOpenModal] = useState<boolean>(false);
   const router = useRouter();
   const { data: session } = useSession();
+  const { onOpen } = useContext(ModalContext);
 
   const handleSignOut = () => {
     signOut({ redirect: false }).then(() => {
@@ -20,10 +20,6 @@ const ProfileItem = () => {
 
   return (
     <>
-      <EditProfileModal
-        openModal={openModal}
-        setOpenModal={(val) => setOpenModal(val)}
-      />
       <div className="flex justify-between items-center p-3 mx-2 bg-neutral-800 rounded-xl">
         <div className="flex items-center">
           <Avatar
@@ -42,7 +38,7 @@ const ProfileItem = () => {
               link: "",
               textColor: "text-white",
               icon: <Pencil size={16} />,
-              setOpenModal: (val) => setOpenModal(val),
+              OpenModal: () => onOpen("editProfile", {}),
             },
             {
               content: "Profile Details",

@@ -6,6 +6,7 @@ import ReactQueryProvider from "@/components/provider/query-provider";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth-options";
 import AlertProvider from "@/components/provider/alert-provider";
+import ModalProvider from "@/components/provider/modal-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,7 +26,9 @@ export default async function RootLayout({ children }: ILayoutProps) {
       <body className={inter.className}>
         <AlertProvider>
           <AuthSessionProvider session={session}>
-            <ReactQueryProvider>{children}</ReactQueryProvider>
+            <ReactQueryProvider>
+              <ModalProvider>{children}</ModalProvider>
+            </ReactQueryProvider>
           </AuthSessionProvider>
         </AlertProvider>
       </body>
