@@ -17,17 +17,22 @@ import ProfileItem from "../profile-item";
 import { useParams } from "next/navigation";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
-import { Server } from "@prisma/client";
+import { Room, Server } from "@prisma/client";
 import useMutationData from "@/hooks/useMutationData";
 import { deleteServer } from "@/handlers/server";
 import { AlertContext } from "@/context/createContext";
 import { useRouter } from "next/navigation";
 
-const ChannelCollapsible = () => {
+interface ChannelCollapsibleProps {
+  rooms: Array<Room> | undefined;
+  type: string;
+}
+
+const ChannelCollapsible = ({ rooms, type }: ChannelCollapsibleProps) => {
   return (
     <>
       <Collapsible
-        triggerText="TEXT CHANNEL"
+        triggerText={`${type} ROOMS`}
         triggerIcon={
           <Plus
             size={25}
@@ -36,12 +41,17 @@ const ChannelCollapsible = () => {
         }
         content={
           <>
-            <ChannelItem
-              title="announcement"
-              mainIcon={<Hash size={18} />}
-              icons={<Settings size={16} />}
-              backgroundHover="hover:bg-zinc-800 cursor-pointer hover:text-white"
-            />
+            {rooms?.map((room) => {
+              return (
+                <ChannelItem
+                  key={room?.roomId}
+                  title={room?.name}
+                  mainIcon={<Hash size={18} />}
+                  icons={<Settings size={16} />}
+                  backgroundHover="hover:bg-zinc-800 cursor-pointer hover:text-white"
+                />
+              );
+            })}
           </>
         }
       />
@@ -49,18 +59,11 @@ const ChannelCollapsible = () => {
   );
 };
 
-const ChannelPannelContent = () => {
-  return (
-    <>
-      <div className="mt-2 p-1">
-        <ChannelCollapsible />
-        <ChannelCollapsible />
-      </div>
-    </>
-  );
-};
+interface ChannelPannelProps {
+  rooms: Array<Room> | undefined;
+}
 
-const ChannelPanel = () => {
+const ChannelPanel = ({ rooms }: ChannelPannelProps) => {
   const params = useParams();
 
   const [serverDetails, setServerDetails] = useState<Server>();
@@ -93,10 +96,6 @@ const ChannelPanel = () => {
   useEffect(() => {
     handleServerDetails();
   }, []);
-
-  const { isSuccess, isError, mutate } = useMutationData({
-    func: deleteServer,
-  });
 
   return (
     <div className="h-[100vh] bg-[rgb(71,71,79)] pb-2">
@@ -138,7 +137,12 @@ const ChannelPanel = () => {
         width="w-[260px]"
         backgroundColor="bg-[rgb(71,71,79)]"
         height="h-[75%]"
-        content={<ChannelPannelContent />}
+        content={
+          <div className="mt-2 p-1">
+            <ChannelCollapsible rooms={rooms} type="TEXT" />{" "}
+            {/* <ChannelCollapsible />{" "} */}
+          </div>
+        }
         padding={false}
       />
       <ProfileItem />

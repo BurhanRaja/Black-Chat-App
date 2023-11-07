@@ -55,7 +55,7 @@ export async function PUT(
   let success = false;
 
   try {
-    const { username, displayname, email, gender, imageUrl } = await req.json();
+    const { username, bio, email, imageUrl } = await req.json();
 
     const user = await currentProfile();
 
@@ -69,9 +69,9 @@ export async function PUT(
     await prisma?.profile.update({
       data: {
         username,
-        displayname,
+        displayname: username.charAt(0).toUpperCase() + username.slice(1),
+        bio,
         email,
-        gender,
         imageUrl,
       },
       where: {

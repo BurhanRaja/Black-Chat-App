@@ -26,6 +26,7 @@ declare module "next-auth" {
   interface User extends DefaultUser {
     userId: string;
     emailVerified: boolean;
+    displayname: string;
   }
 }
 
@@ -71,6 +72,7 @@ export const authOptions: NextAuthOptions = {
             userId: true,
             email: true,
             password: true,
+            displayname: true,
             username: true,
             imageUrl: true,
             emailVerified: true,
@@ -89,6 +91,7 @@ export const authOptions: NextAuthOptions = {
         return Promise.resolve({
           userId: user?.userId,
           username: user?.username,
+          displayname: user?.displayname,
           email: user?.email,
           image: user?.imageUrl,
           emailVerified: user?.emailVerified,
@@ -124,6 +127,7 @@ export const authOptions: NextAuthOptions = {
           token.userId = user.userId;
           token.emailVerified = user.emailVerified as boolean;
           token.imageUrl = user.image!;
+          token.name = user.displayname;
         }
         if (profile?.email && account?.access_token) {
           let userProfile = await prisma.profile.findUnique({
@@ -145,11 +149,13 @@ export const authOptions: NextAuthOptions = {
                 token.userId = userProfile?.userId!;
                 token.emailVerified = userProfile?.emailVerified!;
                 token.imageUrl = userProfile?.imageUrl!;
+                token.name = userProfile?.displayname;
               }
             } else {
               token.userId = userProfile?.userId!;
               token.emailVerified = userProfile?.emailVerified!;
               token.imageUrl = userProfile?.imageUrl!;
+              token.name = userProfile?.displayname;
             }
           }
         }
@@ -160,6 +166,7 @@ export const authOptions: NextAuthOptions = {
       return Promise.resolve(token);
     },
     session: async ({ session, token }) => {
+      session.user.name = token.name;
       session.user.userId = token.userId;
       session.user.emailVerified = token.emailVerified;
       session.user.image = token.imageUrl;

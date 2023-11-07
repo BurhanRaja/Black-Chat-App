@@ -7,12 +7,12 @@ import { useParams } from "next/navigation";
 import { MdEmojiPeople } from "react-icons/md";
 
 const Header = () => {
-  const { serverId, channelId } = useParams();
+  const params = useParams();
 
   return (
     <>
       <div className="bg-[rgb(71,71,79)] p-3 pb-2 shadow-md flex justify-between pr-5">
-        {serverId === "%40me" ? (
+        {params?.serverId === "%40me" ? (
           <>
             <div className="flex items-center">
               <p className="mr-2 flex items-center">

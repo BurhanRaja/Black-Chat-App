@@ -32,7 +32,11 @@ export async function GET(
       },
       include: {
         rooms: true,
-        sUsers: true,
+        sUsers: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
 

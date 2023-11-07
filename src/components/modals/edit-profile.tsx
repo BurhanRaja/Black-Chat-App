@@ -5,12 +5,14 @@ import { XCircle } from "lucide-react";
 import { useContext, useRef, useState } from "react";
 import FileUpload from "../file-upload";
 import Input from "../ui/input";
-
+import Textarea from "../ui/textarea";
 const EditProfileForm = () => {
   const { data } = useContext(ModalContext);
 
   const [file, setFile] = useState<string>(data?.profile?.imageUrl!);
-  const usernameRef = useRef(null);
+  const [bio, setBio] = useState<string>(data?.profile?.bio!);
+  const usernameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
 
   return (
     <>
@@ -20,7 +22,39 @@ const EditProfileForm = () => {
           value={file}
           onChange={(val) => setFile(val)}
         />
-        <Input label="Displayname" ref={usernameRef} />
+        <div className="mt-3">
+          <Input
+            label="Username"
+            ref={usernameRef}
+            defaultValue={data?.profile?.username}
+          />
+        </div>
+        <div className="mt-3">
+          <Input
+            label="Email"
+            ref={emailRef}
+            defaultValue={data?.profile?.email}
+          />
+        </div>
+        <div className="mt-3">
+          <Textarea
+            label="Bio"
+            value={bio}
+            rows={5}
+            onChange={(e) => setBio(e.target.value)}
+            className={`${
+              bio.length > 160 ? "border border-red-500" : ""
+            } p-2.5 w-[100%] rounded-md bg-[rgb(43,43,47)] outline-none "text-zinc-300 text-sm`}
+          />
+          <p className="text-xs mt-0.5 text-right text-gray-400">
+            {bio.length}/160
+          </p>
+        </div>
+        <div className="flex justify-end mt-10">
+          <button className="p-2 w-[30%] rounded-md border border-gray-200 text-gray-200 hover:bg-gray-200 hover:text-gray-800 font-bold">
+            Update
+          </button>
+        </div>
       </form>
     </>
   );
@@ -36,7 +70,7 @@ const EditProfileModal = () => {
         <Dialog.Portal>
           <Dialog.Overlay className="bg-blackA6 data-[state=open]:animate-overlayShow fixed inset-0" />
           <Dialog.Content
-            className={`data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-black p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none`}
+            className={`data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[100vh] w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-black p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none`}
           >
             <Dialog.Title className={`text-white m-0 text-[17px] font-medium`}>
               Edit Profile

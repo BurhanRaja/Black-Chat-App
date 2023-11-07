@@ -40,7 +40,7 @@ const ProfileItem = () => {
             transition={false}
             fallbackBackgroundColor="bg-black"
           />
-          <p className="ml-2">BurhanRaja</p>
+          <p className="ml-2">{session?.user.name}</p>
         </div>
         <Dropdown
           trigger={<MoreHorizontal className="text-gray-400 cursor-pointer" />}
