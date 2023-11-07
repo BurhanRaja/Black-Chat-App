@@ -13,10 +13,7 @@ interface IFileUploadProps {
 const FileUpload = ({ onChange, value, endpoint }: IFileUploadProps) => {
   const fileType = value.split(".").pop();
 
-  console.log(fileType);
-  console.log(value);
-
-  if (value && fileType !== "pdf" && endpoint === "serverImage") {
+  if (value && fileType !== "pdf") {
     return (
       <>
         <div className="flex justify-center">

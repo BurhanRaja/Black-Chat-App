@@ -22,24 +22,14 @@ export async function GET(
   let success = false;
 
   try {
-    const user = await currentProfile();
+    const profile = await currentProfile();
 
-    if (!user) {
+    if (!profile) {
       return NextResponse.json(
         { success, message: "User not found." },
         { status: 404 }
       );
     }
-
-    let profile = {
-      username: user.username,
-      displayname: user.displayname,
-      email: user.email,
-      emailVerified: user.emailVerified,
-      image: user.imageUrl,
-      bio: user.bio,
-      gender: user.gender,
-    };
 
     success = true;
     return NextResponse.json({ success, data: profile }, { status: 200 });

@@ -16,10 +16,12 @@ import ScrollArea from "../ui/scroll-area";
 import ProfileItem from "../profile-item";
 import { useParams } from "next/navigation";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Server } from "@prisma/client";
 import useMutationData from "@/hooks/useMutationData";
 import { deleteServer } from "@/handlers/server";
+import { AlertContext } from "@/context/createContext";
+import { useRouter } from "next/navigation";
 
 const ChannelCollapsible = () => {
   return (
@@ -62,14 +64,34 @@ const ChannelPanel = () => {
   const params = useParams();
 
   const [serverDetails, setServerDetails] = useState<Server>();
+  const { setAlertOpen, setTitle, setDescription, setType } =
+    useContext(AlertContext);
+  const router = useRouter();
 
-  const handleServerData = async () => {
+  const handleServerDelete = async () => {
     const response = await axios.delete(`/api/server/${params?.serverId}`);
+    if (response.data.success) {
+      setAlertOpen(true);
+      setTitle("Success");
+      setDescription("Server Successfully deleted.");
+      setType("success");
+      router.refresh();
+      router.push("/servers/@me");
+    } else {
+      setAlertOpen(true);
+      setTitle("Error");
+      setDescription(response.data.message);
+      setType("error");
+    }
+  };
+
+  const handleServerDetails = async () => {
+    const response = await axios.get(`/api/server/${params?.serverId}`);
     setServerDetails(response.data.data);
   };
 
   useEffect(() => {
-    handleServerData();
+    handleServerDetails();
   }, []);
 
   const { isSuccess, isError, mutate } = useMutationData({
@@ -103,6 +125,7 @@ const ChannelPanel = () => {
             link: "",
             textColor: "text-red-500",
             icon: <Trash2 size={16} />,
+            handleFunction: () => handleServerDelete(),
           },
         ]}
         contentColor="bg-gray-950 mt-2"

@@ -148,12 +148,12 @@ const Register = () => {
             <div className="mb-3">
               <Input
                 value={username}
-                setVal={(val) => setUsername(val)}
+                onChange={(e) => setUsername(e.target.value)}
                 name="username"
                 type="text"
                 label="Username"
-                setFocus={(val) => setUsernameFocus(val)}
-                setBlur={(val) => setUsernameFocus(val)}
+                onFocus={() => setUsernameFocus(true)}
+                onBlur={() => setUsernameFocus(false)}
               />
               {username.length !== 0 && usernameError && !usernameFocus ? (
                 <p className="mt-1 text-xs text-red-500">{usernameError}</p>
@@ -180,12 +180,12 @@ const Register = () => {
             <div className="mb-3">
               <Input
                 value={email}
-                setVal={(val) => setEmail(val)}
+                onChange={(e) => setEmail(e.target.value)}
                 name="email"
                 type="email"
                 label="Email"
-                setFocus={(val) => setEmailFocus(val)}
-                setBlur={(val) => setEmailFocus(val)}
+                onFocus={() => setEmailFocus(true)}
+                onBlur={() => setEmailFocus(false)}
               />
               {email.length !== 0 && emailError && !emailFocus ? (
                 <p className="mt-1 text-xs text-red-500">{emailError}</p>
@@ -209,12 +209,12 @@ const Register = () => {
             <div className="mb-3">
               <Input
                 value={password}
-                setVal={(val) => setPassword(val)}
+                onChange={(e) => setPassword(e.target.value)}
                 name="password"
                 type="password"
                 label="Password"
-                setFocus={(val) => setPasswordFocus(val)}
-                setBlur={(val) => setPasswordFocus(val)}
+                onFocus={() => setPasswordFocus(true)}
+                onBlur={() => setPasswordFocus(false)}
               />
               {password.length !== 0 && passwordError && !passwordFocus ? (
                 <p className="mt-1 text-xs text-red-500">{passwordError}</p>

@@ -2,10 +2,28 @@
 import { ModalContext } from "@/context/createContext";
 import * as Dialog from "@radix-ui/react-dialog";
 import { XCircle } from "lucide-react";
-import { useContext } from "react";
+import { useContext, useRef, useState } from "react";
+import FileUpload from "../file-upload";
+import Input from "../ui/input";
 
 const EditProfileForm = () => {
-  return <></>;
+  const { data } = useContext(ModalContext);
+
+  const [file, setFile] = useState<string>(data?.profile?.imageUrl!);
+  const usernameRef = useRef(null);
+
+  return (
+    <>
+      <form>
+        <FileUpload
+          endpoint="userImage"
+          value={file}
+          onChange={(val) => setFile(val)}
+        />
+        <Input label="Displayname" ref={usernameRef} />
+      </form>
+    </>
+  );
 };
 
 const EditProfileModal = () => {

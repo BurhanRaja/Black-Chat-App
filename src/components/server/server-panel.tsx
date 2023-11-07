@@ -1,6 +1,5 @@
 import ScrollArea from "../ui/scroll-area";
 import ServerIcon from "./server-icon";
-import CreateServerModal from "../modals/create-server";
 import { prisma } from "@/db/client";
 import currentProfile from "@/lib/current-profile";
 import CreateServerBtn from "./create-server-btn";
@@ -16,7 +15,7 @@ const ServerPanel = async () => {
     servers = await prisma.server.findMany({
       where: {
         sUsers: {
-          some: { userId: profile?.id },
+          some: { userId: profile?.userId },
         },
       },
       include: {
@@ -27,7 +26,6 @@ const ServerPanel = async () => {
 
   return (
     <>
-      <CreateServerModal />
       <ScrollArea
         width="w-[75px]"
         height="h-[100vh]"

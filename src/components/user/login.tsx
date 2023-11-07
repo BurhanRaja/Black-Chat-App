@@ -77,23 +77,19 @@ const Login = () => {
             <div className="mb-3">
               <Input
                 value={email}
-                setVal={(val) => setEmail(val)}
+                onChange={(e) => setEmail(e.target.value)}
                 name="email"
                 type="email"
                 label="Email"
-                setFocus={() => {}}
-                setBlur={() => {}}
               />
             </div>
             <div className="mb-3">
               <Input
                 value={password}
-                setVal={(val) => setPassword(val)}
+                onChange={(e) => setPassword(e.target.value)}
                 name="password"
                 type="password"
                 label="Password"
-                setFocus={() => {}}
-                setBlur={() => {}}
               />
               <Link
                 href={"/forgetpassword"}

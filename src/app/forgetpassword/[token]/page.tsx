@@ -16,7 +16,7 @@ const ResetPassword = () => {
   const { mutate, isLoading, isSuccess, isError } = useMutationData({
     func: resetPassword,
   });
-  const { token } = useParams();
+  const params = useParams();
 
   const [password, setPassword] = useState<string>("");
   const [checkPassword, setCheckPassword] = useState<boolean>(false);
@@ -54,7 +54,7 @@ const ResetPassword = () => {
       password,
     };
 
-    mutate({ data, token });
+    mutate({ data, token: params?.token });
   };
 
   useEffect(() => {
@@ -72,12 +72,12 @@ const ResetPassword = () => {
             <div className="mb-3">
               <Input
                 value={password}
-                setVal={(val) => setPassword(val)}
+                onChange={(e) => setPassword(e.target.value)}
                 name="password"
                 type="password"
                 label="New Password"
-                setFocus={(val) => setPasswordFocus(val)}
-                setBlur={(val) => setPasswordFocus(val)}
+                onFocus={() => setPasswordFocus(true)}
+                onBlur={() => setPasswordFocus(false)}
               />
               {password.length !== 0 && passwordError && !passwordFocus ? (
                 <p className="mt-1 text-xs text-red-500">{passwordError}</p>

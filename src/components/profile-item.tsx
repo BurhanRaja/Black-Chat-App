@@ -1,4 +1,5 @@
 "use client";
+
 import { MoreHorizontal, UserCircle2, Pencil, LogOut } from "lucide-react";
 import Avatar from "./ui/avatar";
 import Dropdown from "./ui/dropdown";
@@ -6,6 +7,7 @@ import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
 import { ModalContext } from "@/context/createContext";
+import axios from "axios";
 
 const ProfileItem = () => {
   const router = useRouter();
@@ -16,6 +18,16 @@ const ProfileItem = () => {
     signOut({ redirect: false }).then(() => {
       router.push("/auth/signin");
     });
+  };
+
+  const handleOpenModal = async () => {
+    const response = await axios.get("/api/user");
+    if (!response.data.success) {
+      return;
+    }
+    console.log(response.data.data);
+    onOpen("editProfile", { profile: response.data.data });
+    return;
   };
 
   return (
@@ -38,7 +50,7 @@ const ProfileItem = () => {
               link: "",
               textColor: "text-white",
               icon: <Pencil size={16} />,
-              OpenModal: () => onOpen("editProfile", {}),
+              OpenModal: () => handleOpenModal(),
             },
             {
               content: "Profile Details",

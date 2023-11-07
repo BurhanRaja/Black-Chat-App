@@ -1,57 +1,49 @@
 "use client";
+import { InputHTMLAttributes, forwardRef } from "react";
 
-interface InputProps {
-  value: string;
-  setVal: (val: string) => void;
-  name: string;
-  type: "email" | "password" | "text";
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   labelTextColor?: string;
   inputTextColor?: string;
   inputBackgroundColor?: string;
-  width?: string;
-  setFocus: (val: boolean) => void;
-  setBlur: (val: boolean) => void;
 }
 
-const Input = ({
-  value,
-  setVal,
-  name,
-  type,
-  label,
-  labelTextColor,
-  inputTextColor,
-  inputBackgroundColor,
-  setBlur,
-  setFocus,
-}: InputProps) => {
-  return (
-    <>
-      <div className={`flex flex-col mx-auto`}>
-        <label
-          className={`text-[15px] font-medium leading-[35px] ${
-            labelTextColor ? labelTextColor : "text-white"
-          }`}
-        >
-          {label}
-        </label>
-        <input
-          type={type}
-          name={name}
-          className={`p-2.5 w-[100%] rounded-md ${
-            inputBackgroundColor ? inputBackgroundColor : "bg-[rgb(43,43,47)]"
-          } outline-none ${
-            inputTextColor ? inputTextColor : "text-zinc-300"
-          } channel-search text-sm`}
-          value={value}
-          onChange={(e) => setVal(e.target.value)}
-          onFocus={() => setFocus(true)}
-          onBlur={() => setBlur(false)}
-        />
-      </div>
-    </>
-  );
-};
+const Input = forwardRef<HTMLInputElement, InputProps>(
+  (
+    {
+      label,
+      labelTextColor,
+      inputTextColor,
+      inputBackgroundColor,
+      type,
+      ...props
+    },
+    ref
+  ) => {
+    return (
+      <>
+        <div className={`flex flex-col mx-auto`}>
+          <label
+            className={`text-[15px] font-medium leading-[35px] ${
+              labelTextColor ? labelTextColor : "text-white"
+            }`}
+          >
+            {label}
+          </label>
+          <input
+            ref={ref}
+            type={type}
+            className={`p-2.5 w-[100%] rounded-md ${
+              inputBackgroundColor ? inputBackgroundColor : "bg-[rgb(43,43,47)]"
+            } outline-none ${
+              inputTextColor ? inputTextColor : "text-zinc-300"
+            } channel-search text-sm`}
+            {...props}
+          />
+        </div>
+      </>
+    );
+  }
+);
 
 export default Input;

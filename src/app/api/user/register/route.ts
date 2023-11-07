@@ -50,7 +50,7 @@ export async function POST(req: NextRequest): Promise<
     // Create User
     let data = {
       userId: uniqueId,
-      displayname: username,
+      displayname: username.charAt(0).toUpperCase() + username.slice(1),
       username: username.toLowerCase(),
       email,
       password: securePassword,

@@ -3,10 +3,8 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { X } from "lucide-react";
-import { ReactNode, useState } from "react";
-import ServerPanel from "@/components/server/server-panel";
+import { ReactNode } from "react";
 import Header from "@/components/defaults/header";
-import { useParams } from "next/navigation";
 import { ChatAreaImageItem } from "../chat/chat-area";
 
 interface MainCommonLayoutProps {
@@ -25,10 +23,6 @@ const MainCommonLayout = ({
   serverId,
   roomId,
 }: MainCommonLayoutProps) => {
-  const { data: session } = useSession();
-
-  const [resendEmail, setResentEmail] = useState<boolean>(true);
-
   return (
     <>
       {sidepannel}

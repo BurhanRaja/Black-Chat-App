@@ -189,6 +189,7 @@ export async function DELETE(
       },
     });
 
+    success = true;
     return NextResponse.json(
       { success, message: "Server deleted successfully." },
       { status: 200 }

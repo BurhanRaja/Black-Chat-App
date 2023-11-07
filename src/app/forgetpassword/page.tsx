@@ -74,12 +74,12 @@ const ForgetPasswordEmail = () => {
             <div className="mb-3">
               <Input
                 value={email}
-                setVal={(val) => setEmail(val)}
+                onChange={(e) => setEmail(e.target.value)}
                 name="email"
                 type="email"
                 label="Email"
-                setFocus={(val) => setEmailFocus(val)}
-                setBlur={(val) => setEmailFocus(val)}
+                onFocus={() => setEmailFocus(true)}
+                onBlur={() => setEmailFocus(false)}
               />
               {email.length !== 0 && emailError && !emailFocus ? (
                 <p className="mt-1 text-xs text-red-500">{emailError}</p>

@@ -6,13 +6,13 @@ import ChatItem from "./chat-item";
 import { useParams } from "next/navigation";
 
 export const ChatAreaImageItem = () => {
-  const { serverId } = useParams();
+  const params = useParams();
 
   return (
     <>
       <div
         className={`flex items-center justify-center h-[93.3vh] bg-zinc-700 ${
-          serverId === "%40me" ? "w-full" : "w-[80%]"
+          params?.serverId === "%40me" ? "w-full" : "w-[80%]"
         }`}
       >
         <div className="flex flex-col justify-between items-center">
@@ -39,10 +39,14 @@ const ChatAreaItem = () => {
 };
 
 const ChatArea = () => {
-  const { serverId } = useParams();
+  const params = useParams();
   return (
     // <ChatAreaImageItem />
-    <div className={`${serverId === "%40me" ? "w-full" : "w-[80%]"} h-[665px]`}>
+    <div
+      className={`${
+        params?.serverId === "%40me" ? "w-full" : "w-[80%]"
+      } h-[665px]`}
+    >
       <ScrollArea
         width="w-[100%]"
         backgroundColor="bg-zinc-700"
