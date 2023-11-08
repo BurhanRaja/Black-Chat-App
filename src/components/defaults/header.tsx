@@ -5,9 +5,31 @@ import MemberSearch from "../members/member-search";
 import Tooltip from "../ui/tooltip";
 import { useParams } from "next/navigation";
 import { MdEmojiPeople } from "react-icons/md";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { Room } from "@prisma/client";
 
-const Header = () => {
+interface HeaderProps {
+  setMembersOpen: (val: boolean) => void;
+  membersOpen: boolean;
+}
+
+const Header = ({ membersOpen, setMembersOpen }: HeaderProps) => {
+  const [roomDetails, setRoomDetails] = useState<Room>();
   const params = useParams();
+
+  const handleRoomDetails = async () => {
+    if (params?.roomId) {
+      let response = await axios.get(`/api/room/${params?.roomId}`);
+      if (response.data.success) {
+        setRoomDetails(response.data.data);
+      }
+    }
+  };
+
+  useEffect(() => {
+    handleRoomDetails();
+  }, []);
 
   return (
     <>
@@ -34,12 +56,17 @@ const Header = () => {
           <>
             <div className="flex items-center">
               <Hash size={18} className="mr-1" />
-              <p>announcement</p>
+              <p>{roomDetails?.name}</p>
             </div>
             <div className="flex items-center">
               <MemberSearch />
               <Tooltip
-                trigger={<Users2 className="cursor-pointer" />}
+                trigger={
+                  <Users2
+                    className="cursor-pointer"
+                    onClick={() => setMembersOpen(!membersOpen)}
+                  />
+                }
                 content="User's List"
                 side="bottom"
               />

@@ -21,12 +21,11 @@ const AppServerLayout = () => {
   const params = useParams();
 
   const [serverDetails, setServerDetails] = useState<ServerDetails>();
+  const [membersOpen, setMembersOpen] = useState<boolean>(true);
 
   const handleServerData = async () => {
     if (params?.serverId !== "@me") {
-      let response = await axios.get(
-        `http://localhost:3000/api/server/${params?.serverId}`
-      );
+      let response = await axios.get(`/api/server/${params?.serverId}`);
       setServerDetails(response?.data.data);
     }
   };
@@ -35,16 +34,21 @@ const AppServerLayout = () => {
     handleServerData();
   }, []);
 
-  console.log(serverDetails);
-
   return (
     <>
       <MainCommonLayout
         sidepannel={<ChannelPanel rooms={serverDetails?.rooms} />}
-        chatarea={<ChatArea />}
-        memberpannel={<MemberPanel members={serverDetails?.sUsers} />}
+        chatarea={<ChatArea membersOpen={membersOpen} />}
+        memberpannel={
+          <MemberPanel
+            membersOpen={membersOpen}
+            members={serverDetails?.sUsers}
+          />
+        }
         serverId={params?.serverId as string}
         roomId={params?.roomId as string}
+        setMembersOpen={(val) => setMembersOpen(val)}
+        membersOpen={membersOpen}
       />
     </>
   );

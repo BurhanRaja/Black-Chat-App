@@ -9,15 +9,16 @@ interface CustomUser extends SUser {
 }
 interface MemberPannel {
   members: Array<CustomUser> | undefined;
+  membersOpen: boolean;
 }
 
-const MemberPanel = ({ members }: MemberPannel) => {
+const MemberPanel = ({ members, membersOpen }: MemberPannel) => {
   console.log(members);
   return (
     <>
       <ScrollArea
-        width="w-[20%]"
-        height="h-[93.3vh]"
+        width={membersOpen ? "w-[20%]" : "w-[0]"}
+        height={"h-[93.3vh]"}
         content={
           <>
             {members?.map((member) => {
@@ -31,7 +32,7 @@ const MemberPanel = ({ members }: MemberPannel) => {
             })}
           </>
         }
-        padding
+        padding={membersOpen}
         backgroundColor="bg-[rgb(56,56,64)]"
       />
     </>

@@ -14,6 +14,8 @@ interface MainCommonLayoutProps {
   fullWidth?: boolean;
   serverId: string;
   roomId?: string;
+  setMembersOpen: (val: boolean) => void;
+  membersOpen: boolean;
 }
 
 const MainCommonLayout = ({
@@ -22,12 +24,17 @@ const MainCommonLayout = ({
   chatarea,
   serverId,
   roomId,
+  setMembersOpen,
+  membersOpen,
 }: MainCommonLayoutProps) => {
   return (
     <>
       {sidepannel}
       <div className="content w-[79%]">
-        <Header />
+        <Header
+          membersOpen={membersOpen}
+          setMembersOpen={(val) => setMembersOpen(val)}
+        />
         <div className="flex">
           {serverId === "%40me" && roomId === undefined ? (
             <ChatAreaImageItem />

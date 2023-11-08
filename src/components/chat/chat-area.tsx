@@ -29,28 +29,29 @@ export const ChatAreaImageItem = () => {
   );
 };
 
-const ChatAreaItem = () => {
-  return (
-    <>
-      <ChatItem />
-      <ChatItem />
-    </>
-  );
-};
+interface ChatAreaProps {
+  membersOpen: boolean;
+}
 
-const ChatArea = () => {
+const ChatArea = ({ membersOpen }: ChatAreaProps) => {
   const params = useParams();
+
   return (
     // <ChatAreaImageItem />
     <div
       className={`${
-        params?.serverId === "%40me" ? "w-full" : "w-[80%]"
+        params?.serverId === "%40me" || !membersOpen ? "w-full" : "w-[80%]"
       } h-[665px]`}
     >
       <ScrollArea
         width="w-[100%]"
         backgroundColor="bg-zinc-700"
-        content={<ChatAreaItem />}
+        content={
+          <>
+            <ChatItem />
+            <ChatItem />
+          </>
+        }
         height="h-[88%]"
         padding={true}
       />
