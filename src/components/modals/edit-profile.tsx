@@ -6,6 +6,7 @@ import { useContext, useRef, useState } from "react";
 import FileUpload from "../file-upload";
 import Input from "../ui/input";
 import Textarea from "../ui/textarea";
+
 const EditProfileForm = () => {
   const { data } = useContext(ModalContext);
 
@@ -13,6 +14,10 @@ const EditProfileForm = () => {
   const [bio, setBio] = useState<string>(data?.profile?.bio!);
   const usernameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
+
+  const handleSubmit = () => {
+      
+  }
 
   return (
     <>
