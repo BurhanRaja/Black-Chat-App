@@ -8,6 +8,7 @@ import {
   Trash2,
   Plus,
   Hash,
+  PlusSquare,
 } from "lucide-react";
 import ChannelSearch from "./channel-search";
 import Collapsible from "../ui/collapsible";
@@ -17,76 +18,77 @@ import ProfileItem from "../profile-item";
 import { useParams } from "next/navigation";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
-import { Room, Server } from "@prisma/client";
+import { Room, RoomType, Server } from "@prisma/client";
 import useMutationData from "@/hooks/useMutationData";
 import { deleteServer } from "@/handlers/server";
-import { AlertContext } from "@/context/createContext";
+import { AlertContext, ModalContext } from "@/context/createContext";
 import { useRouter } from "next/navigation";
 
 interface ChannelCollapsibleProps {
-  rooms: Array<Room> | undefined;
-  type: string;
+  rooms: Array<Room>;
+  type: RoomType;
 }
 
 const ChannelCollapsible = ({ rooms, type }: ChannelCollapsibleProps) => {
+  let roomTypeFilter = rooms?.filter((el) => el.type === type);
+
   return (
     <>
-      <Collapsible
-        triggerText={`${type} ROOMS`}
-        triggerIcon={
-          <Plus
-            size={25}
-            className="hover:bg-zinc-800 p-1 rounded-sm text-white"
-          />
-        }
-        content={
-          <>
-            {rooms?.map((room) => {
-              return (
-                <ChannelItem
-                  key={room?.roomId}
-                  title={room?.name}
-                  mainIcon={<Hash size={18} />}
-                  icons={<Settings size={16} />}
-                  backgroundHover="hover:bg-zinc-800 cursor-pointer hover:text-white"
-                />
-              );
-            })}
-          </>
-        }
-      />
+      {rooms?.length > 0 && roomTypeFilter.length > 0 ? (
+        <Collapsible
+          triggerText={`${type} ROOMS`}
+          triggerIcon={<></>}
+          content={
+            <>
+              {rooms?.map((room) => {
+                if (room.type === type) {
+                  return (
+                    <ChannelItem
+                      key={room?.roomId}
+                      title={room?.name}
+                      mainIcon={<Hash size={18} />}
+                      icons={<Settings size={16} />}
+                      backgroundHover="hover:bg-zinc-800 cursor-pointer hover:text-white"
+                    />
+                  );
+                }
+              })}
+            </>
+          }
+        />
+      ) : (
+        ""
+      )}
     </>
   );
 };
 
 interface ChannelPannelProps {
-  rooms: Array<Room> | undefined;
+  rooms: Array<Room>;
 }
 
 const ChannelPanel = ({ rooms }: ChannelPannelProps) => {
-  const params = useParams();
-
   const [serverDetails, setServerDetails] = useState<Server>();
-  const { setAlertOpen, setTitle, setDescription, setType } =
-    useContext(AlertContext);
-  const router = useRouter();
 
-  const handleServerDelete = async () => {
-    const response = await axios.delete(`/api/server/${params?.serverId}`);
-    if (response.data.success) {
-      setAlertOpen(true);
-      setTitle("Success");
-      setDescription("Server Successfully deleted.");
-      setType("success");
-      router.refresh();
-      router.push("/servers/@me");
-    } else {
-      setAlertOpen(true);
-      setTitle("Error");
-      setDescription(response.data.message);
-      setType("error");
-    }
-  };
+  const params = useParams();
+  const { onOpen } = useContext(ModalContext);
+
+  // const handleServerDelete = async () => {
+  //   const response = await axios.delete(`/api/server/${params?.serverId}`);
+  //   if (response.data.success) {
+  //     setAlertOpen(true);
+  //     setTitle("Success");
+  //     setDescription("Server Successfully deleted.");
+  //     setType("success");
+  //     router.refresh();
+  //     router.push("/servers/@me");
+  //   } else {
+  //     setAlertOpen(true);
+  //     setTitle("Error");
+  //     setDescription(response.data.message);
+  //     setType("error");
+  //   }
+  // };
 
   const handleServerDetails = async () => {
     const response = await axios.get(`/api/server/${params?.serverId}`);
@@ -114,6 +116,13 @@ const ChannelPanel = ({ rooms }: ChannelPannelProps) => {
             icon: <UserPlus2 size={16} />,
           },
           {
+            content: "Create Room",
+            link: "",
+            textColor: "text-white",
+            icon: <PlusSquare size={16} />,
+            handleFunction: () => onOpen("createRoom", {}),
+          },
+          {
             content: "Server Settings",
             link: "",
             textColor: "text-white",
@@ -124,7 +133,7 @@ const ChannelPanel = ({ rooms }: ChannelPannelProps) => {
             link: "",
             textColor: "text-red-500",
             icon: <Trash2 size={16} />,
-            handleFunction: () => handleServerDelete(),
+            // handleFunction: () => handleServerDelete(),
           },
         ]}
         contentColor="bg-gray-950 mt-2"
@@ -139,8 +148,9 @@ const ChannelPanel = ({ rooms }: ChannelPannelProps) => {
         height="h-[75%]"
         content={
           <div className="mt-2 p-1">
-            <ChannelCollapsible rooms={rooms} type="TEXT" />{" "}
-            {/* <ChannelCollapsible />{" "} */}
+            <ChannelCollapsible rooms={rooms} type="TEXT" />
+            <ChannelCollapsible rooms={rooms} type="AUDIO" />
+            <ChannelCollapsible rooms={rooms} type="VIDEO" />
           </div>
         }
         padding={false}

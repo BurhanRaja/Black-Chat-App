@@ -26,12 +26,15 @@ export async function POST(req: NextRequest): Promise<
       );
     }
 
-    const validation = createRoom.safeParse(req.body);
-
+    // Validation
+    const bodyData = await req.json();
+    const validation = createRoom.safeParse(bodyData);
     if (!validation.success) {
       const { errors } = validation.error;
-
-      return NextResponse.json({ success, error: errors }, { status: 400 });
+      return NextResponse.json(
+        { success, error: errors, message: "Validation Error" },
+        { status: 400 }
+      );
     }
 
     const { name, type, serverId, isPrivate } = validation.data;

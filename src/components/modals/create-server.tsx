@@ -8,6 +8,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { XCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ModalContext } from "@/context/createContext";
+import { CreateServer } from "@/types";
 
 // Create Server Form
 const CreateServerForm = () => {
@@ -30,9 +31,9 @@ const CreateServerForm = () => {
       setError("The above field is empty.");
       return;
     }
-    let data = {
+    let data: CreateServer = {
       imageUrl: file,
-      name: nameRef.current?.value,
+      name: nameRef.current?.value as string,
     };
     mutate(data);
   };

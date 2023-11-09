@@ -2,26 +2,51 @@
 import { ModalContext } from "@/context/createContext";
 import * as Dialog from "@radix-ui/react-dialog";
 import { XCircle } from "lucide-react";
-import { useContext, useRef, useState } from "react";
+import { FormEvent, useContext, useEffect, useRef, useState } from "react";
 import FileUpload from "../file-upload";
 import Input from "../ui/input";
 import Textarea from "../ui/textarea";
+import { EditProfile } from "@/types";
+import useMutationData from "@/hooks/useMutationData";
+import { editProfileFunc } from "@/handlers/user";
+import { useRouter } from "next/navigation";
 
 const EditProfileForm = () => {
-  const { data } = useContext(ModalContext);
+  const { data, onClose } = useContext(ModalContext);
+  const router = useRouter();
 
   const [file, setFile] = useState<string>(data?.profile?.imageUrl!);
   const [bio, setBio] = useState<string>(data?.profile?.bio!);
   const usernameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
 
-  const handleSubmit = () => {
-      
-  }
+  const { isSuccess, isError, mutate } = useMutationData({
+    func: editProfileFunc,
+  });
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+
+    let data: EditProfile = {
+      imageUrl: file,
+      username: usernameRef.current?.value as string,
+      bio: bio,
+      email: emailRef.current?.value as string,
+    };
+
+    mutate(data);
+  };
+
+  useEffect(() => {
+    if (isSuccess && !isError) {
+      router.refresh();
+      onClose();
+    }
+  }, [isSuccess, isError]);
 
   return (
     <>
-      <form>
+      <form onSubmit={handleSubmit}>
         <FileUpload
           endpoint="userImage"
           value={file}

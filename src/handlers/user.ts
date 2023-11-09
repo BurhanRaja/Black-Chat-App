@@ -1,3 +1,4 @@
+import { CreateRoom, EditProfile } from "@/types";
 import axios from "axios";
 
 interface RegisterData {
@@ -35,6 +36,15 @@ interface ResetPassword {
 }
 export const resetPassword = async ({ data, token }: ResetPassword) => {
   const response = await axios.post(`/api/user/forgetpassword/${token}`, data, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  return response.data;
+};
+
+export const editProfileFunc = async (data: EditProfile) => {
+  const response = await axios.put("/api/user", data, {
     headers: {
       "Content-Type": "application/json",
     },

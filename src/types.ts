@@ -47,3 +47,4 @@ export const createRoom = z.object({
   serverId: z.string(),
   isPrivate: z.boolean(),
 });
+export type CreateRoom = z.infer<typeof createRoom>;

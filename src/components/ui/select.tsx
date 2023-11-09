@@ -1,5 +1,7 @@
 "use client";
 
+import { RoomType } from "@prisma/client";
+
 interface OptionArray {
   value: string;
   name: string;
@@ -11,7 +13,7 @@ interface SelectProps {
   name: string;
   labelTextColor?: string;
   value: string;
-  setValue: (val: string) => void;
+  setValue: (val: string | RoomType) => void;
   selectBackgroundColor?: string;
   selectTextColor?: string;
   options: Array<OptionArray>;

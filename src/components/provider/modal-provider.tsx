@@ -4,6 +4,7 @@ import { useState } from "react";
 import CreateServerModal from "../modals/create-server";
 import { ModalContext, ModalData, ModalType } from "@/context/createContext";
 import EditProfileModal from "../modals/edit-profile";
+import CreateRoomModal from "../modals/create-room";
 
 interface ModalProviderProps {
   children: React.ReactNode;
@@ -29,6 +30,7 @@ const ModalProvider = ({ children }: ModalProviderProps) => {
   return (
     <ModalContext.Provider value={{ type, data, isOpen, onOpen, onClose }}>
       <CreateServerModal />
+      <CreateRoomModal />
       <EditProfileModal />
       {children}
     </ModalContext.Provider>
