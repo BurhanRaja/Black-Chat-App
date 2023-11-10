@@ -37,7 +37,7 @@ const AppServerLayout = () => {
   return (
     <>
       <MainCommonLayout
-        sidepannel={<ChannelPanel rooms={serverDetails?.rooms!} />}
+        sidepannel={<ChannelPanel />}
         chatarea={<ChatArea membersOpen={membersOpen} />}
         memberpannel={
           <MemberPanel

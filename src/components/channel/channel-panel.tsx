@@ -19,10 +19,7 @@ import { useParams } from "next/navigation";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { Room, RoomType, Server } from "@prisma/client";
-import useMutationData from "@/hooks/useMutationData";
-import { deleteServer } from "@/handlers/server";
-import { AlertContext, ModalContext } from "@/context/createContext";
-import { useRouter } from "next/navigation";
+import { ModalContext } from "@/context/createContext";
 
 interface ChannelCollapsibleProps {
   rooms: Array<Room>;
@@ -34,28 +31,30 @@ const ChannelCollapsible = ({ rooms, type }: ChannelCollapsibleProps) => {
 
   return (
     <>
-      {rooms?.length > 0 && roomTypeFilter.length > 0 ? (
-        <Collapsible
-          triggerText={`${type} ROOMS`}
-          triggerIcon={<></>}
-          content={
-            <>
-              {rooms?.map((room) => {
-                if (room.type === type) {
-                  return (
-                    <ChannelItem
-                      key={room?.roomId}
-                      title={room?.name}
-                      mainIcon={<Hash size={18} />}
-                      icons={<Settings size={16} />}
-                      backgroundHover="hover:bg-zinc-800 cursor-pointer hover:text-white"
-                    />
-                  );
-                }
-              })}
-            </>
-          }
-        />
+      {rooms?.length > 0 ? (
+        <div className="mb-4">
+          <Collapsible
+            triggerText={`${type} ROOMS`}
+            triggerIcon={<></>}
+            content={
+              <>
+                {rooms?.map((room) => {
+                  if (room.type === type) {
+                    return (
+                      <ChannelItem
+                        key={room?.roomId}
+                        title={room?.name}
+                        mainIcon={<Hash size={18} />}
+                        icons={<Settings size={16} />}
+                        backgroundHover="hover:bg-zinc-800 cursor-pointer hover:text-white"
+                      />
+                    );
+                  }
+                })}
+              </>
+            }
+          />
+        </div>
       ) : (
         ""
       )}
@@ -63,12 +62,11 @@ const ChannelCollapsible = ({ rooms, type }: ChannelCollapsibleProps) => {
   );
 };
 
-interface ChannelPannelProps {
-  rooms: Array<Room>;
-}
-
-const ChannelPanel = ({ rooms }: ChannelPannelProps) => {
+const ChannelPanel = () => {
   const [serverDetails, setServerDetails] = useState<Server>();
+  const [textRoom, setTextRoom] = useState<Array<Room>>([]);
+  const [audioRoom, setAudioRoom] = useState<Array<Room>>([]);
+  const [videoRoom, setVideoRoom] = useState<Array<Room>>([]);
 
   const params = useParams();
   const { onOpen } = useContext(ModalContext);
@@ -90,6 +88,13 @@ const ChannelPanel = ({ rooms }: ChannelPannelProps) => {
   //   }
   // };
 
+  const handleRoom = async () => {
+    const response = await axios.get(`/api/room/server/${params?.serverId}`);
+    setTextRoom(response.data.data.textRoom);
+    setAudioRoom(response.data.data.audioRoom);
+    setVideoRoom(response.data.data.videoRoom);
+  };
+
   const handleServerDetails = async () => {
     const response = await axios.get(`/api/server/${params?.serverId}`);
     setServerDetails(response.data.data);
@@ -97,6 +102,7 @@ const ChannelPanel = ({ rooms }: ChannelPannelProps) => {
 
   useEffect(() => {
     handleServerDetails();
+    handleRoom();
   }, []);
 
   return (
@@ -148,9 +154,9 @@ const ChannelPanel = ({ rooms }: ChannelPannelProps) => {
         height="h-[75%]"
         content={
           <div className="mt-2 p-1">
-            <ChannelCollapsible rooms={rooms} type="TEXT" />
-            <ChannelCollapsible rooms={rooms} type="AUDIO" />
-            <ChannelCollapsible rooms={rooms} type="VIDEO" />
+            <ChannelCollapsible rooms={textRoom} type="TEXT" />
+            <ChannelCollapsible rooms={audioRoom} type="AUDIO" />
+            <ChannelCollapsible rooms={videoRoom} type="VIDEO" />
           </div>
         }
         padding={false}

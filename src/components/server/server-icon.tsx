@@ -11,6 +11,7 @@ interface ServerIconProps {
   fallbackColor?: string;
   fallbackBackgroundColor?: string;
   tooltipText?: string;
+  needLink?: boolean;
   link?: string;
 }
 
@@ -21,11 +22,31 @@ const ServerIcon = ({
   fallbackBackgroundColor,
   fallbackColor,
   tooltipText,
+  needLink = true,
   link,
 }: ServerIconProps) => {
   return (
     <div className="my-3">
-      <Link href={link ? link : "/servers/@me"}>
+      {needLink ? (
+        <Link href={link ? link : "/servers/@me"}>
+          <Tooltip
+            trigger={
+              <button>
+                <Avatar
+                  image={image}
+                  altname={altName}
+                  radius=""
+                  transition={true}
+                  fallback={fallback}
+                  fallbackBackgroundColor={fallbackBackgroundColor}
+                  fallbackColor={fallbackColor}
+                />
+              </button>
+            }
+            content={tooltipText ? tooltipText : "Server"}
+          />
+        </Link>
+      ) : (
         <Tooltip
           trigger={
             <button>
@@ -42,7 +63,7 @@ const ServerIcon = ({
           }
           content={tooltipText ? tooltipText : "Server"}
         />
-      </Link>
+      )}
     </div>
   );
 };

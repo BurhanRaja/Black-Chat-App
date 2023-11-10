@@ -12,11 +12,13 @@ const AppDMLayout = () => {
     <>
       <MainCommonLayout
         sidepannel={<DMPannel />}
-        chatarea={<ChatArea />}
+        chatarea={<ChatArea membersOpen={false} />}
         memberpannel={<></>}
         fullWidth={true}
         serverId={params?.serverId as string}
         roomId={params?.roomId as string}
+        setMembersOpen={() => {}}
+        membersOpen={false}
       />
     </>
   );

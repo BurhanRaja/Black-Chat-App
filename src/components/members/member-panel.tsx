@@ -24,6 +24,7 @@ const MemberPanel = ({ members, membersOpen }: MemberPannel) => {
             {members?.map((member) => {
               return (
                 <MemberItem
+                  key={member.userId}
                   userId={member.userId}
                   name={member.user.displayname}
                   image={member.user.imageUrl}

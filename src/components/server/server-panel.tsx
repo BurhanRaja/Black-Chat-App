@@ -3,6 +3,7 @@ import ServerIcon from "./server-icon";
 import { prisma } from "@/db/client";
 import currentProfile from "@/lib/current-profile";
 import CreateServerBtn from "./create-server-btn";
+import Link from "next/link";
 
 const ServerPanel = async () => {
   const profile = await currentProfile();
@@ -48,7 +49,9 @@ const ServerPanel = async () => {
               );
             })}
             <hr className="border-gray-500" />
+            {/* <Link> */}
             <CreateServerBtn />
+            {/* </Link> */}
           </>
         }
         backgroundColor="bg-zinc-900"

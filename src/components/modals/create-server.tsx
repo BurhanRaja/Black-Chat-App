@@ -13,7 +13,6 @@ import { CreateServer } from "@/types";
 // Create Server Form
 const CreateServerForm = () => {
   const [file, setFile] = useState<string>("");
-  const [name, setName] = useState<string>("");
   const [error, setError] = useState<string>("");
 
   const nameRef = useRef<HTMLInputElement>(null);
@@ -61,7 +60,7 @@ const CreateServerForm = () => {
           labelTextColor="text-gray-500 mt-2"
           inputTextColor="text-gray-200"
         />
-        {name.length === 0 && error && (
+        {nameRef.current?.value.length === 0 && error && (
           <p className="text-red-500 text-xs mt-1">{error}</p>
         )}
         <div className="flex justify-end mt-10">

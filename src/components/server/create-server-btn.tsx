@@ -11,9 +11,9 @@ const CreateServerBtn = () => {
 
   return (
     <>
-      <CreateServerModal />
       <div onClick={() => onOpen("createServer", {})}>
         <ServerIcon
+          needLink={false}
           fallback={<Plus size={20} />}
           fallbackBackgroundColor="bg-gray-800 hover:bg-green-600"
           fallbackColor="text-green-600 hover:text-gray-800"
