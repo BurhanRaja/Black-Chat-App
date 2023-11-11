@@ -3,21 +3,23 @@
 import { Profile, SUser } from "@prisma/client";
 import ScrollArea from "../ui/scroll-area";
 import MemberItem from "./member-item";
+import { useContext } from "react";
+import { MemberPannelContext } from "@/context/createContext";
 
 interface CustomUser extends SUser {
   user: Profile;
 }
 interface MemberPannel {
   members: Array<CustomUser> | undefined;
-  membersOpen: boolean;
 }
 
-const MemberPanel = ({ members, membersOpen }: MemberPannel) => {
-  console.log(members);
+const MemberPanel = ({ members }: MemberPannel) => {
+  const { memberPannelOpen } = useContext(MemberPannelContext);
+
   return (
     <>
       <ScrollArea
-        width={membersOpen ? "w-[20%]" : "w-[0]"}
+        width={memberPannelOpen ? "w-[20%]" : "w-[0]"}
         height={"h-[93.3vh]"}
         content={
           <>
@@ -33,7 +35,7 @@ const MemberPanel = ({ members, membersOpen }: MemberPannel) => {
             })}
           </>
         }
-        padding={membersOpen}
+        padding={memberPannelOpen}
         backgroundColor="bg-[rgb(56,56,64)]"
       />
     </>

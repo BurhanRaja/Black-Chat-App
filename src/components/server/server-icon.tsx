@@ -28,7 +28,7 @@ const ServerIcon = ({
   return (
     <div className="my-3">
       {needLink ? (
-        <Link href={link ? link : "/servers/@me"}>
+        <Link href={link ? link : "/me"}>
           <Tooltip
             trigger={
               <button>

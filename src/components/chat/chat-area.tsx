@@ -3,16 +3,19 @@ import ScrollArea from "../ui/scroll-area";
 import Image from "next/image";
 import ChatInput from "./chat-input";
 import ChatItem from "./chat-item";
-import { useParams } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { useContext } from "react";
+import { MemberPannelContext } from "@/context/createContext";
+import ChatAreaLayout from "./chat-area-layout";
 
 export const ChatAreaImageItem = () => {
-  const params = useParams();
+  const pathname = usePathname();
 
   return (
     <>
       <div
         className={`flex items-center justify-center h-[93.3vh] bg-zinc-700 ${
-          params?.serverId === "%40me" ? "w-full" : "w-[80%]"
+          pathname === "/me" ? "w-full" : "w-[80%]"
         }`}
       >
         <div className="flex flex-col justify-between items-center">
@@ -29,20 +32,11 @@ export const ChatAreaImageItem = () => {
   );
 };
 
-interface ChatAreaProps {
-  membersOpen: boolean;
-}
-
-const ChatArea = ({ membersOpen }: ChatAreaProps) => {
-  const params = useParams();
+const ChatArea = () => {
+  const { memberPannelOpen } = useContext(MemberPannelContext);
 
   return (
-    // <ChatAreaImageItem />
-    <div
-      className={`${
-        params?.serverId === "%40me" || !membersOpen ? "w-full" : "w-[80%]"
-      } h-[665px]`}
-    >
+    <ChatAreaLayout>
       <ScrollArea
         width="w-[100%]"
         backgroundColor="bg-zinc-700"
@@ -58,7 +52,7 @@ const ChatArea = ({ membersOpen }: ChatAreaProps) => {
       <div className="bg-zinc-700 w-[100%] pb-8">
         <ChatInput />
       </div>
-    </div>
+    </ChatAreaLayout>
   );
 };
 

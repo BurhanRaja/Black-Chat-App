@@ -3,20 +3,19 @@
 import { Hash, Users2 } from "lucide-react";
 import MemberSearch from "../members/member-search";
 import Tooltip from "../ui/tooltip";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { MdEmojiPeople } from "react-icons/md";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Room } from "@prisma/client";
+import { MemberPannelContext } from "@/context/createContext";
 
-interface HeaderProps {
-  setMembersOpen: (val: boolean) => void;
-  membersOpen: boolean;
-}
-
-const Header = ({ membersOpen, setMembersOpen }: HeaderProps) => {
+const Header = () => {
   const [roomDetails, setRoomDetails] = useState<Room>();
   const params = useParams();
+  const pathname = usePathname();
+  const { memberPannelOpen, setMemberPannelOpen } =
+    useContext(MemberPannelContext);
 
   const handleRoomDetails = async () => {
     if (params?.roomId) {
@@ -34,7 +33,7 @@ const Header = ({ membersOpen, setMembersOpen }: HeaderProps) => {
   return (
     <>
       <div className="bg-[rgb(71,71,79)] p-3 pb-2 shadow-md flex justify-between pr-5">
-        {params?.serverId === "%40me" ? (
+        {pathname === "/me" ? (
           <>
             <div className="flex items-center">
               <p className="mr-2 flex items-center">
@@ -64,7 +63,7 @@ const Header = ({ membersOpen, setMembersOpen }: HeaderProps) => {
                 trigger={
                   <Users2
                     className="cursor-pointer"
-                    onClick={() => setMembersOpen(!membersOpen)}
+                    onClick={() => setMemberPannelOpen(!memberPannelOpen)}
                   />
                 }
                 content="User's List"

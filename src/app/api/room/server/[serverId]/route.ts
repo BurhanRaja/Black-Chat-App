@@ -38,15 +38,6 @@ export async function GET(
 
     const { serverId } = params;
 
-    let server = await prisma.server.findUnique({
-      where: {
-        serverId,
-      },
-      include: {
-        sUsers: true,
-      },
-    });
-
     const rooms = await prisma.server.findMany({
       where: {
         serverId,

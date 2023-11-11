@@ -48,7 +48,7 @@ const Login = () => {
 
   useEffect(() => {
     if (status === "authenticated") {
-      router.push("/servers/@me");
+      router.push("/me");
     }
   }, [status]);
 

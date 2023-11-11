@@ -1,55 +1,52 @@
-"use client";
 import ChatArea from "@/components/chat/chat-area";
 import MemberPanel from "@/components/members/member-panel";
 import MainCommonLayout from "./defaults/main-common-layout";
-import ChannelPanel from "./channel/channel-panel";
-import { useParams } from "next/navigation";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { Profile, Room, SUser, Server } from "@prisma/client";
+import RoomPanel from "./room/room-panel";
+import { prisma } from "@/db/client";
+import MemberPannelProvider from "./provider/user-type-provider";
+import Header from "@/components/defaults/header";
 
-interface CustomUser extends SUser {
-  user: Profile;
+interface AppServerLayoutProps {
+  serverId: string;
+  roomId: string;
 }
 
-interface ServerDetails extends Server {
-  rooms: Array<Room>;
-  sUsers: Array<CustomUser>;
-}
+const AppServerLayout = async ({ serverId, roomId }: AppServerLayoutProps) => {
+  const serverUsers = await prisma.sUser.findMany({
+    where: {
+      serverId,
+    },
+    include: {
+      user: true,
+    },
+  });
 
-const AppServerLayout = () => {
-  const params = useParams();
-
-  const [serverDetails, setServerDetails] = useState<ServerDetails>();
-  const [membersOpen, setMembersOpen] = useState<boolean>(true);
-
-  const handleServerData = async () => {
-    if (params?.serverId !== "@me") {
-      let response = await axios.get(`/api/server/${params?.serverId}`);
-      setServerDetails(response?.data.data);
-    }
-  };
-
-  useEffect(() => {
-    handleServerData();
-  }, []);
+  const server = await prisma.server.findUnique({
+    where: {
+      serverId,
+    },
+    include: {
+      sUsers: true,
+      rooms: true,
+    },
+  });
 
   return (
     <>
-      <MainCommonLayout
-        sidepannel={<ChannelPanel />}
-        chatarea={<ChatArea membersOpen={membersOpen} />}
-        memberpannel={
-          <MemberPanel
-            membersOpen={membersOpen}
-            members={serverDetails?.sUsers}
-          />
-        }
-        serverId={params?.serverId as string}
-        roomId={params?.roomId as string}
-        setMembersOpen={(val) => setMembersOpen(val)}
-        membersOpen={membersOpen}
-      />
+      <MemberPannelProvider>
+        <RoomPanel
+          servername={server?.name!}
+          rooms={server?.rooms!}
+          members={server?.sUsers!}
+        />
+        <div className="content w-[79%]">
+          <Header />
+          <div className="flex">
+            <ChatArea />
+            <MemberPanel members={serverUsers} />
+          </div>
+        </div>
+      </MemberPannelProvider>
     </>
   );
 };

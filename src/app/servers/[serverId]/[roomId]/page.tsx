@@ -1,14 +1,14 @@
 import EmailVerifiedPannel from "@/components/email-verified-pannel";
-import MainAppLayout from "@/components/main-app-layout";
+import AppServerLayout from "@/components/app-server-layout";
 import ServerPanel from "@/components/server/server-panel";
 
-const Room = () => {
+const Room = ({ params }: { params: { serverId: string; roomId: string } }) => {
   return (
     <>
       <EmailVerifiedPannel />
       <div className="flex">
         <ServerPanel />
-        <MainAppLayout />
+        <AppServerLayout serverId={params.serverId} roomId={params.roomId} />
       </div>
     </>
   );

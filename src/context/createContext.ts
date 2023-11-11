@@ -41,6 +41,11 @@ export type ModalContextType = {
   onClose: Function;
 };
 
+export type MemberPannel = {
+  memberPannelOpen: boolean;
+  setMemberPannelOpen: (val: boolean) => void;
+};
+
 export const ThemeContext = createContext<ThemeContextType>({
   theme: "dark",
   setTheme: (val: string) => {},
@@ -59,4 +64,9 @@ export const ModalContext = createContext<ModalContextType>({
   isOpen: false,
   onOpen: (type: ModalType, data: ModalData) => {},
   onClose: () => {},
+});
+
+export const MemberPannelContext = createContext<MemberPannel>({
+  memberPannelOpen: true,
+  setMemberPannelOpen: (val: boolean) => {},
 });
