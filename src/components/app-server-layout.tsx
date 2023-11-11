@@ -35,7 +35,7 @@ const AppServerLayout = async ({ serverId, roomId }: AppServerLayoutProps) => {
     <>
       <MemberPannelProvider>
         <RoomPanel
-          servername={server?.name!}
+          server={server!}
           rooms={server?.rooms!}
           members={server?.sUsers!}
         />

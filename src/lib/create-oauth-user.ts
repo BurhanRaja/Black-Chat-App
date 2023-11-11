@@ -3,6 +3,7 @@ import { randomBytes } from "crypto";
 import { Account, Profile, User } from "next-auth";
 import sendEmail, { NewSendEmailOptions } from "@/lib/send-email";
 import { AdapterUser } from "next-auth/adapters";
+import { encryptToken } from "./encrypt-decrypt";
 
 interface CreateOauthUserParams {
   profile: Profile;
@@ -42,14 +43,17 @@ const createOauthUser = async ({
     data: userData,
   });
 
-  if (userProf.id) {
+  if (userProf.userId) {
+    const userData = userProf.userId + "-" + userProf.email;
+    const encryptedToken = encryptToken(userData);
+
     let emailSend: NewSendEmailOptions = {
       from: "BlackChat <hello@blackchat.com>",
       to: profile.email as string,
       subject: "Email Verification",
       content:
         "Thank you for registering as our user. Kindly click on the button below to activate your account.",
-      link: "http://localhost:3000/verify/login",
+      link: `http://localhost:3000/verify/login/${encryptToken}`,
       linkText: "Verify Link",
     };
     sendEmail(emailSend);

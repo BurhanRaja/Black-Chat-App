@@ -38,9 +38,15 @@ const ProfileItem = () => {
             image={session?.user.image!}
             altname="Profile-Item"
             transition={false}
+            width="w-[45px]"
+            height="h-[45px]"
             fallbackBackgroundColor="bg-black"
           />
-          <p className="ml-2">{session?.user.name}</p>
+          <p className="ml-2">
+            {session?.user.name?.length! > 10
+              ? session?.user.name?.substring(0, 10) + "..."
+              : session?.user?.name}
+          </p>
         </div>
         <Dropdown
           trigger={<MoreHorizontal className="text-gray-400 cursor-pointer" />}

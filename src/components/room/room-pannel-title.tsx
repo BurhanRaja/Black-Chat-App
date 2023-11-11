@@ -14,9 +14,17 @@ import { ModalContext } from "@/context/createContext";
 
 interface RoomPannelTitleProps {
   serverName: string;
+  inviteCode: string;
+  isAdmin: boolean;
+  isModerator: boolean;
 }
 
-const RoomPannelTitle = ({ serverName }: RoomPannelTitleProps) => {
+const RoomPannelTitle = ({
+  serverName,
+  inviteCode,
+  isAdmin,
+  isModerator,
+}: RoomPannelTitleProps) => {
   const { onOpen } = useContext(ModalContext);
 
   // const handleServerDelete = async () => {
@@ -36,6 +44,8 @@ const RoomPannelTitle = ({ serverName }: RoomPannelTitleProps) => {
   //   }
   // };
 
+  console.log(isAdmin);
+
   return (
     <>
       <Dropdown
@@ -45,34 +55,75 @@ const RoomPannelTitle = ({ serverName }: RoomPannelTitleProps) => {
             <ChevronDown />
           </button>
         }
-        items={[
-          {
-            content: "Invite People",
-            link: "",
-            textColor: "text-violet-400",
-            icon: <UserPlus2 size={16} />,
-          },
-          {
-            content: "Create Room",
-            link: "",
-            textColor: "text-white",
-            icon: <PlusSquare size={16} />,
-            handleFunction: () => onOpen("createRoom", {}),
-          },
-          {
-            content: "Server Settings",
-            link: "",
-            textColor: "text-white",
-            icon: <Settings size={16} />,
-          },
-          {
-            content: "Delete Server",
-            link: "",
-            textColor: "text-red-500",
-            icon: <Trash2 size={16} />,
-            // handleFunction: () => handleServerDelete(),
-          },
-        ]}
+        items={
+          isAdmin
+            ? [
+                {
+                  content: "Invite People",
+                  link: "",
+                  textColor: "text-violet-400",
+                  icon: <UserPlus2 size={16} />,
+                  handleFunction: () =>
+                    onOpen("invitePeople", { query: inviteCode }),
+                },
+                {
+                  content: "Create Room",
+                  link: "",
+                  textColor: "text-white",
+                  icon: <PlusSquare size={16} />,
+                  handleFunction: () => onOpen("createRoom", {}),
+                },
+                {
+                  content: "Server Settings",
+                  link: "",
+                  textColor: "text-white",
+                  icon: <Settings size={16} />,
+                  handleFunction: () => {},
+                },
+                {
+                  content: "Delete Server",
+                  link: "",
+                  textColor: "text-red-500",
+                  icon: <Trash2 size={16} />,
+                  handleFunction: () => {},
+                },
+              ]
+            : isModerator
+            ? [
+                {
+                  content: "Invite People",
+                  link: "",
+                  textColor: "text-violet-400",
+                  icon: <UserPlus2 size={16} />,
+                  handleFunction: () =>
+                    onOpen("invitePeople", { query: inviteCode }),
+                },
+                {
+                  content: "Create Room",
+                  link: "",
+                  textColor: "text-white",
+                  icon: <PlusSquare size={16} />,
+                  handleFunction: () => onOpen("createRoom", {}),
+                },
+                {
+                  content: "Server Settings",
+                  link: "",
+                  textColor: "text-white",
+                  icon: <Settings size={16} />,
+                  handleFunction: () => {},
+                },
+              ]
+            : [
+                {
+                  content: "Invite People",
+                  link: "",
+                  textColor: "text-violet-400",
+                  icon: <UserPlus2 size={16} />,
+                  handleFunction: () =>
+                    onOpen("invitePeople", { query: inviteCode }),
+                },
+              ]
+        }
         contentColor="bg-gray-950 mt-2"
         contentWidth="w-[225px]"
       />

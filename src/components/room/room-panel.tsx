@@ -1,18 +1,23 @@
 import ChannelSearch from "./room-search";
 import ScrollArea from "../ui/scroll-area";
 import ProfileItem from "../profile-item";
-import { Room, RoomType, SUser, SUserRole } from "@prisma/client";
+import { Room, RoomType, SUser, SUserRole, Server } from "@prisma/client";
 import RoomPannelTitle from "./room-pannel-title";
 import currentProfile from "@/lib/current-profile";
 import RoomCollapsible from "./room-collapsible";
 
+interface ServerProps extends Server {
+  rooms: Array<Room>;
+  sUsers: Array<SUser>;
+}
+
 interface RoomPannelProps {
-  servername: string;
+  server: ServerProps;
   rooms: Array<Room>;
   members: Array<SUser>;
 }
 
-const RoomPanel = async ({ servername, members, rooms }: RoomPannelProps) => {
+const RoomPanel = async ({ server, members, rooms }: RoomPannelProps) => {
   const user = await currentProfile();
 
   const textRoom = rooms.filter((room) => room.type === RoomType["TEXT"]);
@@ -21,15 +26,25 @@ const RoomPanel = async ({ servername, members, rooms }: RoomPannelProps) => {
 
   const isAdmin =
     user?.userId ===
-    members.find((member) => member.type === SUserRole["ADMIN"])?.userId;
+      members.find((member) => member.type === SUserRole["ADMIN"])?.userId &&
+    user?.userId ===
+      server.sUsers.find((user) => user.type === "ADMIN")?.userId;
 
   const isModerator =
     user?.userId ===
-    members.find((member) => member.type === SUserRole["MODERATOR"])?.userId;
+      members.find((member) => member.type === SUserRole["MODERATOR"])
+        ?.userId &&
+    user?.userId ===
+      server.sUsers.find((user) => user.type === "MODERATOR")?.userId;
 
   return (
     <div className="h-[100vh] bg-[rgb(71,71,79)] pb-2">
-      <RoomPannelTitle serverName={servername} />
+      <RoomPannelTitle
+        serverName={server?.name}
+        inviteCode={server?.inviteCode}
+        isAdmin={isAdmin}
+        isModerator={isModerator}
+      />
       <div className="mt-2 p-1">
         <ChannelSearch />
       </div>

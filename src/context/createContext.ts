@@ -23,6 +23,7 @@ export type ModalType =
   | "messageFile"
   | "deleteMessage"
   | "editProfile"
+  | "invitePeople"
   | null;
 
 export type ModalData = {
@@ -67,6 +68,6 @@ export const ModalContext = createContext<ModalContextType>({
 });
 
 export const MemberPannelContext = createContext<MemberPannel>({
-  memberPannelOpen: true,
+  memberPannelOpen: false,
   setMemberPannelOpen: (val: boolean) => {},
 });

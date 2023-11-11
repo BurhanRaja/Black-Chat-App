@@ -4,6 +4,7 @@ import { randomBytes } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/db/client";
 import { RoomType, SUserRole } from "@prisma/client";
+import { v4 as uuidV4 } from "uuid";
 
 export async function POST(req: NextRequest): Promise<
   | NextResponse<{
@@ -44,7 +45,7 @@ export async function POST(req: NextRequest): Promise<
       uniqueId += randomBytes(4).toString("hex");
     }
 
-    let inviteCode = encryptToken(name + "-" + uniqueId);
+    let inviteCode = uuidV4();
 
     let data = {
       name,
