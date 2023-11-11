@@ -1,23 +1,19 @@
-"use client";
-
-import ChatArea from "@/components/chat/chat-area";
 import DMPannel from "./dm/dm-pannel";
-import MainCommonLayout from "./defaults/main-common-layout";
-import { useParams } from "next/navigation";
+import Header from "@/components/defaults/header";
+import { ReactNode } from "react";
 
-const AppDMLayout = () => {
-  const params = useParams();
+interface AppDMLayoutProps {
+  chatarea: ReactNode;
+}
 
+const AppDMLayout = ({ chatarea }: AppDMLayoutProps) => {
   return (
     <>
       <DMPannel />
-      <MainCommonLayout
-        chatarea={<ChatArea />}
-        memberpannel={<></>}
-        fullWidth={true}
-        serverId={params?.serverId as string}
-        roomId={params?.roomId as string}
-      />
+      <div className="content w-[79%]">
+        <Header />
+        <div className="flex">{chatarea}</div>
+      </div>
     </>
   );
 };
