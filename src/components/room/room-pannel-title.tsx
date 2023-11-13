@@ -5,8 +5,6 @@ import {
   Settings,
   UserPlus2,
   Trash2,
-  Plus,
-  Hash,
   PlusSquare,
   LogOut,
 } from "lucide-react";

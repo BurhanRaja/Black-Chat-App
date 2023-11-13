@@ -258,6 +258,13 @@ const ServerDetailsForm = () => {
 
 // Server Settings Tabs
 const ServerSettingsTabs = () => {
+  const { data } = useContext(ModalContext);
+  const { data: session } = useSession();
+
+  const isAdmin =
+    data?.sUsers?.find((el) => el.user.userId === session?.user.userId)
+      ?.type === "ADMIN";
+
   return (
     <>
       <TabsPrimitive.Root
@@ -268,12 +275,14 @@ const ServerSettingsTabs = () => {
           className="shrink-0 flex border-b border-mauve6"
           aria-label="Manage your account"
         >
-          <TabsPrimitive.Trigger
-            className="bg-black text-gray-400 px-5 h-[45px] flex-1 flex items-center justify-center text-[15px] leading-none text-mauve11 select-none first:rounded-tl-md last:rounded-tr-md hover:text-white data-[state=active]:text-white data-[state=active]:shadow-[inset_0_-1px_0_0,0_1px_0_0] data-[state=active]:shadow-current data-[state=active]:focus:relative data-[state=active]:focus:shadow-[0_0_0_2px] data-[state=active]:focus:shadow-black outline-none cursor-pointer"
-            value="tab1"
-          >
-            Server Details
-          </TabsPrimitive.Trigger>
+          {isAdmin && (
+            <TabsPrimitive.Trigger
+              className="bg-black text-gray-400 px-5 h-[45px] flex-1 flex items-center justify-center text-[15px] leading-none text-mauve11 select-none first:rounded-tl-md last:rounded-tr-md hover:text-white data-[state=active]:text-white data-[state=active]:shadow-[inset_0_-1px_0_0,0_1px_0_0] data-[state=active]:shadow-current data-[state=active]:focus:relative data-[state=active]:focus:shadow-[0_0_0_2px] data-[state=active]:focus:shadow-black outline-none cursor-pointer"
+              value="tab1"
+            >
+              Server Details
+            </TabsPrimitive.Trigger>
+          )}
           <TabsPrimitive.Trigger
             className="bg-black text-gray-400 px-5 h-[45px] flex-1 flex items-center justify-center text-[15px] leading-none text-mauve11 select-none first:rounded-tl-md last:rounded-tr-md hover:text-white data-[state=active]:text-white data-[state=active]:shadow-[inset_0_-1px_0_0,0_1px_0_0] data-[state=active]:shadow-current data-[state=active]:focus:relative data-[state=active]:focus:shadow-[0_0_0_2px] data-[state=active]:focus:shadow-black outline-none cursor-pointer"
             value="tab2"
@@ -281,12 +290,14 @@ const ServerSettingsTabs = () => {
             Members
           </TabsPrimitive.Trigger>
         </TabsPrimitive.List>
-        <TabsPrimitive.Content
-          className="grow p-5 bg-black rounded-b-md outline-none focus:shadow-[0_0_0_2px] focus:shadow-black"
-          value="tab1"
-        >
-          <ServerDetailsForm />
-        </TabsPrimitive.Content>
+        {isAdmin && (
+          <TabsPrimitive.Content
+            className="grow p-5 bg-black rounded-b-md outline-none focus:shadow-[0_0_0_2px] focus:shadow-black"
+            value="tab1"
+          >
+            <ServerDetailsForm />
+          </TabsPrimitive.Content>
+        )}
         <TabsPrimitive.Content
           className="grow p-5 bg-black rounded-b-md outline-none focus:shadow-[0_0_0_2px] focus:shadow-black"
           value="tab2"
