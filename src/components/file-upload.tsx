@@ -8,9 +8,17 @@ interface IFileUploadProps {
   onChange: (file: string) => void;
   value: string;
   endpoint: "serverImage" | "messageFile" | "userImage";
+  width?: string;
+  height?: string;
 }
 
-const FileUpload = ({ onChange, value, endpoint }: IFileUploadProps) => {
+const FileUpload = ({
+  onChange,
+  value,
+  endpoint,
+  width,
+  height,
+}: IFileUploadProps) => {
   const fileType = value.split(".").pop();
 
   if (value && fileType !== "pdf") {
@@ -21,8 +29,8 @@ const FileUpload = ({ onChange, value, endpoint }: IFileUploadProps) => {
             <Avatar
               image={value}
               altname="uploaded file"
-              width="w-[80px] rounded-full"
-              height="h-[80px]"
+              width={`${width ? width : "w-[80px]"} rounded-full`}
+              height={`${height ? height : "h-[80px]"}`}
             />
             <button
               className="absolute bg-gray-200 hover:bg-gray-100 rounded-full p-1 right-1"

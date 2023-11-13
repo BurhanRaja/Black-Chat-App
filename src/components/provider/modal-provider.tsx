@@ -8,6 +8,7 @@ import CreateRoomModal from "../modals/create-room";
 import EditRoomModal from "../modals/edit-room";
 import DeleteRoomModal from "../modals/delete-room";
 import InvitePeopleCodeModal from "../modals/invite-people";
+import ServerSettingsModal from "../modals/server-settings";
 
 interface ModalProviderProps {
   children: React.ReactNode;
@@ -38,6 +39,7 @@ const ModalProvider = ({ children }: ModalProviderProps) => {
       <EditRoomModal />
       <DeleteRoomModal />
       <InvitePeopleCodeModal />
+      <ServerSettingsModal />
       {children}
     </ModalContext.Provider>
   );

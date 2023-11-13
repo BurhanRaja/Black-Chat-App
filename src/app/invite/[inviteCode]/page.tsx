@@ -1,3 +1,4 @@
+import ServerAlert from "@/components/server-alert";
 import { prisma } from "@/db/client";
 import currentProfile from "@/lib/current-profile";
 import { SUserRole } from "@prisma/client";
@@ -15,6 +16,14 @@ const InviteCode = async ({ params }: InviteCodeProps) => {
 
   if (!profile) {
     redirect("/auth/signin");
+  }
+
+  if (!profile.emailVerified) {
+    return (
+      <>
+        <ServerAlert type="error" message="Please verify your email." redirect="/me" />
+      </>
+    );
   }
 
   if (!params.inviteCode) {
@@ -36,10 +45,10 @@ const InviteCode = async ({ params }: InviteCodeProps) => {
   });
 
   if (existingServer) {
-    let defaultRoom = existingServer.rooms.filter(
+    let defaultRoom = existingServer.rooms.find(
       (room) => room.default === true
     );
-    redirect(`/servers/${existingServer.serverId}/${defaultRoom[0].roomId}`);
+    redirect(`/servers/${existingServer.serverId}/${defaultRoom?.roomId}`);
   }
 
   const server = await prisma.server.findUnique({

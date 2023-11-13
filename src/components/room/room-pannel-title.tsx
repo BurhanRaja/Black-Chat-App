@@ -8,22 +8,22 @@ import {
   Plus,
   Hash,
   PlusSquare,
+  LogOut,
 } from "lucide-react";
 import { useContext } from "react";
 import { ModalContext } from "@/context/createContext";
+import { ServerProps } from "./room-panel";
 
 interface RoomPannelTitleProps {
-  serverName: string;
-  inviteCode: string;
   isAdmin: boolean;
   isModerator: boolean;
+  server: ServerProps;
 }
 
 const RoomPannelTitle = ({
-  serverName,
-  inviteCode,
   isAdmin,
   isModerator,
+  server,
 }: RoomPannelTitleProps) => {
   const { onOpen } = useContext(ModalContext);
 
@@ -44,14 +44,12 @@ const RoomPannelTitle = ({
   //   }
   // };
 
-  console.log(isAdmin);
-
   return (
     <>
       <Dropdown
         trigger={
           <button className="flex justify-between items-center p-3 shadow-md focus:outline-0 w-[100%] rounded-sm hover:bg-zinc-600">
-            <span>{serverName}</span>
+            <span>{server?.name}</span>
             <ChevronDown />
           </button>
         }
@@ -64,7 +62,7 @@ const RoomPannelTitle = ({
                   textColor: "text-violet-400",
                   icon: <UserPlus2 size={16} />,
                   handleFunction: () =>
-                    onOpen("invitePeople", { query: inviteCode }),
+                    onOpen("invitePeople", { query: server?.inviteCode }),
                 },
                 {
                   content: "Create Room",
@@ -78,7 +76,16 @@ const RoomPannelTitle = ({
                   link: "",
                   textColor: "text-white",
                   icon: <Settings size={16} />,
-                  handleFunction: () => {},
+                  handleFunction: () =>
+                    onOpen("serverSettings", {
+                      server: {
+                        serverId: server?.serverId,
+                        name: server?.name,
+                        imageUrl: server?.imageUrl,
+                        createdAt: server?.createdAt,
+                      },
+                      sUsers: server.sUsers,
+                    }),
                 },
                 {
                   content: "Delete Server",
@@ -96,7 +103,7 @@ const RoomPannelTitle = ({
                   textColor: "text-violet-400",
                   icon: <UserPlus2 size={16} />,
                   handleFunction: () =>
-                    onOpen("invitePeople", { query: inviteCode }),
+                    onOpen("invitePeople", { query: server?.inviteCode }),
                 },
                 {
                   content: "Create Room",
@@ -106,10 +113,10 @@ const RoomPannelTitle = ({
                   handleFunction: () => onOpen("createRoom", {}),
                 },
                 {
-                  content: "Server Settings",
+                  content: "Leave Server",
                   link: "",
-                  textColor: "text-white",
-                  icon: <Settings size={16} />,
+                  textColor: "text-red-500",
+                  icon: <LogOut size={16} />,
                   handleFunction: () => {},
                 },
               ]
@@ -120,7 +127,14 @@ const RoomPannelTitle = ({
                   textColor: "text-violet-400",
                   icon: <UserPlus2 size={16} />,
                   handleFunction: () =>
-                    onOpen("invitePeople", { query: inviteCode }),
+                    onOpen("invitePeople", { query: server?.inviteCode }),
+                },
+                {
+                  content: "Leave Server",
+                  link: "",
+                  textColor: "text-red-500",
+                  icon: <LogOut size={16} />,
+                  handleFunction: () => {},
                 },
               ]
         }

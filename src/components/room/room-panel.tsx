@@ -6,7 +6,7 @@ import RoomPannelTitle from "./room-pannel-title";
 import currentProfile from "@/lib/current-profile";
 import RoomCollapsible from "./room-collapsible";
 
-interface ServerProps extends Server {
+export interface ServerProps extends Server {
   rooms: Array<Room>;
   sUsers: Array<SUser>;
 }
@@ -24,13 +24,13 @@ const RoomPanel = async ({ server, members, rooms }: RoomPannelProps) => {
   const audioRoom = rooms.filter((room) => room.type === RoomType["AUDIO"]);
   const videoRoom = rooms.filter((room) => room.type === RoomType["VIDEO"]);
 
-  const isAdmin =
+  const isAdmin: boolean =
     user?.userId ===
       members.find((member) => member.type === SUserRole["ADMIN"])?.userId &&
     user?.userId ===
       server.sUsers.find((user) => user.type === "ADMIN")?.userId;
 
-  const isModerator =
+  const isModerator: boolean =
     user?.userId ===
       members.find((member) => member.type === SUserRole["MODERATOR"])
         ?.userId &&
@@ -40,10 +40,9 @@ const RoomPanel = async ({ server, members, rooms }: RoomPannelProps) => {
   return (
     <div className="h-[100vh] bg-[rgb(71,71,79)] pb-2">
       <RoomPannelTitle
-        serverName={server?.name}
-        inviteCode={server?.inviteCode}
         isAdmin={isAdmin}
         isModerator={isModerator}
+        server={server}
       />
       <div className="mt-2 p-1">
         <ChannelSearch />

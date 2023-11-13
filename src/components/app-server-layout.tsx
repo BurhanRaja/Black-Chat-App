@@ -26,7 +26,11 @@ const AppServerLayout = async ({ serverId, roomId }: AppServerLayoutProps) => {
       serverId,
     },
     include: {
-      sUsers: true,
+      sUsers: {
+        include: {
+          user: true,
+        },
+      },
       rooms: true,
     },
   });

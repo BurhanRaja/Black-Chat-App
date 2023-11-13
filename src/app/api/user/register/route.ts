@@ -4,6 +4,7 @@ import { randomBytes } from "crypto";
 import sendEmail, { NewSendEmailOptions } from "@/lib/send-email";
 import hashPassword from "@/lib/hash-password";
 import { encryptToken } from "@/lib/encrypt-decrypt";
+import { createProfile } from "@/types";
 
 const mainURL = process.env.NEXT_APP_URL!;
 const appName = process.env.NEXT_APP_NAME!;
@@ -18,7 +19,17 @@ export async function POST(req: NextRequest): Promise<
 > {
   let success = false;
   try {
-    const { username, email, password, gender } = await req.json();
+    const bodyData = await req.json();
+    const validation = createProfile.safeParse(bodyData);
+    if (!validation.success) {
+      const { errors } = validation.error;
+      return NextResponse.json(
+        { success, message: errors[0]?.message },
+        { status: 406 }
+      );
+    }
+
+    const { username, email, password, gender } = bodyData;
 
     // Email Check
     let user = await prisma.profile.findUnique({

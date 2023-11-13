@@ -1,10 +1,10 @@
 import currentProfile from "@/lib/current-profile";
-import { encryptToken } from "@/lib/encrypt-decrypt";
 import { randomBytes } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/db/client";
 import { RoomType, SUserRole } from "@prisma/client";
 import { v4 as uuidV4 } from "uuid";
+import { createServer } from "@/types";
 
 export async function POST(req: NextRequest): Promise<
   | NextResponse<{
@@ -16,9 +16,36 @@ export async function POST(req: NextRequest): Promise<
   let success = false;
 
   try {
-    const { imageUrl, name } = await req.json();
+    const profile = await currentProfile();
 
-    const user = await currentProfile();
+    if (!profile) {
+      return NextResponse.json(
+        { success, message: "UnAuthorized" },
+        { status: 401 }
+      );
+    }
+
+    if (!profile.emailVerified) {
+      return NextResponse.json(
+        { success, message: "Please Verify your Email first." },
+        { status: 400 }
+      );
+    }
+
+    const bodyData = await req.json();
+    const validation = createServer.safeParse(bodyData);
+    if (!validation.success) {
+      const { errors } = validation.error;
+      return NextResponse.json(
+        {
+          success,
+          message: errors[0]?.message,
+        },
+        { status: 406 }
+      );
+    }
+
+    const { imageUrl, name } = bodyData;
 
     let server = await prisma.server.findUnique({
       where: {
@@ -52,7 +79,7 @@ export async function POST(req: NextRequest): Promise<
       imageUrl,
       serverId: uniqueId,
       inviteCode,
-      ownerId: user?.userId!,
+      ownerId: profile?.userId!,
     };
 
     server = await prisma.server.create({
@@ -74,7 +101,7 @@ export async function POST(req: NextRequest): Promise<
       sUserId: userUniqueId,
       type: SUserRole["ADMIN"],
       serverId: server.serverId,
-      userId: user?.userId!,
+      userId: profile?.userId!,
     };
 
     await prisma.sUser.create({
@@ -137,11 +164,11 @@ export async function GET(): Promise<
   let success = false;
 
   try {
-    const user = await currentProfile();
+    const profile = await currentProfile();
 
     let ownedServer = await prisma.server.findMany({
       where: {
-        ownerId: user?.userId!,
+        ownerId: profile?.userId!,
         rooms: {
           some: {
             default: true,
@@ -157,7 +184,7 @@ export async function GET(): Promise<
       where: {
         sUsers: {
           some: {
-            userId: user?.userId!,
+            userId: profile?.userId!,
             type: SUserRole["MEMBER"],
           },
         },
@@ -176,7 +203,7 @@ export async function GET(): Promise<
       where: {
         sUsers: {
           some: {
-            userId: user?.userId!,
+            userId: profile?.userId!,
             type: SUserRole["MODERATOR"],
           },
         },

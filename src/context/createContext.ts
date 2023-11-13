@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { Profile, Room, Server } from "@prisma/client";
+import { Profile, Room, SUser, Server } from "@prisma/client";
 
 type ThemeContextType = {
   theme: string;
@@ -17,19 +17,26 @@ export type ModalType =
   | "createServer"
   | "editServer"
   | "deleteServer"
+  | "serverSettings"
   | "createRoom"
   | "editRoom"
   | "deleteRoom"
+  | "roomSettings"
   | "messageFile"
   | "deleteMessage"
   | "editProfile"
   | "invitePeople"
   | null;
 
+interface CustomUser extends SUser {
+  user: Profile;
+}
+
 export type ModalData = {
   server?: Server;
   room?: Room;
   profile?: Profile;
+  sUsers?: Array<CustomUser>;
   apiUrl?: string;
   query?: string;
 };

@@ -1,4 +1,4 @@
-import z from "zod";
+import z, { TypeOf } from "zod";
 import { RoomType } from "@prisma/client";
 
 // Create Profile
@@ -15,9 +15,16 @@ export const createProfile = z.object({
     .min(5)
     .max(20)
     .regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/),
-  gender: z.string().toLowerCase(),
+  gender: z.number(),
 });
 export type CreateProfile = z.infer<typeof createProfile>;
+
+// Resend Email
+export const resendEmail = z.object({
+  userId: z.string(),
+  email: z.string().email(),
+});
+export type ResendEmail = z.infer<typeof resendEmail>;
 
 // Edit Profile
 export const editProfile = z.object({

@@ -32,8 +32,8 @@ export async function POST(req: NextRequest): Promise<
     if (!validation.success) {
       const { errors } = validation.error;
       return NextResponse.json(
-        { success, error: errors, message: "Validation Error" },
-        { status: 400 }
+        { success, message: errors[0]?.message },
+        { status: 406 }
       );
     }
 

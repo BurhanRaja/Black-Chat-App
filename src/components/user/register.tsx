@@ -10,6 +10,7 @@ import GoogleButton from "../google-button";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { AiFillInfoCircle } from "react-icons/ai";
+import { CreateProfile } from "@/types";
 
 const USERNAME_REGEX = /^[a-zA-Z0-9]{5,20}$/;
 const EMAIL_REGEX = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,5}$/;
@@ -108,7 +109,7 @@ const Register = () => {
       return;
     }
 
-    let data = {
+    let data: CreateProfile = {
       email,
       username,
       gender: Number(gender),
