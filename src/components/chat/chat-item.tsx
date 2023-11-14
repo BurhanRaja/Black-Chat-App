@@ -1,12 +1,31 @@
 "use client";
 
 import Avatar from "../ui/avatar";
-import Dropdown from "../ui/dropdown";
 import { BsFillReplyFill, BsFillEmojiLaughingFill } from "react-icons/bs";
-import { SmilePlus } from "lucide-react";
+import { File, SmilePlus } from "lucide-react";
 import Tooltip from "../ui/tooltip";
+import { SUserRole } from "@prisma/client";
 
-const ChatItem = () => {
+interface ChatItemProps {
+  message: string;
+  file: string;
+  fileType: string | undefined;
+  username: string;
+  createdAt: string;
+  userImage: string;
+  type: SUserRole;
+}
+
+const ChatItem = ({
+  message,
+  file,
+  fileType,
+  username,
+  createdAt,
+  userImage,
+  type,
+}: ChatItemProps) => {
+  console.log(file);
   return (
     <>
       <div className="relative flex items-start hover:bg-[rgb(54,54,58)] p-2 py-3 group">
@@ -30,34 +49,36 @@ const ChatItem = () => {
             content="Add Reaction"
           />
         </div>
-        <Dropdown
-          trigger={
-            <Avatar
-              image="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
-              altname="anyname"
-            />
-          }
-          items={[
-            {
-              content: "Direct Message",
-              link: "",
-              textColor: "white",
-              hoverBackgroundColor: "bg-zinc-800",
-            },
-          ]}
-          contentWidth="w-[300px]"
-          contentColor="bg-gray-900"
-        />
+        <Avatar image={userImage} altname="anyname" />
         <div className="ml-2">
           <p className="text-sm text-zinc-400">
-            <span className="text-green-400">BurhanRaja </span> -{" "}
-            <span className="text-xs ">2023/04/05 {"  "} 4:05 PM</span>
+            <span className="text-green-400">{username} </span> -{" "}
+            <span className="text-xs ">{createdAt}</span>
           </p>
-          <p>Content written here. More is on the way</p>
-          <button className="flex items-center justify-between bg-zinc-800 p-0.5 px-1 text-xs mt-1 rounded-md">
+          {fileType && fileType !== "pdf" && (
+            <div className="bg-zinc-800 rounded-md max-h-[300px] max-width-[400px] h-auto p-2 cursor-pointer my-1">
+              <img
+                src={file}
+                className="max-h-[250px] max-width-[350px]"
+              />
+            </div>
+          )}
+          {fileType === "pdf" && (
+            <div className="relative flex items-center p-2 mt-2 rounded-md bg-neutral-800 my-1">
+              <File
+                size={35}
+                className="h-10 w-10 fill-indigo-200 stroke-indigo-400"
+              />
+              <a className="ml-2 text-sm text-indigo-500 dark:text-indigo-400 hover:underline cursor-pointer">
+                PDF File
+              </a>
+            </div>
+          )}
+          <p>{message}</p>
+          {/* <button className="flex items-center justify-between bg-zinc-800 p-0.5 px-1 text-xs mt-1 rounded-md">
             <BsFillEmojiLaughingFill className="text-xs text-yellow-500 mr-1" />
             <p>1</p>
-          </button>
+          </button> */}
         </div>
       </div>
     </>

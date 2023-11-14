@@ -12,7 +12,7 @@ const ChatAreaLayout = ({ children }: ChatAreaLayoutProps) => {
 
   return (
     <>
-      <div className={`${!memberPannelOpen ? "w-full" : "w-[80%]"} h-[665px]`}>
+      <div className={`${!memberPannelOpen ? "w-full" : "w-[80%]"}`}>
         {children}
       </div>
     </>

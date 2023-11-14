@@ -1,5 +1,8 @@
 import z, { TypeOf } from "zod";
-import { RoomType } from "@prisma/client";
+import { Message, Profile, RoomType, SUser } from "@prisma/client";
+import { NextApiResponse } from "next";
+import { Server as NetServer, Socket } from "net";
+import { Server as SocketIOServer } from "socket.io";
 
 // Create Profile
 export const createProfile = z.object({
@@ -55,3 +58,19 @@ export const createRoom = z.object({
   isPrivate: z.boolean(),
 });
 export type CreateRoom = z.infer<typeof createRoom>;
+
+// Response Server IO
+export type NextApiResponseServerIo = NextApiResponse & {
+  socket: Socket & {
+    server: NetServer & {
+      io: SocketIOServer;
+    };
+  };
+};
+
+// Message With Profile
+export type MessageWithProfile = Message & {
+  user: SUser & {
+    user: Profile;
+  };
+};

@@ -6,7 +6,7 @@ const Room = ({ params }: { params: { serverId: string; roomId: string } }) => {
   return (
     <>
       <EmailVerifiedPannel />
-      <div className="flex">
+      <div className="flex h-full">
         <ServerPanel />
         <AppServerLayout serverId={params.serverId} roomId={params.roomId} />
       </div>

@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Message" ALTER COLUMN "sUserId" DROP NOT NULL,
+ALTER COLUMN "isReply" SET DEFAULT false,
+ALTER COLUMN "replyuserId" DROP NOT NULL;

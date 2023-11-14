@@ -65,7 +65,7 @@ const DMPannelContent = () => {
 const DMPannel = () => {
   return (
     <>
-      <div className="h-[100vh] bg-[rgb(71,71,79)] pb-2 w-[255px]">
+      <div className="h-[100vh] bg-[rgb(71,71,79)] pb-2 w-[255px] ml-20">
         <button className="flex justify-between items-center p-3 shadow-md focus:outline-0 w-[100%] rounded-sm bg-[rgb(71,71,79)] hover:bg-zinc-600">
           <span>Direct Messages</span>
         </button>

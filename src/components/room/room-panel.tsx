@@ -38,7 +38,7 @@ const RoomPanel = async ({ server, members, rooms }: RoomPannelProps) => {
       server.sUsers.find((user) => user.type === "MODERATOR")?.userId;
 
   return (
-    <div className="h-[100vh] bg-[rgb(71,71,79)] pb-2">
+    <div className="h-[100vh] bg-[rgb(71,71,79)] pb-2 ml-[4.8rem]">
       <RoomPannelTitle
         isAdmin={isAdmin}
         isModerator={isModerator}

@@ -1,10 +1,11 @@
-import ChatArea from "@/components/chat/chat-area";
 import MemberPanel from "@/components/members/member-panel";
-import MainCommonLayout from "./defaults/main-common-layout";
 import RoomPanel from "./room/room-panel";
 import { prisma } from "@/db/client";
 import MemberPannelProvider from "./provider/user-type-provider";
 import Header from "@/components/defaults/header";
+import ChatMessages from "@/components/chat/chat-messages";
+import ChatAreaLayout from "./chat/chat-area-layout";
+import ChatInput from "./chat/chat-input";
 
 interface AppServerLayoutProps {
   serverId: string;
@@ -12,6 +13,10 @@ interface AppServerLayoutProps {
 }
 
 const AppServerLayout = async ({ serverId, roomId }: AppServerLayoutProps) => {
+  const queryKey = `chat:${roomId}`;
+  const addKey = `chat:${roomId}:message`;
+  const updateKey = `chat:${roomId}:message:update`;
+
   const serverUsers = await prisma.sUser.findMany({
     where: {
       serverId,
@@ -43,10 +48,20 @@ const AppServerLayout = async ({ serverId, roomId }: AppServerLayoutProps) => {
           rooms={server?.rooms!}
           members={server?.sUsers!}
         />
-        <div className="content w-[79%]">
+        <div className="w-[79%] h-full">
           <Header />
           <div className="flex">
-            <ChatArea />
+            <ChatAreaLayout>
+              <ChatMessages
+                queryKey={queryKey}
+                apiUrl="/api/messages"
+                paramKey="roomId"
+                paramValue={roomId}
+              />
+              <div className="bg-zinc-700 relative w-[100%] pb-6 pt-2">
+                <ChatInput serverId={serverId} roomId={roomId} />
+              </div>
+            </ChatAreaLayout>
             <MemberPanel members={serverUsers} />
           </div>
         </div>

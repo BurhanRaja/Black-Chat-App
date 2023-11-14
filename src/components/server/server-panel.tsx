@@ -26,7 +26,7 @@ const ServerPanel = async () => {
   }
 
   return (
-    <>
+    <div className="fixed">
       <ScrollArea
         width="w-[75px]"
         height="h-[100vh]"
@@ -57,7 +57,7 @@ const ServerPanel = async () => {
         backgroundColor="bg-zinc-900"
         padding={true}
       ></ScrollArea>
-    </>
+    </div>
   );
 };
 

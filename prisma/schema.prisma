@@ -157,18 +157,18 @@ model Reaction {
 model Message {
   id        String  @id @default(uuid())
   messageId String  @unique
-  content   String
+  content   String?
   file      String?
   isDelete  Boolean @default(false)
-  isReply   Boolean
+  isReply   Boolean @default(false)
 
   // The one who is replied to
-  replyuser   SUser  @relation(fields: [replyuserId], references: [sUserId], name: "replyUser")
-  replyuserId String
+  replyuser   SUser?  @relation(fields: [replyuserId], references: [sUserId], name: "replyUser")
+  replyuserId String?
   // The who replied
-  user        SUser  @relation(fields: [sUserId], references: [sUserId], name: "user")
-  sUserId     String
-  room        Room   @relation(fields: [roomId], references: [roomId], onDelete: Cascade)
+  user        SUser?  @relation(fields: [sUserId], references: [sUserId], name: "user")
+  sUserId     String?
+  room        Room    @relation(fields: [roomId], references: [roomId], onDelete: Cascade)
   roomId      String
 
   reactions Reaction[]

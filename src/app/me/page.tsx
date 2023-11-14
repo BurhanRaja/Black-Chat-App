@@ -1,7 +1,7 @@
 import EmailVerifiedPannel from "@/components/email-verified-pannel";
 import ServerPanel from "@/components/server/server-panel";
 import AppDMLayout from "@/components/app-directmessage-layout";
-import { ChatAreaImageItem } from "@/components/chat/chat-area";
+import { ChatAreaImageItem } from "@/components/chat/chat-messages";
 
 const Home = () => {
   return (

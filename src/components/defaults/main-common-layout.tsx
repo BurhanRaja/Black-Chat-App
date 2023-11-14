@@ -2,7 +2,7 @@
 
 import { ReactNode, useContext } from "react";
 import Header from "@/components/defaults/header";
-import { ChatAreaImageItem } from "../chat/chat-area";
+import { ChatAreaImageItem } from "../chat/chat-messages";
 import { MemberPannelContext } from "@/context/createContext";
 import { usePathname, useRouter } from "next/navigation";
 
