@@ -54,11 +54,18 @@ export type MemberPannel = {
   setMemberPannelOpen: (val: boolean) => void;
 };
 
+type SocketContextType = {
+  isConnected: boolean;
+  socket: any | null;
+};
+
+// Theme Context
 export const ThemeContext = createContext<ThemeContextType>({
   theme: "dark",
   setTheme: (val: string) => {},
 });
 
+// Alert Context
 export const AlertContext = createContext<AlertContextType>({
   setAlertOpen: (val: boolean) => {},
   setTitle: (val: string) => {},
@@ -66,6 +73,7 @@ export const AlertContext = createContext<AlertContextType>({
   setType: (val: "error" | "success" | "info" | "notification") => {},
 });
 
+// Modal Context
 export const ModalContext = createContext<ModalContextType>({
   type: null,
   data: {},
@@ -74,7 +82,14 @@ export const ModalContext = createContext<ModalContextType>({
   onClose: () => {},
 });
 
+// Member Context
 export const MemberPannelContext = createContext<MemberPannel>({
   memberPannelOpen: false,
   setMemberPannelOpen: (val: boolean) => {},
+});
+
+// Socket Context
+export const SocketContext = createContext<SocketContextType>({
+  isConnected: false,
+  socket: null,
 });

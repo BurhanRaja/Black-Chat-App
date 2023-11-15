@@ -5,13 +5,15 @@ import Avatar from "./ui/avatar";
 import Dropdown from "./ui/dropdown";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ModalContext } from "@/context/createContext";
 import axios from "axios";
+import { Profile } from "@prisma/client";
 
 const ProfileItem = () => {
   const router = useRouter();
   const { data: session } = useSession();
+  const [profileData, setProfileData] = useState<Profile>();
   const { onOpen } = useContext(ModalContext);
 
   const handleSignOut = () => {
@@ -21,21 +23,31 @@ const ProfileItem = () => {
   };
 
   const handleOpenModal = async () => {
-    const response = await axios.get("/api/user");
-    if (!response.data.success) {
-      return;
-    }
-    console.log(response.data.data);
-    onOpen("editProfile", { profile: response.data.data });
+    onOpen("editProfile", { profile: profileData });
     return;
   };
+
+  const getProfile = async () => {
+    const response = await axios.get(`/api/user`);
+    if (response.data.success) {
+      setProfileData(response.data.data);
+    }
+  };
+
+  useEffect(() => {
+    if (!session?.user.image) {
+      getProfile();
+    }
+  }, [session?.user]);
 
   return (
     <>
       <div className="flex justify-between items-center p-3 mx-2 bg-neutral-800 rounded-xl">
         <div className="flex items-center">
           <Avatar
-            image={session?.user.image!}
+            image={
+              session?.user.image ? session.user.image : profileData?.imageUrl
+            }
             altname="Profile-Item"
             transition={false}
             width="w-[45px]"

@@ -1,7 +1,7 @@
 import MemberPanel from "@/components/members/member-panel";
 import RoomPanel from "./room/room-panel";
 import { prisma } from "@/db/client";
-import MemberPannelProvider from "./provider/user-type-provider";
+import MemberPannelProvider from "./provider/member-pannel-provider";
 import Header from "@/components/defaults/header";
 import ChatMessages from "@/components/chat/chat-messages";
 import ChatAreaLayout from "./chat/chat-area-layout";

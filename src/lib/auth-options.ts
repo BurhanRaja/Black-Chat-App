@@ -126,7 +126,7 @@ export const authOptions: NextAuthOptions = {
         if (user?.userId) {
           token.userId = user.userId;
           token.emailVerified = user.emailVerified as boolean;
-          token.imageUrl = user.image!;
+          token.imageUrl = profile?.image ? profile.image : user.image!;
           token.name = user.displayname;
         }
         if (profile?.email && account?.access_token) {
@@ -148,13 +148,13 @@ export const authOptions: NextAuthOptions = {
               if (successToken) {
                 token.userId = userProfile?.userId!;
                 token.emailVerified = userProfile?.emailVerified!;
-                token.imageUrl = userProfile?.imageUrl!;
+                token.sub = userProfile?.imageUrl!;
                 token.name = userProfile?.displayname;
               }
             } else {
               token.userId = userProfile?.userId!;
               token.emailVerified = userProfile?.emailVerified!;
-              token.imageUrl = userProfile?.imageUrl!;
+              token.sub = userProfile?.imageUrl!;
               token.name = userProfile?.displayname;
             }
           }
@@ -163,6 +163,7 @@ export const authOptions: NextAuthOptions = {
       if (trigger === "update" && session?.emailVerifySuccess) {
         token.emailVerified = session?.emailVerifySuccess;
       }
+      // console.log(token);
       return Promise.resolve(token);
     },
     session: async ({ session, token }) => {

@@ -2,11 +2,12 @@
 import Image from "next/image";
 import ChatItem from "./chat-item";
 import { usePathname } from "next/navigation";
-import { Fragment, useRef } from "react";
+import { Fragment, useContext, useRef } from "react";
 import ChatWelcome from "./chat-welcome";
 import useChatQuery from "@/hooks/useChatQuery";
 import useChatScroll from "@/hooks/useChatScroll";
 import { Loader2, ServerCrash } from "lucide-react";
+import { SocketContext } from "@/context/createContext";
 
 export const ChatAreaImageItem = () => {
   const pathname = usePathname();
@@ -58,6 +59,10 @@ const ChatMessages = ({
     loadMore: fetchNextPage,
     count: data?.pages?.[0]?.items.length ?? 0,
   });
+
+  const { isConnected, socket } = useContext(SocketContext);
+  console.log(isConnected);
+  console.log(socket);
 
   if (status === "loading") {
     return (
