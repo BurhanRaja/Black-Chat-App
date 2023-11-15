@@ -1,4 +1,3 @@
-import currentProfile from "@/lib/current-profile";
 import { NextApiResponseServerIo } from "@/types";
 import { NextApiRequest } from "next";
 import { prisma } from "@/db/client";
@@ -81,19 +80,27 @@ export default async function handler(
     }
 
     let data = {
-      content: content!,
-      file: fileUrl!,
+      content: content as string,
+      file: fileUrl as string,
       messageId: uniqueId,
-      sUserId: member?.sUserId!,
+      sUserId: member?.sUserId as string,
       replyuserId: "",
       roomId: roomId as string,
     };
 
     message = await prisma.message.create({
       data,
+      include: {
+        user: {
+          include: {
+            user: true,
+          },
+        },
+      },
     });
 
     success = true;
+    res.socket.server.io.emit(`chat:${roomId}:message`, message);
     return res.status(200).send({
       success,
       message,

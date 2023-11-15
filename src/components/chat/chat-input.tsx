@@ -52,18 +52,21 @@ const ChatInput = ({ serverId, roomId }: ChatInputProps) => {
   const { onClose } = useContext(ModalContext);
 
   const handleMessage = async () => {
-    if (!inputRef.current?.value) return;
+    if (!inputRef.current?.value && !file) return;
+
     let data = {
-      content: inputRef.current.value,
+      content: inputRef?.current?.value ? inputRef.current.value : "",
       fileUrl: file,
     };
     const response = await axios.post(
       `/api/socket/messages?serverId=${serverId}&roomId=${roomId}&reply=no`,
       data
     );
-
+      
     setFile("");
-    inputRef.current.value = "";
+    if (inputRef.current?.value) {
+      inputRef.current.value = "";
+    }
   };
 
   useEffect(() => {

@@ -8,6 +8,8 @@ import useChatQuery from "@/hooks/useChatQuery";
 import useChatScroll from "@/hooks/useChatScroll";
 import { Loader2, ServerCrash } from "lucide-react";
 import { SocketContext } from "@/context/createContext";
+import useChatSocket from "@/hooks/useChatSocket";
+import { MessageWithProfile } from "@/types";
 
 export const ChatAreaImageItem = () => {
   const pathname = usePathname();
@@ -34,24 +36,28 @@ export const ChatAreaImageItem = () => {
 };
 
 interface ChatAreaProps {
-  queryKey: string;
+  roomId: string;
   apiUrl: string;
   paramKey: string;
   paramValue: string;
 }
 
 const ChatMessages = ({
-  queryKey,
+  roomId,
   apiUrl,
   paramKey,
   paramValue,
 }: ChatAreaProps) => {
+  const queryKey = `chat:${roomId}`;
+  const addKey = `chat:${roomId}:message`;
+  const updateKey = `chat:${roomId}:message:update`;
+
   const bottomRef = useRef<HTMLDivElement>(null);
   const chatRef = useRef<HTMLDivElement>(null);
 
   const { data, isFetchingNextPage, fetchNextPage, hasNextPage, status } =
     useChatQuery({ queryKey, apiUrl, paramKey, paramValue });
-
+  useChatSocket({ queryKey, addKey, updateKey });
   useChatScroll({
     chatRef,
     bottomRef,
@@ -113,17 +119,19 @@ const ChatMessages = ({
         {data?.pages.map((el, index) => {
           return (
             <Fragment key={index}>
-              {el.items?.map((el: any) => {
+              {el.items?.map((el: MessageWithProfile) => {
                 return (
                   <ChatItem
-                    key={el.messageId}
-                    message={el.content}
-                    file={el.file!}
-                    fileType={el.file!.split(".").pop()}
-                    username={el.user.user.displayname}
-                    createdAt={new Date(el.createdAt).toLocaleString()}
-                    userImage={el.user.user.imageUrl}
-                    type={el.user.type}
+                    key={el?.messageId}
+                    message={el?.content}
+                    file={el?.file!}
+                    fileType={el?.file ? el?.file?.split(".").pop() : ""}
+                    username={el?.user?.user?.displayname}
+                    createdAt={new Date(el?.createdAt).toLocaleString()}
+                    userImage={el?.user?.user?.imageUrl}
+                    type={el?.user?.type}
+                    deleted={el?.isDelete}
+                    messageUserId={el?.user?.userId}
                   />
                 );
               })}

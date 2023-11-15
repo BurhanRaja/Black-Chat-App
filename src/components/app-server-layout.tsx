@@ -13,10 +13,6 @@ interface AppServerLayoutProps {
 }
 
 const AppServerLayout = async ({ serverId, roomId }: AppServerLayoutProps) => {
-  const queryKey = `chat:${roomId}`;
-  const addKey = `chat:${roomId}:message`;
-  const updateKey = `chat:${roomId}:message:update`;
-
   const serverUsers = await prisma.sUser.findMany({
     where: {
       serverId,
@@ -53,7 +49,7 @@ const AppServerLayout = async ({ serverId, roomId }: AppServerLayoutProps) => {
           <div className="flex">
             <ChatAreaLayout>
               <ChatMessages
-                queryKey={queryKey}
+                roomId={roomId}
                 apiUrl="/api/messages"
                 paramKey="roomId"
                 paramValue={roomId}
