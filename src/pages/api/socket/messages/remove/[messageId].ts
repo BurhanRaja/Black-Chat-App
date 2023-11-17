@@ -71,7 +71,9 @@ export default async function handler(
       });
     }
 
-    let message = await prisma.message.findUnique({
+    console.log(messageId);
+
+    let message = await prisma.message.findFirst({
       where: {
         messageId: messageId as string,
         roomId: roomId as string,
@@ -85,10 +87,17 @@ export default async function handler(
       },
     });
 
-    if (!message || message.isDelete) {
+    if (!message) {
       return res.status(404).send({
         success,
         message: "Message not found",
+      });
+    }
+
+    if (!message.isDelete) {
+      return res.status(404).send({
+        success,
+        message: "Message is not deleted",
       });
     }
 

@@ -41,7 +41,8 @@ model Profile {
   servers                Server[]
   conversationsInitiated Conversation[]  @relation(name: "POneId")
   conversationsReceived  Conversation[]  @relation(name: "PTwoId")
-  directMessages         DirectMessage[]
+  directMessages         DirectMessage[] @relation(name: "replyUser")
+  replydirectMessages    DirectMessage[] @relation(name: "user")
   reactions              Reaction[]
   Account                Account[]
 
@@ -182,7 +183,7 @@ model Message {
 }
 
 model Conversation {
-  id String @id @default(uuid())
+  id String @id @unique @default(uuid())
 
   profileOne   Profile @relation(fields: [profileOneId], references: [userId], name: "POneId")
   profileOneId String
@@ -204,8 +205,13 @@ model DirectMessage {
   content         String
   file            String?
   isDelete        Boolean @default(false)
+  isReply         Boolean @default(false)
 
-  user           Profile       @relation(fields: [userId], references: [userId])
+  // The one who is replied to
+  replyuser   Profile? @relation(fields: [replyuserId], references: [userId], name: "replyUser")
+  replyuserId String?
+
+  user           Profile       @relation(fields: [userId], references: [userId], name: "user")
   userId         String
   conversation   Conversation? @relation(fields: [conversationId], references: [id])
   conversationId String?
@@ -217,4 +223,5 @@ model DirectMessage {
 
   @@index([conversationId])
   @@index([userId])
+  @@index([replyuserId])
 }
