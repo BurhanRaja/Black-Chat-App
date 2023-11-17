@@ -2,7 +2,6 @@
 
 import { ModalContext } from "@/context/createContext";
 import {
-  MutableRefObject,
   useContext,
   useEffect,
   useRef,
@@ -10,7 +9,7 @@ import {
 } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
-import { Check, CheckCheck, Search, XCircle } from "lucide-react";
+import { Check, Search, XCircle } from "lucide-react";
 import { Profile, SUser, SUserRole } from "@prisma/client";
 import Avatar from "../ui/avatar";
 import ScrollArea from "../ui/scroll-area";

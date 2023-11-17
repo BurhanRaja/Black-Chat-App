@@ -42,10 +42,10 @@ const FileUpload = () => {
 
 interface ChatInputProps {
   serverId: string;
-  roomId: string;
+  chatId: string;
 }
 
-const ChatInput = ({ serverId, roomId }: ChatInputProps) => {
+const ChatInput = ({ serverId, chatId }: ChatInputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<string>("");
   const [fileType, setFileType] = useState<string>("");
@@ -59,10 +59,10 @@ const ChatInput = ({ serverId, roomId }: ChatInputProps) => {
       fileUrl: file,
     };
     const response = await axios.post(
-      `/api/socket/messages?serverId=${serverId}&roomId=${roomId}&reply=no`,
+      `/api/socket/messages?serverId=${serverId}&roomId=${chatId}&reply=no`,
       data
     );
-      
+
     setFile("");
     if (inputRef.current?.value) {
       inputRef.current.value = "";

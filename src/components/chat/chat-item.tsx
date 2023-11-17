@@ -2,18 +2,18 @@
 
 import Avatar from "../ui/avatar";
 import { BsFillReplyFill, BsFillEmojiLaughingFill } from "react-icons/bs";
-import { Ban, Edit2, File, SmilePlus, Trash2 } from "lucide-react";
+import { Ban, Edit2, File, SmilePlus, Trash2, X } from "lucide-react";
 import Tooltip from "../ui/tooltip";
 import { Profile, SUser, SUserRole } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-import { useContext, useRef } from "react";
+import { useContext, useRef, useState } from "react";
 import { AlertContext, ModalContext } from "@/context/createContext";
 
 interface ChatItemProps {
   color: string;
   serverId: string;
-  roomId: string;
+  chatId: string;
   messageId: string;
   currmember: {
     user: Profile;
@@ -39,25 +39,49 @@ const ChatItem = ({
   deleted,
   messageUserId,
   serverId,
-  roomId,
+  chatId,
   messageId,
   currmember,
 }: ChatItemProps) => {
   const { data: session } = useSession();
-  const editMsgRef = useRef(null);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const editMsgRef = useRef<HTMLTextAreaElement>(null);
 
   const { onOpen } = useContext(ModalContext);
 
   const isAdmin = currmember.type === "ADMIN";
   const isModerator = currmember.type === "MODERATOR";
-  const isOwner = currmember.user?.id === messageUserId;
+  const isOwner = currmember.userId === messageUserId;
   const canDelete = !deleted && (isAdmin || isModerator || isOwner);
   const canEdit = !deleted && isOwner && !file;
+
+  const handleEditMessage = async () => {
+    if (!editMsgRef.current?.value) {
+      return;
+    }
+    let data = {
+      content: editMsgRef.current.value,
+    };
+    const response = await axios.put(
+      `/api/socket/messages/${messageId}?serverId=${serverId}&roomId=${chatId}`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (response.data.success) {
+      setIsEditing(false);
+      editMsgRef.current.value = "";
+    }
+  };
 
   return (
     <>
       <div className="relative flex items-start hover:bg-[rgb(54,54,58)] p-2 py-3 group">
-        {!deleted ? (
+        {!deleted && !isEditing ? (
           <div className="absolute right-10 top-[-6px] bg-zinc-800 px-2 py-0.5 hidden group-hover:block">
             <Tooltip
               trigger={
@@ -80,7 +104,10 @@ const ChatItem = ({
             {canEdit && (
               <Tooltip
                 trigger={
-                  <button className="p-1.5 rounded-sm hover:bg-zinc-700">
+                  <button
+                    className="p-1.5 rounded-sm hover:bg-zinc-700"
+                    onClick={() => setIsEditing(true)}
+                  >
                     <Edit2 size={20} />
                   </button>
                 }
@@ -96,7 +123,7 @@ const ChatItem = ({
                     className="p-1.5 rounded-sm hover:bg-zinc-700"
                     onClick={() =>
                       onOpen("deleteMessage", {
-                        query: `/${messageId}?serverId=${serverId}&roomId=${roomId}`,
+                        query: `/${messageId}?serverId=${serverId}&roomId=${chatId}`,
                       })
                     }
                   >
@@ -109,7 +136,17 @@ const ChatItem = ({
             )}
           </div>
         ) : (
-          ""
+          <div className="absolute right-10 top-[-6px] bg-zinc-800 px-2 py-0.5 hidden group-hover:block">
+            <Tooltip
+              trigger={
+                <button className="p-1.5 rounded-sm hover:bg-zinc-700">
+                  <X size={20} className="text-red-500" />
+                </button>
+              }
+              side="top"
+              content="Remove Deleted Message"
+            />
+          </div>
         )}
         {!deleted ? (
           <Avatar image={userImage} altname="anyname" />
@@ -121,13 +158,32 @@ const ChatItem = ({
           />
         )}
 
-        <div className="ml-2">
+        <div className={`ml-2 ${isEditing ? "w-[75%]" : ""}`}>
           <p className="text-sm">
             <>
               <span style={{ color: color }}>{username} </span> -{" "}
               <span className="text-xs text-zinc-400">{createdAt}</span>
             </>
           </p>
+          {isEditing && (
+            <div className="my-1 flex">
+              <textarea
+                ref={editMsgRef}
+                className="w-[100%] p-2.5 mx-2 outline-none bg-zinc-800 chat-input rounded-sm"
+                placeholder="Write a Message"
+                defaultValue={message}
+              />
+              <div className="text-right">
+                <button
+                  className="p-2.5 rounded-sm bg-black"
+                  onClick={handleEditMessage}
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          )}
+
           {!deleted ? (
             <>
               {fileType && fileType !== "pdf" && (
@@ -146,7 +202,7 @@ const ChatItem = ({
                   </a>
                 </div>
               )}
-              <p>{message}</p>
+              <p>{!isEditing ? message : ""}</p>
             </>
           ) : (
             <p className="text-gray-400">{message}</p>

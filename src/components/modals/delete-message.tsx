@@ -5,13 +5,10 @@ import { AlertContext, ModalContext } from "@/context/createContext";
 import * as Dialog from "@radix-ui/react-dialog";
 import { XCircle } from "lucide-react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 
 const DeleteMessageModal = () => {
   const { type, isOpen, onClose, data } = useContext(ModalContext);
   const isModal = type === "deleteMessage" && isOpen;
-
-  const router = useRouter();
 
   const { setTitle, setDescription, setType, setAlertOpen } =
     useContext(AlertContext);

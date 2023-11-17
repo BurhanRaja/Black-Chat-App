@@ -8,7 +8,7 @@ export default async function handler(
   res: NextApiResponseServerIo
 ) {
   let success = false;
-  if (req.method !== "DELETE" && req.method !== "PUT") {
+  if (req.method !== "DELETE") {
     return res.status(405).send({ success, message: "Method not Allowed." });
   }
 
@@ -104,50 +104,21 @@ export default async function handler(
       });
     }
 
-    if (req.method === "DELETE") {
-      message = await prisma.message.update({
-        where: {
-          messageId: messageId as string,
-          roomId: roomId as string,
-        },
-        data: {
-          file: null,
-          content: "This content is deleted",
-          isDelete: true,
-        },
-        include: {
-          user: {
-            include: {
-              user: true,
-            },
+    message = await prisma.message.delete({
+      where: {
+        messageId: messageId as string,
+        roomId: roomId as string,
+      },
+      include: {
+        user: {
+          include: {
+            user: true,
           },
         },
-      });
-    }
+      },
+    });
 
-    if (req.method === "PUT") {
-      const { content } = req.body;
-      message = await prisma.message.update({
-        where: {
-          messageId: messageId as string,
-          roomId: roomId as string,
-        },
-        data: {
-          content: content,
-        },
-        include: {
-          user: {
-            include: {
-              user: true,
-            },
-          },
-        },
-      });
-    }
-
-    success = true;
-    res.socket.server.io.emit(`chat:${roomId}:message:update`, message, false);
-
+    res.socket.server.io.emit(`chat:${roomId}:message:update`, message, true);
     return res.status(200).send({
       success,
       message,

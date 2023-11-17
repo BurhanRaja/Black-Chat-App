@@ -62,14 +62,14 @@ const AppServerLayout = async ({ serverId, roomId }: AppServerLayoutProps) => {
             <ChatAreaLayout>
               <ChatMessages
                 member={member!}
-                roomId={roomId}
+                chatId={roomId}
                 serverId={serverId}
                 apiUrl="/api/messages"
                 paramKey="roomId"
                 paramValue={roomId}
               />
               <div className="bg-zinc-700 relative w-[100%] pb-6 pt-2">
-                <ChatInput serverId={serverId} roomId={roomId} />
+                <ChatInput serverId={serverId} chatId={roomId} />
               </div>
             </ChatAreaLayout>
             <MemberPanel members={serverUsers} />

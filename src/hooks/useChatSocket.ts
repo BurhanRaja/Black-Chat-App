@@ -20,29 +20,45 @@ const useChatSocket = ({ queryKey, addKey, updateKey }: ChatSocketProps) => {
       return;
     }
     // Update Message
-    socket.on(updateKey, (message: MessageWithProfile) => {
+    socket.on(updateKey, (message: MessageWithProfile, remove: boolean) => {
       queryClient.setQueriesData([queryKey], (oldData: any) => {
         if (!oldData || !oldData.pages || oldData.length === 0) {
           return oldData;
         }
 
-        let newData = oldData.pages?.map((page: any) => {
+        if (remove) {
+          let newData = oldData.pages?.map((page: any) => {
+            return {
+              ...page,
+              items: page.items.filter(
+                (item: MessageWithProfile) =>
+                  item.messageId === message.messageId
+              ),
+            };
+          });
           return {
-            ...page,
-            items: page.items?.map((item: MessageWithProfile) => {
-              if (item.messageId === message.messageId) {
-                console.log(message);
-                return message;
-              }
-              return item;
-            }),
+            ...oldData,
+            pages: newData,
           };
-        });
+        } else {
+          let newData = oldData.pages?.map((page: any) => {
+            return {
+              ...page,
+              items: page.items?.map((item: MessageWithProfile) => {
+                if (item.messageId === message.messageId) {
+                  console.log(message);
+                  return message;
+                }
+                return item;
+              }),
+            };
+          });
 
-        return {
-          ...oldData,
-          pages: newData,
-        };
+          return {
+            ...oldData,
+            pages: newData,
+          };
+        }
       });
     });
     // Add Message

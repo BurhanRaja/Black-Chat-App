@@ -2,12 +2,11 @@
 import Image from "next/image";
 import ChatItem from "./chat-item";
 import { usePathname } from "next/navigation";
-import { Fragment, useContext, useRef } from "react";
+import { Fragment, useRef } from "react";
 import ChatWelcome from "./chat-welcome";
 import useChatQuery from "@/hooks/useChatQuery";
 import useChatScroll from "@/hooks/useChatScroll";
 import { Loader2, ServerCrash } from "lucide-react";
-import { SocketContext } from "@/context/createContext";
 import useChatSocket from "@/hooks/useChatSocket";
 import { MessageWithProfile } from "@/types";
 import { Profile, SUser } from "@prisma/client";
@@ -38,7 +37,7 @@ export const ChatAreaImageItem = () => {
 };
 
 interface ChatAreaProps {
-  roomId: string;
+  chatId: string;
   serverId: string;
   member: {
     user: Profile;
@@ -49,16 +48,16 @@ interface ChatAreaProps {
 }
 
 const ChatMessages = ({
-  roomId,
+  chatId,
   serverId,
   apiUrl,
   paramKey,
   paramValue,
   member,
 }: ChatAreaProps) => {
-  const queryKey = `chat:${roomId}`;
-  const addKey = `chat:${roomId}:message`;
-  const updateKey = `chat:${roomId}:message:update`;
+  const queryKey = `chat:${chatId}`;
+  const addKey = `chat:${chatId}:message`;
+  const updateKey = `chat:${chatId}:message:update`;
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const chatRef = useRef<HTMLDivElement>(null);
@@ -133,7 +132,7 @@ const ChatMessages = ({
                 );
                 let randomColor = "";
                 if (!colorCheck) {
-                  randomColor = randomcolor({ luminosity: "bright" });
+                  randomColor = randomcolor({ luminosity: "light" });
                   userColor.push({
                     userId: el?.user?.userId,
                     color: randomColor,
@@ -142,7 +141,7 @@ const ChatMessages = ({
                 return (
                   <ChatItem
                     color={colorCheck ? colorCheck.color : randomColor}
-                    roomId={roomId}
+                    chatId={chatId}
                     serverId={serverId}
                     messageId={el?.messageId}
                     currmember={member}
