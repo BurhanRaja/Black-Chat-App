@@ -30,7 +30,6 @@ export async function GET(req: NextRequest): Promise<
     success = true;
     return NextResponse.json({ success, usernameUsed: false }, { status: 200 });
   } catch (err) {
-    console.log(err);
     return NextResponse.json(
       { success, message: "Internal Server Error." },
       { status: 500 }

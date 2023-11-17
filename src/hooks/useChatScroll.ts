@@ -59,8 +59,6 @@ const useChatScroll = ({
         });
       }, 100);
     }
-
-    // if ()
   }, [chatRef, bottomRef, count, hasInitialized]);
 };
 

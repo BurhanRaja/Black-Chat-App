@@ -6,6 +6,8 @@ import Header from "@/components/defaults/header";
 import ChatMessages from "@/components/chat/chat-messages";
 import ChatAreaLayout from "./chat/chat-area-layout";
 import ChatInput from "./chat/chat-input";
+import currentProfile from "@/lib/current-profile";
+import { redirect } from "next/navigation";
 
 interface AppServerLayoutProps {
   serverId: string;
@@ -13,6 +15,12 @@ interface AppServerLayoutProps {
 }
 
 const AppServerLayout = async ({ serverId, roomId }: AppServerLayoutProps) => {
+  const profile = await currentProfile();
+
+  if (!profile) {
+    redirect("/auth/signin");
+  }
+
   const serverUsers = await prisma.sUser.findMany({
     where: {
       serverId,
@@ -36,6 +44,10 @@ const AppServerLayout = async ({ serverId, roomId }: AppServerLayoutProps) => {
     },
   });
 
+  const member = server?.sUsers.find(
+    (member) => member.userId === profile?.userId
+  );
+
   return (
     <>
       <MemberPannelProvider>
@@ -49,7 +61,9 @@ const AppServerLayout = async ({ serverId, roomId }: AppServerLayoutProps) => {
           <div className="flex">
             <ChatAreaLayout>
               <ChatMessages
+                member={member!}
                 roomId={roomId}
+                serverId={serverId}
                 apiUrl="/api/messages"
                 paramKey="roomId"
                 paramValue={roomId}

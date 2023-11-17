@@ -31,13 +31,18 @@ const useChatSocket = ({ queryKey, addKey, updateKey }: ChatSocketProps) => {
             ...page,
             items: page.items?.map((item: MessageWithProfile) => {
               if (item.messageId === message.messageId) {
+                console.log(message);
                 return message;
               }
               return item;
             }),
           };
         });
-        return newData;
+
+        return {
+          ...oldData,
+          pages: newData,
+        };
       });
     });
     // Add Message

@@ -10,6 +10,8 @@ import { Loader2, ServerCrash } from "lucide-react";
 import { SocketContext } from "@/context/createContext";
 import useChatSocket from "@/hooks/useChatSocket";
 import { MessageWithProfile } from "@/types";
+import { Profile, SUser } from "@prisma/client";
+import randomcolor from "randomcolor";
 
 export const ChatAreaImageItem = () => {
   const pathname = usePathname();
@@ -37,6 +39,10 @@ export const ChatAreaImageItem = () => {
 
 interface ChatAreaProps {
   roomId: string;
+  serverId: string;
+  member: {
+    user: Profile;
+  } & SUser;
   apiUrl: string;
   paramKey: string;
   paramValue: string;
@@ -44,9 +50,11 @@ interface ChatAreaProps {
 
 const ChatMessages = ({
   roomId,
+  serverId,
   apiUrl,
   paramKey,
   paramValue,
+  member,
 }: ChatAreaProps) => {
   const queryKey = `chat:${roomId}`;
   const addKey = `chat:${roomId}:message`;
@@ -66,9 +74,9 @@ const ChatMessages = ({
     count: data?.pages?.[0]?.items.length ?? 0,
   });
 
-  const { isConnected, socket } = useContext(SocketContext);
-  console.log(isConnected);
-  console.log(socket);
+  let userColor: Array<{ color: string; userId: string }> = [];
+
+  // const { isConnected, socket } = useContext(SocketContext);
 
   if (status === "loading") {
     return (
@@ -116,20 +124,35 @@ const ChatMessages = ({
         </div>
       )}
       <div className="flex flex-col-reverse mt-auto">
-        {data?.pages.map((el, index) => {
+        {data?.pages?.map((el, index) => {
           return (
             <Fragment key={index}>
-              {el.items?.map((el: MessageWithProfile) => {
+              {el?.items?.map((el: MessageWithProfile) => {
+                let colorCheck = userColor?.find(
+                  (elColor) => elColor.userId === el.user.userId
+                );
+                let randomColor = "";
+                if (!colorCheck) {
+                  randomColor = randomcolor({ luminosity: "bright" });
+                  userColor.push({
+                    userId: el?.user?.userId,
+                    color: randomColor,
+                  });
+                }
                 return (
                   <ChatItem
+                    color={colorCheck ? colorCheck.color : randomColor}
+                    roomId={roomId}
+                    serverId={serverId}
+                    messageId={el?.messageId}
+                    currmember={member}
                     key={el?.messageId}
-                    message={el?.content}
+                    message={el?.content!}
                     file={el?.file!}
                     fileType={el?.file ? el?.file?.split(".").pop() : ""}
                     username={el?.user?.user?.displayname}
                     createdAt={new Date(el?.createdAt).toLocaleString()}
                     userImage={el?.user?.user?.imageUrl}
-                    type={el?.user?.type}
                     deleted={el?.isDelete}
                     messageUserId={el?.user?.userId}
                   />

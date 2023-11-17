@@ -106,7 +106,6 @@ export default async function handler(
       message,
     });
   } catch (err) {
-    console.log(err);
     return res.status(500).send({
       success,
       message: "Internal Server Error.",

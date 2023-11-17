@@ -163,7 +163,6 @@ export const authOptions: NextAuthOptions = {
       if (trigger === "update" && session?.emailVerifySuccess) {
         token.emailVerified = session?.emailVerifySuccess;
       }
-      // console.log(token);
       return Promise.resolve(token);
     },
     session: async ({ session, token }) => {

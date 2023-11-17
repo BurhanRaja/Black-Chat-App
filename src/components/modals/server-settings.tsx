@@ -77,7 +77,6 @@ const ServerSettingsMembers = () => {
     );
 
     if (response.data.success) {
-      console.log(response.data);
       router.refresh();
       await handleSearch();
     }

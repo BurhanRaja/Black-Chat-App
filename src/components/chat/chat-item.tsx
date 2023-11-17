@@ -4,17 +4,26 @@ import Avatar from "../ui/avatar";
 import { BsFillReplyFill, BsFillEmojiLaughingFill } from "react-icons/bs";
 import { Ban, Edit2, File, SmilePlus, Trash2 } from "lucide-react";
 import Tooltip from "../ui/tooltip";
-import { SUserRole } from "@prisma/client";
+import { Profile, SUser, SUserRole } from "@prisma/client";
 import { useSession } from "next-auth/react";
+import axios from "axios";
+import { useContext, useRef } from "react";
+import { AlertContext, ModalContext } from "@/context/createContext";
 
 interface ChatItemProps {
+  color: string;
+  serverId: string;
+  roomId: string;
+  messageId: string;
+  currmember: {
+    user: Profile;
+  } & SUser;
   message: string;
   file: string;
   fileType: string | undefined;
   username: string;
   createdAt: string;
   userImage: string;
-  type: SUserRole;
   deleted: boolean;
   messageUserId: string;
 }
@@ -26,11 +35,24 @@ const ChatItem = ({
   username,
   createdAt,
   userImage,
-  type,
+  color,
   deleted,
   messageUserId,
+  serverId,
+  roomId,
+  messageId,
+  currmember,
 }: ChatItemProps) => {
   const { data: session } = useSession();
+  const editMsgRef = useRef(null);
+
+  const { onOpen } = useContext(ModalContext);
+
+  const isAdmin = currmember.type === "ADMIN";
+  const isModerator = currmember.type === "MODERATOR";
+  const isOwner = currmember.user?.id === messageUserId;
+  const canDelete = !deleted && (isAdmin || isModerator || isOwner);
+  const canEdit = !deleted && isOwner && !file;
 
   return (
     <>
@@ -55,32 +77,35 @@ const ChatItem = ({
               side="top"
               content="Add Reaction"
             />
-            {(type === "ADMIN" ||
-              type === "MODERATOR" ||
-              messageUserId === session?.user.userId) && (
-              <>
-                {" "}
-                {!file && (
-                  <Tooltip
-                    trigger={
-                      <button className="p-1.5 rounded-sm hover:bg-zinc-700">
-                        <Edit2 size={20} />
-                      </button>
+            {canEdit && (
+              <Tooltip
+                trigger={
+                  <button className="p-1.5 rounded-sm hover:bg-zinc-700">
+                    <Edit2 size={20} />
+                  </button>
+                }
+                side="top"
+                content="Edit"
+              />
+            )}
+
+            {canDelete && (
+              <Tooltip
+                trigger={
+                  <button
+                    className="p-1.5 rounded-sm hover:bg-zinc-700"
+                    onClick={() =>
+                      onOpen("deleteMessage", {
+                        query: `/${messageId}?serverId=${serverId}&roomId=${roomId}`,
+                      })
                     }
-                    side="top"
-                    content="Edit"
-                  />
-                )}
-                <Tooltip
-                  trigger={
-                    <button className="p-1.5 rounded-sm hover:bg-zinc-700">
-                      <Trash2 size={20} className="text-red-500" />
-                    </button>
-                  }
-                  side="top"
-                  content="Delete"
-                />
-              </>
+                  >
+                    <Trash2 size={20} className="text-red-500" />
+                  </button>
+                }
+                side="top"
+                content="Delete"
+              />
             )}
           </div>
         ) : (
@@ -97,15 +122,11 @@ const ChatItem = ({
         )}
 
         <div className="ml-2">
-          <p className="text-sm text-zinc-400">
-            {!deleted ? (
-              <>
-                <span className="text-green-400">{username} </span> -{" "}
-                <span className="text-xs ">{createdAt}</span>
-              </>
-            ) : (
-              ""
-            )}
+          <p className="text-sm">
+            <>
+              <span style={{ color: color }}>{username} </span> -{" "}
+              <span className="text-xs text-zinc-400">{createdAt}</span>
+            </>
           </p>
           {!deleted ? (
             <>

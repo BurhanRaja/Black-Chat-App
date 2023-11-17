@@ -34,7 +34,6 @@ export async function GET(
     success = true;
     return NextResponse.json({ success, data: profile }, { status: 200 });
   } catch (err) {
-    console.log(err);
     return NextResponse.json(
       { success, message: "Internal Server Error." },
       { status: 500 }
