@@ -55,20 +55,25 @@ const ChatItemMessage = ({
   let isAdmin;
   let isModerator;
   let isOwner;
+  let canDelete;
 
   if (currmemberServer) {
     isAdmin = currmemberServer?.type === "ADMIN";
     isModerator = currmemberServer?.type === "MODERATOR";
     isOwner = currmemberServer.userId === messageUserId;
+    canDelete = !deleted && (isAdmin || isModerator || isOwner);
   }
 
   if (currmemberConversation) {
     isAdmin = true;
     isModerator = true;
     isOwner = currmemberConversation.userId === messageUserId;
+
+    console.log(currmemberConversation.userId);
+    console.log(messageUserId);
+    canDelete = !deleted && isOwner;
   }
 
-  const canDelete = !deleted && (isAdmin || isModerator || isOwner);
   const canEdit = !deleted && isOwner && !file;
 
   const removeAPI =
@@ -229,7 +234,11 @@ const ChatItemMessage = ({
                     size={35}
                     className="h-10 w-10 fill-indigo-200 stroke-indigo-400"
                   />
-                  <a className="ml-2 text-sm text-indigo-500 dark:text-indigo-400 hover:underline cursor-pointer">
+                  <a
+                    target="_blank"
+                    href={file}
+                    className="ml-2 text-sm text-indigo-500 dark:text-indigo-400 hover:underline cursor-pointer"
+                  >
                     PDF File
                   </a>
                 </div>

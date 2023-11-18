@@ -69,7 +69,6 @@ const ChatInput = ({ serverId, chatId, conversationId }: ChatInputProps) => {
     if (response.data.success) {
       setFile("");
       if (inputRef.current?.value) {
-        console.log(inputRef.current.value);
         inputRef.current.value = "";
       }
     }
@@ -117,16 +116,15 @@ const ChatInput = ({ serverId, chatId, conversationId }: ChatInputProps) => {
         )}
 
         {file && fileType === "pdf" && (
-          <div className="absolute flex items-center justify-between left-0 top-[-30px] w-[100%] p-1.5 px-2 rounded-t-md text-sm bg-black">
+          <div className="absolute flex items-center justify-between left-0 top-[-76px] w-[100%] p-1.5 px-2 rounded-t-md text-sm bg-black">
             <div className="relative flex items-center p-2 mt-2 rounded-md bg-background/10">
               <FileIcon className="h-10 w-10 fill-indigo-200 stroke-indigo-400" />
               <a
-                href={file}
-                target="_blank"
+                href={""}
                 rel="noopener noreferrer"
-                className="ml-2 text-sm text-indigo-500 dark:text-indigo-400 hover:underline"
+                className={`${file} ml-2 text-sm text-indigo-500 dark:text-indigo-400 hover:underline`}
               >
-                {file}
+                PDF File
               </a>
               <button
                 onClick={() => setFile("")}

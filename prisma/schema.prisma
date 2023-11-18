@@ -36,6 +36,7 @@ model Profile {
   bio                 String  @default("")
   gender              Int     @default(-1)
   forgetPasswordToken String  @default("")
+  connected           Boolean @default(false)
 
   serverUsers            SUser[]
   servers                Server[]
@@ -164,15 +165,19 @@ model Message {
   isReply   Boolean @default(false)
 
   // The one who is replied to
-  replyuser   SUser?  @relation(fields: [replyuserId], references: [sUserId], name: "replyUser")
-  replyuserId String?
-  // The who replied
-  user        SUser?  @relation(fields: [sUserId], references: [sUserId], name: "user")
-  sUserId     String?
-  room        Room    @relation(fields: [roomId], references: [roomId], onDelete: Cascade)
-  roomId      String
+  replyuser      SUser?   @relation(fields: [replyuserId], references: [sUserId], name: "replyUser")
+  replyuserId    String?
+  replymessage   Message? @relation(fields: [replymessageId], references: [messageId], onDelete: Restrict, onUpdate: Restrict, name: "replymessage")
+  replymessageId String?
 
-  reactions Reaction[]
+  // The who replied
+  user    SUser?  @relation(fields: [sUserId], references: [sUserId], name: "user")
+  sUserId String?
+  room    Room    @relation(fields: [roomId], references: [roomId], onDelete: Cascade)
+  roomId  String
+
+  reactions     Reaction[]
+  replymessages Message[]  @relation(name: "replymessage")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -180,6 +185,7 @@ model Message {
   @@index([roomId])
   @@index([sUserId])
   @@index([replyuserId])
+  @@index([replymessageId])
 }
 
 model Conversation {
@@ -208,15 +214,18 @@ model DirectMessage {
   isReply         Boolean @default(false)
 
   // The one who is replied to
-  replyuser   Profile? @relation(fields: [replyuserId], references: [userId], name: "replyUser")
-  replyuserId String?
+  replyuser      Profile?       @relation(fields: [replyuserId], references: [userId], name: "replyUser")
+  replyuserId    String?
+  replymessage   DirectMessage? @relation(fields: [replymessageId], references: [directMessageId], onDelete: Restrict, onUpdate: Restrict, name: "replymessage")
+  replymessageId String?
 
   user           Profile       @relation(fields: [userId], references: [userId], name: "user")
   userId         String
   conversation   Conversation? @relation(fields: [conversationId], references: [id])
   conversationId String?
 
-  reactions Reaction[]
+  reactions     Reaction[]
+  replymessages DirectMessage[] @relation(name: "replymessage")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -224,4 +233,5 @@ model DirectMessage {
   @@index([conversationId])
   @@index([userId])
   @@index([replyuserId])
+  @@index([replymessageId])
 }
