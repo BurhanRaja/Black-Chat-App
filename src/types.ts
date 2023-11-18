@@ -1,5 +1,11 @@
 import z, { TypeOf } from "zod";
-import { Message, Profile, RoomType, SUser } from "@prisma/client";
+import {
+  DirectMessage,
+  Message,
+  Profile,
+  RoomType,
+  SUser,
+} from "@prisma/client";
 import { NextApiResponse } from "next";
 import { Server as NetServer, Socket } from "net";
 import { Server as SocketIOServer } from "socket.io";
@@ -73,4 +79,8 @@ export type MessageWithProfile = Message & {
   user: SUser & {
     user: Profile;
   };
+};
+
+export type DirectMessageWithProfile = DirectMessage & {
+  user: Profile;
 };

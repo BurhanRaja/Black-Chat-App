@@ -58,18 +58,21 @@ const RoomPanel = async ({ server, members, rooms }: RoomPannelProps) => {
               type="Text"
               isAdmin={isAdmin}
               isModerator={isModerator}
+              url={`/servers/${server.serverId}`}
             />
             <RoomCollapsible
               rooms={audioRoom}
               type="Audio"
               isAdmin={isAdmin}
               isModerator={isModerator}
+              url={`/servers/${server.serverId}`}
             />
             <RoomCollapsible
               rooms={videoRoom}
               type="Video"
               isAdmin={isAdmin}
               isModerator={isModerator}
+              url={`/servers/${server.serverId}`}
             />
           </div>
         }

@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import ChatItem from "./chat-item";
+import ChatItemMessage from "./chat-item-message";
 import { usePathname } from "next/navigation";
 import { Fragment, useRef } from "react";
 import ChatWelcome from "./chat-welcome";
@@ -8,7 +8,7 @@ import useChatQuery from "@/hooks/useChatQuery";
 import useChatScroll from "@/hooks/useChatScroll";
 import { Loader2, ServerCrash } from "lucide-react";
 import useChatSocket from "@/hooks/useChatSocket";
-import { MessageWithProfile } from "@/types";
+import { DirectMessageWithProfile, MessageWithProfile } from "@/types";
 import { Profile, SUser } from "@prisma/client";
 import randomcolor from "randomcolor";
 
@@ -36,28 +36,48 @@ export const ChatAreaImageItem = () => {
   );
 };
 
-interface ChatAreaProps {
-  chatId: string;
-  serverId: string;
-  member: {
+interface ChatMessagesProps {
+  chatId?: string;
+  serverId?: string;
+  conversationId?: string;
+  memberServer?: {
     user: Profile;
   } & SUser;
+  memberConversation?: Profile;
   apiUrl: string;
   paramKey: string;
   paramValue: string;
+  welcomeType: string;
+  welcomeName: string;
 }
 
 const ChatMessages = ({
   chatId,
   serverId,
+  conversationId,
   apiUrl,
   paramKey,
   paramValue,
-  member,
-}: ChatAreaProps) => {
-  const queryKey = `chat:${chatId}`;
-  const addKey = `chat:${chatId}:message`;
-  const updateKey = `chat:${chatId}:message:update`;
+  memberServer,
+  memberConversation,
+  welcomeType,
+  welcomeName,
+}: ChatMessagesProps) => {
+  let queryKey = "";
+  let addKey = "";
+  let updateKey = "";
+
+  if (chatId) {
+    queryKey = `chat:${chatId}`;
+    addKey = `chat:${chatId}:message`;
+    updateKey = `chat:${chatId}:message:update`;
+  }
+
+  if (conversationId) {
+    queryKey = `chat:${conversationId}`;
+    addKey = `chat:${conversationId}:message`;
+    updateKey = `chat:${conversationId}:message:update`;
+  }
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const chatRef = useRef<HTMLDivElement>(null);
@@ -107,7 +127,7 @@ const ChatMessages = ({
       className="flex-1 flex flex-col py-4 bg-zinc-700 overflow-y-auto h-[585px]"
     >
       {!hasNextPage && <div className="flex-1" />}
-      {!hasNextPage && <ChatWelcome type={"room"} name={"general"} />}
+      {!hasNextPage && <ChatWelcome type={welcomeType} name={welcomeName} />}
       {hasNextPage && (
         <div className="flex justify-center">
           {isFetchingNextPage ? (
@@ -123,43 +143,80 @@ const ChatMessages = ({
         </div>
       )}
       <div className="flex flex-col-reverse mt-auto">
-        {data?.pages?.map((el, index) => {
-          return (
-            <Fragment key={index}>
-              {el?.items?.map((el: MessageWithProfile) => {
-                let colorCheck = userColor?.find(
-                  (elColor) => elColor.userId === el.user.userId
-                );
-                let randomColor = "";
-                if (!colorCheck) {
-                  randomColor = randomcolor({ luminosity: "light" });
-                  userColor.push({
-                    userId: el?.user?.userId,
-                    color: randomColor,
-                  });
-                }
-                return (
-                  <ChatItem
-                    color={colorCheck ? colorCheck.color : randomColor}
-                    chatId={chatId}
-                    serverId={serverId}
-                    messageId={el?.messageId}
-                    currmember={member}
-                    key={el?.messageId}
-                    message={el?.content!}
-                    file={el?.file!}
-                    fileType={el?.file ? el?.file?.split(".").pop() : ""}
-                    username={el?.user?.user?.displayname}
-                    createdAt={new Date(el?.createdAt).toLocaleString()}
-                    userImage={el?.user?.user?.imageUrl}
-                    deleted={el?.isDelete}
-                    messageUserId={el?.user?.userId}
-                  />
-                );
-              })}
-            </Fragment>
-          );
-        })}
+        {!conversationId && chatId && serverId
+          ? data?.pages?.map((el, index) => {
+              return (
+                <Fragment key={index}>
+                  {el?.items?.map((el: MessageWithProfile) => {
+                    let colorCheck = userColor?.find(
+                      (elColor) => elColor.userId === el.user.userId
+                    );
+                    let randomColor = "";
+                    if (!colorCheck) {
+                      randomColor = randomcolor({ luminosity: "light" });
+                      userColor.push({
+                        userId: el?.user?.userId,
+                        color: randomColor,
+                      });
+                    }
+                    return (
+                      <ChatItemMessage
+                        color={colorCheck ? colorCheck.color : randomColor}
+                        chatId={chatId}
+                        serverId={serverId}
+                        messageId={el?.messageId}
+                        currmemberServer={memberServer}
+                        key={el?.messageId}
+                        message={el?.content!}
+                        file={el?.file!}
+                        fileType={el?.file ? el?.file?.split(".").pop() : ""}
+                        username={el?.user?.user?.displayname}
+                        createdAt={new Date(el?.createdAt).toLocaleString()}
+                        userImage={el?.user?.user?.imageUrl}
+                        deleted={el?.isDelete}
+                        messageUserId={el?.user?.userId}
+                      />
+                    );
+                  })}
+                </Fragment>
+              );
+            })
+          : data?.pages?.map((el, index) => {
+              return (
+                <Fragment key={index}>
+                  {el?.items?.map((el: DirectMessageWithProfile) => {
+                    let colorCheck = userColor?.find(
+                      (elColor) => elColor.userId === el.user.userId
+                    );
+                    let randomColor = "";
+                    if (!colorCheck) {
+                      randomColor = randomcolor({ luminosity: "light" });
+                      userColor.push({
+                        userId: el?.user?.userId,
+                        color: randomColor,
+                      });
+                    }
+                    return (
+                      <ChatItemMessage
+                        color={colorCheck ? colorCheck.color : randomColor}
+                        conversationId={conversationId!}
+                        messageId={el?.directMessageId}
+                        currmemberConversation={memberConversation}
+                        key={el?.directMessageId}
+                        message={el?.content!}
+                        file={el?.file!}
+                        fileType={el?.file ? el?.file?.split(".").pop() : ""}
+                        username={el?.user?.displayname}
+                        createdAt={new Date(el?.createdAt).toLocaleString()}
+                        userImage={el?.user?.imageUrl}
+                        deleted={el?.isDelete}
+                        messageUserId={el?.user?.userId}
+                      />
+                    );
+                  })}
+                </Fragment>
+              );
+            })}
       </div>
       <div ref={bottomRef} />
     </div>

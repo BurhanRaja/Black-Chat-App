@@ -127,7 +127,12 @@ export default async function handler(
       },
     });
 
-    res.socket.server.io.emit(`chat:${roomId}:message:update`, message, true);
+    res.socket.server.io.emit(
+      `chat:${roomId}:message:update`,
+      message,
+      undefined,
+      true
+    );
     return res.status(200).send({
       success,
       message,

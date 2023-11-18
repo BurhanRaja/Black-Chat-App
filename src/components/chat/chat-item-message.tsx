@@ -12,12 +12,14 @@ import { AlertContext, ModalContext } from "@/context/createContext";
 
 interface ChatItemProps {
   color: string;
-  serverId: string;
-  chatId: string;
+  serverId?: string;
+  chatId?: string;
+  conversationId?: string;
   messageId: string;
-  currmember: {
+  currmemberServer?: {
     user: Profile;
   } & SUser;
+  currmemberConversation?: Profile;
   message: string;
   file: string;
   fileType: string | undefined;
@@ -28,7 +30,7 @@ interface ChatItemProps {
   messageUserId: string;
 }
 
-const ChatItem = ({
+const ChatItemMessage = ({
   message,
   file,
   fileType,
@@ -39,21 +41,52 @@ const ChatItem = ({
   deleted,
   messageUserId,
   serverId,
+  conversationId,
   chatId,
   messageId,
-  currmember,
+  currmemberServer,
+  currmemberConversation,
 }: ChatItemProps) => {
-  const { data: session } = useSession();
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const editMsgRef = useRef<HTMLTextAreaElement>(null);
 
   const { onOpen } = useContext(ModalContext);
 
-  const isAdmin = currmember.type === "ADMIN";
-  const isModerator = currmember.type === "MODERATOR";
-  const isOwner = currmember.userId === messageUserId;
+  let isAdmin;
+  let isModerator;
+  let isOwner;
+
+  if (currmemberServer) {
+    isAdmin = currmemberServer?.type === "ADMIN";
+    isModerator = currmemberServer?.type === "MODERATOR";
+    isOwner = currmemberServer.userId === messageUserId;
+  }
+
+  if (currmemberConversation) {
+    isAdmin = true;
+    isModerator = true;
+    isOwner = currmemberConversation.userId === messageUserId;
+  }
+
   const canDelete = !deleted && (isAdmin || isModerator || isOwner);
   const canEdit = !deleted && isOwner && !file;
+
+  const removeAPI =
+    !conversationId && serverId && chatId
+      ? `/api/socket/messages/remove/${messageId}?serverId=${serverId}&roomId=${chatId}`
+      : `/api/socket/direct-messages/remove/${messageId}?conversationId=${conversationId}`;
+  const editAPI =
+    !conversationId && serverId && chatId
+      ? `/api/socket/messages/${messageId}?serverId=${serverId}&roomId=${chatId}`
+      : `/api/socket/direct-messages/${messageId}?conversationId=${conversationId}`;
+  const deleteAPI =
+    !conversationId && serverId && chatId
+      ? `/messages/${messageId}?serverId=${serverId}&roomId=${chatId}`
+      : `/direct-messages/${messageId}?conversationId=${conversationId}`;
+
+  const handleRemoveMessage = async () => {
+    await axios.delete(removeAPI);
+  };
 
   const handleEditMessage = async () => {
     if (!editMsgRef.current?.value) {
@@ -62,15 +95,11 @@ const ChatItem = ({
     let data = {
       content: editMsgRef.current.value,
     };
-    const response = await axios.put(
-      `/api/socket/messages/${messageId}?serverId=${serverId}&roomId=${chatId}`,
-      data,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await axios.put(editAPI, data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     if (response.data.success) {
       setIsEditing(false);
@@ -123,7 +152,7 @@ const ChatItem = ({
                     className="p-1.5 rounded-sm hover:bg-zinc-700"
                     onClick={() =>
                       onOpen("deleteMessage", {
-                        query: `/${messageId}?serverId=${serverId}&roomId=${chatId}`,
+                        query: deleteAPI,
                       })
                     }
                   >
@@ -139,7 +168,10 @@ const ChatItem = ({
           <div className="absolute right-10 top-[-6px] bg-zinc-800 px-2 py-0.5 hidden group-hover:block">
             <Tooltip
               trigger={
-                <button className="p-1.5 rounded-sm hover:bg-zinc-700">
+                <button
+                  className="p-1.5 rounded-sm hover:bg-zinc-700"
+                  onClick={handleRemoveMessage}
+                >
                   <X size={20} className="text-red-500" />
                 </button>
               }
@@ -217,4 +249,4 @@ const ChatItem = ({
   );
 };
 
-export default ChatItem;
+export default ChatItemMessage;

@@ -33,7 +33,7 @@ const MemberItem = ({ image, name, userId }: MemberItemProps) => {
           items={[
             {
               content: "Message",
-              link: "",
+              link: `/direct-message/${userId}`,
               textColor: "text-white",
               handleFunction: () => {},
               icon: <Send size={16} />,

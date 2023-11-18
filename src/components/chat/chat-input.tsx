@@ -41,15 +41,21 @@ const FileUpload = () => {
 };
 
 interface ChatInputProps {
-  serverId: string;
-  chatId: string;
+  serverId?: string;
+  chatId?: string;
+  conversationId?: string;
 }
 
-const ChatInput = ({ serverId, chatId }: ChatInputProps) => {
+const ChatInput = ({ serverId, chatId, conversationId }: ChatInputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<string>("");
   const [fileType, setFileType] = useState<string>("");
   const { onClose } = useContext(ModalContext);
+
+  let addAPI =
+    !conversationId && serverId && chatId
+      ? `/api/socket/messages?serverId=${serverId}&roomId=${chatId}&reply=no`
+      : `/api/socket/direct-messages?conversationId=${conversationId}&reply=no`;
 
   const handleMessage = async () => {
     if (!inputRef.current?.value && !file) return;
@@ -58,14 +64,14 @@ const ChatInput = ({ serverId, chatId }: ChatInputProps) => {
       content: inputRef?.current?.value ? inputRef.current.value : "",
       fileUrl: file,
     };
-    const response = await axios.post(
-      `/api/socket/messages?serverId=${serverId}&roomId=${chatId}&reply=no`,
-      data
-    );
+    const response = await axios.post(addAPI, data);
 
-    setFile("");
-    if (inputRef.current?.value) {
-      inputRef.current.value = "";
+    if (response.data.success) {
+      setFile("");
+      if (inputRef.current?.value) {
+        console.log(inputRef.current.value);
+        inputRef.current.value = "";
+      }
     }
   };
 

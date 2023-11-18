@@ -3,6 +3,7 @@
 import * as DropdownPrimitive from "@radix-ui/react-dropdown-menu";
 import { ReactNode } from "react";
 import { Settings } from "lucide-react";
+import Link from "next/link";
 
 type ItemArray = {
   content: string | ReactNode;
@@ -46,26 +47,52 @@ const Dropdown = ({
           >
             {items?.map((el) => {
               return (
-                <DropdownPrimitive.Item
-                  key={el.link}
-                  className={`leading-none select-none outline-none p-2.5 cursor-pointer ${
-                    el.hoverBackgroundColor
-                      ? el.hoverBackgroundColor
-                      : "hover:bg-zinc-800"
-                  } text-sm rounded-sm flex justify-between items-center ${
-                    el.textColor
-                  }`}
-                  onClick={() => {
-                    if (el.OpenModal) {
-                      el?.OpenModal();
-                    }
-                    if (el.handleFunction) {
-                      el.handleFunction();
-                    }
-                  }}
-                >
-                  {el.content}
-                  {el.icon}
+                <DropdownPrimitive.Item key={el.link}>
+                  {el.link ? (
+                    <Link href={el.link!} className="outline-none">
+                      <button
+                        className={`leading-none select-none outline-none p-2.5 cursor-pointer w-[100%] ${
+                          el.hoverBackgroundColor
+                            ? el.hoverBackgroundColor
+                            : "hover:bg-zinc-800"
+                        } text-sm rounded-sm flex justify-between items-center ${
+                          el.textColor
+                        }`}
+                        onClick={() => {
+                          if (el.OpenModal) {
+                            el?.OpenModal();
+                          }
+                          if (el.handleFunction) {
+                            el.handleFunction();
+                          }
+                        }}
+                      >
+                        {el.content}
+                        {el.icon}
+                      </button>
+                    </Link>
+                  ) : (
+                    <button
+                      className={`leading-none select-none outline-none p-2.5 cursor-pointer w-[100%] ${
+                        el.hoverBackgroundColor
+                          ? el.hoverBackgroundColor
+                          : "hover:bg-zinc-800"
+                      } text-sm rounded-sm flex justify-between items-center ${
+                        el.textColor
+                      }`}
+                      onClick={() => {
+                        if (el.OpenModal) {
+                          el?.OpenModal();
+                        }
+                        if (el.handleFunction) {
+                          el.handleFunction();
+                        }
+                      }}
+                    >
+                      {el.content}
+                      {el.icon}
+                    </button>
+                  )}
                 </DropdownPrimitive.Item>
               );
             })}

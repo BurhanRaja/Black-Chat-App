@@ -14,7 +14,7 @@ const DeleteMessageModal = () => {
     useContext(AlertContext);
 
   const handleMessageDelete = async () => {
-    const response = await axios.delete(`/api/socket/messages${data.query}`);
+    const response = await axios.delete(`/api/socket${data.query}`);
     if (!response.data.success) {
       setType("error");
       setTitle("Error");

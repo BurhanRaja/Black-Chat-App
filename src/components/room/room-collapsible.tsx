@@ -2,16 +2,19 @@
 
 import { Trash2, Hash, Edit2 } from "lucide-react";
 import Collapsible from "../ui/collapsible";
-import ChannelItem from "./room-item";
+import RoomItem from "./room-item";
 import { Room, SUserRole } from "@prisma/client";
 import { useContext } from "react";
 import { ModalContext } from "@/context/createContext";
+import { IoVideocam } from "react-icons/io5";
+import { AiFillAudio } from "react-icons/ai";
 
 interface ChannelCollapsibleProps {
   rooms: Array<Room>;
   type: string;
   isAdmin: boolean;
   isModerator: boolean;
+  url: string;
 }
 
 const RoomCollapsible = ({
@@ -19,6 +22,7 @@ const RoomCollapsible = ({
   type,
   isAdmin,
   isModerator,
+  url,
 }: ChannelCollapsibleProps) => {
   const { onOpen } = useContext(ModalContext);
 
@@ -40,10 +44,19 @@ const RoomCollapsible = ({
                     room.updatePermission.includes(SUserRole["MODERATOR"]);
 
                   return (
-                    <ChannelItem
+                    <RoomItem
+                      link={url + `/${room.roomId}`}
                       key={room?.roomId}
                       title={room?.name}
-                      mainIcon={<Hash size={18} />}
+                      mainIcon={
+                        room.type === "AUDIO" ? (
+                          <AiFillAudio className="text-lg" />
+                        ) : room.type === "VIDEO" ? (
+                          <IoVideocam className="text-lg" />
+                        ) : (
+                          <Hash size={18} />
+                        )
+                      }
                       icons={
                         <>
                           {isAdmin || moderatorDelete ? (

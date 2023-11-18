@@ -1,68 +1,17 @@
-"use client";
-
 import { Search } from "lucide-react";
 import ScrollArea from "../ui/scroll-area";
 import DMItem from "./dm-item";
 import ProfileItem from "../profile-item";
+import { Conversation, DirectMessage, Profile } from "@prisma/client";
 
-const DMPannelContent = () => {
-  return (
-    <>
-      <div className="mx-2 pt-1">
-        <DMItem
-          image="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
-          altname="any"
-          title="Rohit Jain"
-          backgroundHover="hover:bg-zinc-800"
-        />
-        <DMItem
-          image="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
-          altname="any"
-          title="Rohit Jain"
-          backgroundHover="hover:bg-zinc-800"
-        />
-        <DMItem
-          image="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
-          altname="any"
-          title="Rohit Jain"
-          backgroundHover="hover:bg-zinc-800"
-        />
-        <DMItem
-          image="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
-          altname="any"
-          title="Rohit Jain"
-          backgroundHover="hover:bg-zinc-800"
-        />
-        <DMItem
-          image="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
-          altname="any"
-          title="Rohit Jain"
-          backgroundHover="hover:bg-zinc-800"
-        />
-        <DMItem
-          image="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
-          altname="any"
-          title="Rohit Jain"
-          backgroundHover="hover:bg-zinc-800"
-        />
-        <DMItem
-          image="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
-          altname="any"
-          title="Rohit Jain"
-          backgroundHover="hover:bg-zinc-800"
-        />
-        <DMItem
-          image="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
-          altname="any"
-          title="Rohit Jain"
-          backgroundHover="hover:bg-zinc-800"
-        />
-      </div>
-    </>
-  );
-};
+interface DMPannelProps {
+  conversations: Array<
+    Conversation & { profileOne: Profile; profileTwo: Profile }
+  >;
+  curruser: Profile;
+}
 
-const DMPannel = () => {
+const DMPannel = ({ conversations, curruser }: DMPannelProps) => {
   return (
     <>
       <div className="h-[100vh] bg-[rgb(71,71,79)] pb-2 w-[255px] ml-20">
@@ -80,7 +29,38 @@ const DMPannel = () => {
           width="w-[250px]"
           backgroundColor="bg-[rgb(71,71,79)]"
           height="h-[75%]"
-          content={<DMPannelContent />}
+          content={
+            <>
+              <div className="mx-2 pt-1">
+                {conversations?.map((conversation) => {
+                  if (curruser.userId !== conversation.profileOneId) {
+                    return (
+                      <DMItem
+                        link={`/me/conversation/${conversation.id}`}
+                        key={conversation.id}
+                        image={conversation.profileOne.imageUrl}
+                        altname="any"
+                        title={conversation.profileOne.displayname}
+                        backgroundHover="hover:bg-zinc-800"
+                      />
+                    );
+                  }
+                  if (curruser.userId !== conversation.profileTwoId) {
+                    return (
+                      <DMItem
+                        link={`/me/conversation/${conversation.id}`}
+                        key={conversation.id}
+                        image={conversation.profileTwo.imageUrl}
+                        altname="any"
+                        title={conversation.profileTwo.displayname}
+                        backgroundHover="hover:bg-zinc-800"
+                      />
+                    );
+                  }
+                })}
+              </div>
+            </>
+          }
           padding={false}
         />
         <ProfileItem />

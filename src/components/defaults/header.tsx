@@ -7,10 +7,15 @@ import { useParams, usePathname } from "next/navigation";
 import { MdEmojiPeople } from "react-icons/md";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
-import { Room } from "@prisma/client";
+import { Profile, Room } from "@prisma/client";
 import { MemberPannelContext } from "@/context/createContext";
+import Avatar from "../ui/avatar";
 
-const Header = () => {
+interface HeaderProps {
+  conversationUser?: Profile;
+}
+
+const Header = ({ conversationUser }: HeaderProps) => {
   const [roomDetails, setRoomDetails] = useState<Room>();
   const params = useParams();
   const pathname = usePathname();
@@ -54,21 +59,38 @@ const Header = () => {
         ) : (
           <>
             <div className="flex items-center">
-              <Hash size={18} className="mr-1" />
-              <p>{roomDetails?.name}</p>
+              {conversationUser ? (
+                <div className="mr-1.5">
+                  <Avatar
+                    image={conversationUser.imageUrl!}
+                    altname={conversationUser.username}
+                    width="w-[26px]"
+                    height="h-[26px]"
+                  />
+                </div>
+              ) : (
+                <Hash size={18} className="mr-1" />
+              )}
+              <p className={conversationUser ? "text-sm" : ""}>
+                {conversationUser
+                  ? conversationUser.displayname
+                  : roomDetails?.name}
+              </p>
             </div>
             <div className="flex items-center">
               <MemberSearch />
-              <Tooltip
-                trigger={
-                  <Users2
-                    className="cursor-pointer"
-                    onClick={() => setMemberPannelOpen(!memberPannelOpen)}
-                  />
-                }
-                content="User's List"
-                side="bottom"
-              />
+              {!conversationUser && (
+                <Tooltip
+                  trigger={
+                    <Users2
+                      className="cursor-pointer"
+                      onClick={() => setMemberPannelOpen(!memberPannelOpen)}
+                    />
+                  }
+                  content="User's List"
+                  side="bottom"
+                />
+              )}
             </div>
           </>
         )}

@@ -1,18 +1,85 @@
 import DMPannel from "./dm/dm-pannel";
 import Header from "@/components/defaults/header";
-import { ReactNode } from "react";
+import { prisma } from "@/db/client";
+import currentProfile from "@/lib/current-profile";
+import { redirect } from "next/navigation";
+import ChatMessages from "./chat/chat-messages";
+import ChatAreaLayout from "./chat/chat-area-layout";
+import ChatInput from "./chat/chat-input";
 
 interface AppDMLayoutProps {
-  chatarea: ReactNode;
+  conversationId: string;
 }
 
-const AppDMLayout = ({ chatarea }: AppDMLayoutProps) => {
+const AppDMLayout = async ({ conversationId }: AppDMLayoutProps) => {
+  const profile = await currentProfile();
+
+  if (!profile) {
+    redirect("/auth/signin");
+  }
+
+  const conversation = await prisma.conversation.findFirst({
+    where: {
+      id: conversationId,
+    },
+    include: {
+      profileOne: true,
+      profileTwo: true,
+    },
+  });
+
+  if (!conversation) {
+    redirect("/me");
+  }
+
+  let member =
+    profile?.userId === conversation.profileOne.userId
+      ? conversation.profileOne
+      : conversation.profileTwo;
+
+  let otherMember =
+    profile?.userId !== conversation.profileOne.userId
+      ? conversation.profileOne
+      : conversation.profileTwo;
+
+  let allConversations = await prisma.conversation.findMany({
+    where: {
+      OR: [
+        {
+          profileOneId: profile.userId,
+        },
+        {
+          profileTwoId: profile.userId,
+        },
+      ],
+    },
+    include: {
+      profileOne: true,
+      profileTwo: true,
+    },
+  });
+
   return (
     <>
-      <DMPannel />
-      <div className="content w-[79%]">
-        <Header />
-        <div className="flex">{chatarea}</div>
+      <DMPannel conversations={allConversations} curruser={profile} />
+      <div className="w-[79%] h-full">
+        <Header conversationUser={otherMember} />
+        <div className="flex">
+          <ChatAreaLayout>
+            <ChatMessages
+              memberConversation={member!}
+              apiUrl="/api/direct-messages"
+              conversationId={conversationId}
+              paramKey="conversationId"
+              paramValue={conversationId}
+              welcomeName={otherMember.displayname}
+              welcomeType="conversation"
+            />
+            <div className="bg-zinc-700 relative w-[100%] pb-6 pt-2">
+              <ChatInput conversationId={conversationId} />
+            </div>
+          </ChatAreaLayout>
+        </div>
       </div>
     </>
   );

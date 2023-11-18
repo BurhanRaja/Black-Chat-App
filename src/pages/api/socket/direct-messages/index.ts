@@ -1,8 +1,4 @@
-import {
-  DirectMessageWithProfile,
-  MessageWithProfile,
-  NextApiResponseServerIo,
-} from "@/types";
+import { NextApiResponseServerIo } from "@/types";
 import { NextApiRequest } from "next";
 import { prisma } from "@/db/client";
 import { randomBytes } from "crypto";
@@ -81,6 +77,21 @@ export default async function handler(
       },
     });
 
+    res.socket.server.io.emit(
+      `chat:${conversationId!}:message`,
+      undefined,
+      directMessage
+    );
 
-  } catch (err) {}
+    success = true;
+    return res.status(200).send({
+      success,
+      directMessage,
+    });
+  } catch (err) {
+    return res.status(500).send({
+      success,
+      message: "Internal Server Error.",
+    });
+  }
 }

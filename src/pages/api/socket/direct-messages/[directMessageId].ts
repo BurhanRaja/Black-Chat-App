@@ -30,39 +30,29 @@ export default async function handler(
       return res.status(401).send({ success, message: "UnAuthorized" });
     }
 
-    const { messageId, serverId, roomId } = req.query;
+    const { messageId, conversationId } = req.query;
 
-    let server = await prisma.server.findUnique({
+    let conversation = await prisma.conversation.findUnique({
       where: {
-        serverId: serverId as string,
+        id: conversationId as string,
       },
       include: {
-        sUsers: true,
+        profileOne: true,
+        profileTwo: true,
       },
     });
 
-    if (!server) {
+    if (!conversation) {
       return res.status(404).send({
         success,
         message: "Server not found.",
       });
     }
 
-    let room = await prisma.room.findUnique({
-      where: {
-        roomId: roomId as string,
-        serverId: serverId as string,
-      },
-    });
-
-    if (!room) {
-      return res.status(404).send({
-        success,
-        message: "Room not found.",
-      });
-    }
-
-    const member = server.sUsers.find((user) => user.userId === profile.userId);
+    const member =
+      conversation.profileOne.userId === profile.userId
+        ? conversation.profileOne
+        : conversation.profileTwo;
 
     if (!member) {
       return res.status(404).send({
@@ -71,17 +61,12 @@ export default async function handler(
       });
     }
 
-    let message = await prisma.message.findUnique({
+    let message = await prisma.directMessage.findUnique({
       where: {
-        messageId: messageId as string,
-        roomId: roomId as string,
+        id: conversationId as string,
       },
       include: {
-        user: {
-          include: {
-            user: true,
-          },
-        },
+        user: true,
       },
     });
 
@@ -92,10 +77,8 @@ export default async function handler(
       });
     }
 
-    const isMessageOwner = message.sUserId === member.sUserId;
-    const isAdmin = member.type === "ADMIN";
-    const isModerator = member.type === "MODERATOR";
-    const canModify = isMessageOwner || isAdmin || isModerator;
+    const isMessageOwner = message.userId === member.userId;
+    const canModify = isMessageOwner;
 
     if (!canModify) {
       return res.status(401).send({
@@ -105,10 +88,9 @@ export default async function handler(
     }
 
     if (req.method === "DELETE") {
-      message = await prisma.message.update({
+      message = await prisma.directMessage.update({
         where: {
-          messageId: messageId as string,
-          roomId: roomId as string,
+          directMessageId: message.directMessageId,
         },
         data: {
           file: null,
@@ -116,37 +98,32 @@ export default async function handler(
           isDelete: true,
         },
         include: {
-          user: {
-            include: {
-              user: true,
-            },
-          },
+          user: true,
         },
       });
     }
 
     if (req.method === "PUT") {
       const { content } = req.body;
-      message = await prisma.message.update({
+      message = await prisma.directMessage.update({
         where: {
-          messageId: messageId as string,
-          roomId: roomId as string,
+          directMessageId: message.directMessageId,
         },
         data: {
           content: content,
         },
         include: {
-          user: {
-            include: {
-              user: true,
-            },
-          },
+          user: true,
         },
       });
     }
 
     success = true;
-    res.socket.server.io.emit(`chat:${roomId}:message:update`, message);
+    res.socket.server.io.emit(
+      `chat:${conversationId}:message:update`,
+      undefined,
+      message
+    );
 
     return res.status(200).send({
       success,

@@ -48,6 +48,8 @@ const AppServerLayout = async ({ serverId, roomId }: AppServerLayoutProps) => {
     (member) => member.userId === profile?.userId
   );
 
+  const currRoom = server?.rooms.find((room) => room.roomId === roomId);
+
   return (
     <>
       <MemberPannelProvider>
@@ -59,20 +61,27 @@ const AppServerLayout = async ({ serverId, roomId }: AppServerLayoutProps) => {
         <div className="w-[79%] h-full">
           <Header />
           <div className="flex">
-            <ChatAreaLayout>
-              <ChatMessages
-                member={member!}
-                chatId={roomId}
-                serverId={serverId}
-                apiUrl="/api/messages"
-                paramKey="roomId"
-                paramValue={roomId}
-              />
-              <div className="bg-zinc-700 relative w-[100%] pb-6 pt-2">
-                <ChatInput serverId={serverId} chatId={roomId} />
-              </div>
-            </ChatAreaLayout>
-            <MemberPanel members={serverUsers} />
+            {currRoom?.type === "TEXT" && (
+              <>
+                <ChatAreaLayout>
+                  <ChatMessages
+                    conversationId=""
+                    memberServer={member!}
+                    chatId={roomId}
+                    serverId={serverId}
+                    apiUrl="/api/messages"
+                    paramKey="roomId"
+                    paramValue={roomId}
+                    welcomeName={currRoom?.name!}
+                    welcomeType="room"
+                  />
+                  <div className="bg-zinc-700 relative w-[100%] pb-6 pt-2">
+                    <ChatInput serverId={serverId} chatId={roomId} />
+                  </div>
+                </ChatAreaLayout>
+                <MemberPanel members={serverUsers} />
+              </>
+            )}
           </div>
         </div>
       </MemberPannelProvider>
