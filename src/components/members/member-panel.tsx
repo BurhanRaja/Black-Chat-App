@@ -16,6 +16,8 @@ interface MemberPannel {
 const MemberPanel = ({ members }: MemberPannel) => {
   const { memberPannelOpen } = useContext(MemberPannelContext);
 
+  console.log(members?.map((el) => el.user.connected));
+
   return (
     <>
       <ScrollArea
@@ -30,6 +32,7 @@ const MemberPanel = ({ members }: MemberPannel) => {
                   userId={member.userId}
                   name={member.user.displayname}
                   image={member.user.imageUrl}
+                  isOnline={member.user.connected}
                 />
               );
             })}

@@ -10,6 +10,7 @@ import { useContext, useEffect, useState } from "react";
 import { Profile, Room } from "@prisma/client";
 import { MemberPannelContext } from "@/context/createContext";
 import Avatar from "../ui/avatar";
+import { useSession } from "next-auth/react";
 
 interface HeaderProps {
   conversationUser?: Profile;
@@ -21,6 +22,7 @@ const Header = ({ conversationUser }: HeaderProps) => {
   const pathname = usePathname();
   const { memberPannelOpen, setMemberPannelOpen } =
     useContext(MemberPannelContext);
+  const { data: session } = useSession();
 
   const handleRoomDetails = async () => {
     if (params?.roomId) {

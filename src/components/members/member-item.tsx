@@ -4,15 +4,18 @@ import { useSession } from "next-auth/react";
 import Avatar from "../ui/avatar";
 import Dropdown from "../ui/dropdown";
 import { Send } from "lucide-react";
+import { FaCircle } from "react-icons/fa";
 
 interface MemberItemProps {
   image: string;
   name: string;
   userId: string;
+  isOnline: boolean;
 }
 
-const MemberItem = ({ image, name, userId }: MemberItemProps) => {
+const MemberItem = ({ image, name, userId, isOnline }: MemberItemProps) => {
   const { data: session } = useSession();
+  console.log(isOnline);
   return (
     <>
       {session?.user.userId !== userId ? (
@@ -26,7 +29,19 @@ const MemberItem = ({ image, name, userId }: MemberItemProps) => {
                 height="h-[40px]"
               />
               <p className="ml-2">
-                {name.length <= 11 ? name : name.substring(0, 11) + "..."}
+                <span>
+                  {name.length <= 11 ? name : name.substring(0, 11) + "..."}
+                </span>
+                <span className="text-xs flex items-center">
+                  <span>
+                    <FaCircle
+                      className={`text-xs mr-1 ${
+                        isOnline ? "text-green-500" : "text-red-500"
+                      }`}
+                    />
+                  </span>
+                  <span>{isOnline ? "Online" : "Offline"}</span>
+                </span>
               </p>
             </button>
           }
@@ -52,7 +67,19 @@ const MemberItem = ({ image, name, userId }: MemberItemProps) => {
             height="h-[40px]"
           />
           <p className="ml-2">
-            {name.length <= 11 ? name : name.substring(0, 11) + "..."}
+            <span>
+              {name.length <= 11 ? name : name.substring(0, 11) + "..."}
+            </span>
+            <span className="text-xs flex items-center">
+              <span>
+                <FaCircle
+                  className={`text-xs mr-1 ${
+                    isOnline ? "text-green-500" : "text-red-500"
+                  }`}
+                />
+              </span>
+              <span>Online</span>
+            </span>
           </p>
         </button>
       )}

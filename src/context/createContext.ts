@@ -93,3 +93,5 @@ export const SocketContext = createContext<SocketContextType>({
   isConnected: false,
   socket: null,
 });
+
+export const UserConnectionContext = createContext(null);

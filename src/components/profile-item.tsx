@@ -6,17 +6,27 @@ import Dropdown from "./ui/dropdown";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
-import { ModalContext } from "@/context/createContext";
+import { ModalContext, SocketContext } from "@/context/createContext";
 import axios from "axios";
 import { Profile } from "@prisma/client";
+import { FaCircle } from "react-icons/fa";
 
 const ProfileItem = () => {
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [profileData, setProfileData] = useState<Profile>();
   const { onOpen } = useContext(ModalContext);
+  const { isConnected } = useContext(SocketContext);
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
+    if (session?.user) {
+      const response = await axios.post(
+        "/api/connection",
+        { connection: false },
+        { headers: { "Content-Type": "application/json" } }
+      );
+      console.log(response.data);
+    }
     signOut({ redirect: false }).then(() => {
       router.push("/auth/signin");
     });
@@ -35,10 +45,10 @@ const ProfileItem = () => {
   };
 
   useEffect(() => {
-    if (!session?.user.image) {
+    if (!session?.user && status === "authenticated") {
       getProfile();
     }
-  }, [session?.user]);
+  }, [session, status]);
 
   return (
     <>
@@ -55,9 +65,22 @@ const ProfileItem = () => {
             fallbackBackgroundColor="bg-black"
           />
           <p className="ml-2">
-            {session?.user.name?.length! > 10
-              ? session?.user.name?.substring(0, 10) + "..."
-              : session?.user?.name}
+            <span>
+              {session?.user.name?.length! > 10
+                ? session?.user.name?.substring(0, 10) + "..."
+                : session?.user?.name}
+            </span>
+            <br />
+            <span className="text-xs flex items-center">
+              <span>
+                <FaCircle
+                  className={`text-xs mr-1 ${
+                    isConnected ? "text-green-500" : "text-red-500"
+                  }`}
+                />
+              </span>
+              <span>{isConnected ? "Online" : "Offline"}</span>
+            </span>
           </p>
         </div>
         <Dropdown

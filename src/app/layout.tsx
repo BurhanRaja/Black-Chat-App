@@ -8,6 +8,7 @@ import { authOptions } from "@/lib/auth-options";
 import AlertProvider from "@/components/provider/alert-provider";
 import ModalProvider from "@/components/provider/modal-provider";
 import SocketProvider from "@/components/provider/socket-provider";
+import UserConnectionProvider from "@/components/provider/user-connection-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,9 +29,11 @@ export default async function RootLayout({ children }: ILayoutProps) {
         <AlertProvider>
           <AuthSessionProvider session={session}>
             <SocketProvider>
-              <ReactQueryProvider>
-                <ModalProvider>{children}</ModalProvider>
-              </ReactQueryProvider>
+              <UserConnectionProvider>
+                <ReactQueryProvider>
+                  <ModalProvider>{children}</ModalProvider>
+                </ReactQueryProvider>
+              </UserConnectionProvider>
             </SocketProvider>
           </AuthSessionProvider>
         </AlertProvider>

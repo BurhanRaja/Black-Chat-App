@@ -47,7 +47,7 @@ const Dropdown = ({
           >
             {items?.map((el) => {
               return (
-                <DropdownPrimitive.Item key={el.link}>
+                <DropdownPrimitive.Item key={el.content as string}>
                   {el.link ? (
                     <Link href={el.link!} className="outline-none">
                       <button
