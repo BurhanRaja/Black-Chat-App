@@ -34,11 +34,11 @@ const MemberItem = ({ image, name, userId, isOnline }: MemberItemProps) => {
                 </span>
                 <span className="text-xs flex items-center">
                   <span>
-                    <FaCircle
-                      className={`text-xs mr-1 ${
-                        isOnline ? "text-green-500" : "text-red-500"
-                      }`}
-                    />
+                    {isOnline ? (
+                      <FaCircle className={`text-xs mr-1 text-green-500`} />
+                    ) : (
+                      <FaCircle className={`text-xs mr-1 text-red-500`} />
+                    )}
                   </span>
                   <span>{isOnline ? "Online" : "Offline"}</span>
                 </span>
@@ -72,11 +72,7 @@ const MemberItem = ({ image, name, userId, isOnline }: MemberItemProps) => {
             </span>
             <span className="text-xs flex items-center">
               <span>
-                <FaCircle
-                  className={`text-xs mr-1 ${
-                    isOnline ? "text-green-500" : "text-red-500"
-                  }`}
-                />
+                <FaCircle className={`text-xs mr-1 text-green-500`} />
               </span>
               <span>Online</span>
             </span>

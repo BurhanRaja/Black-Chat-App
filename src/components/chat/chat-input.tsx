@@ -8,6 +8,7 @@ import axios from "axios";
 import MessageFileUpload from "../modals/message-file";
 import Avatar from "../ui/avatar";
 import { ModalContext } from "@/context/createContext";
+import EmojiPicker from "./emoji-picker";
 
 const FileUpload = () => {
   const { onOpen } = useContext(ModalContext);
@@ -47,7 +48,7 @@ interface ChatInputProps {
 }
 
 const ChatInput = ({ serverId, chatId, conversationId }: ChatInputProps) => {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [msgInp, setMsgInp] = useState<string>("");
   const [file, setFile] = useState<string>("");
   const [fileType, setFileType] = useState<string>("");
   const { onClose } = useContext(ModalContext);
@@ -58,19 +59,17 @@ const ChatInput = ({ serverId, chatId, conversationId }: ChatInputProps) => {
       : `/api/socket/direct-messages?conversationId=${conversationId}&reply=no`;
 
   const handleMessage = async () => {
-    if (!inputRef.current?.value && !file) return;
+    if (msgInp.length === 0 && !file) return;
 
     let data = {
-      content: inputRef?.current?.value ? inputRef.current.value : "",
+      content: msgInp ? msgInp : "",
       fileUrl: file,
     };
     const response = await axios.post(addAPI, data);
 
     if (response.data.success) {
       setFile("");
-      if (inputRef.current?.value) {
-        inputRef.current.value = "";
-      }
+      setMsgInp("");
     }
   };
 
@@ -80,6 +79,8 @@ const ChatInput = ({ serverId, chatId, conversationId }: ChatInputProps) => {
       onClose();
     }
   }, [file]);
+
+  console.log(msgInp);
 
   return (
     <>
@@ -140,14 +141,24 @@ const ChatInput = ({ serverId, chatId, conversationId }: ChatInputProps) => {
         <FileUpload />
         <input
           type="text"
-          ref={inputRef}
+          value={msgInp}
+          name="msgInp"
+          onChange={(e) => setMsgInp(e.target.value)}
           className="w-[90%] p-2.5 mx-2 outline-none bg-zinc-800 chat-input"
           placeholder="Write a Message"
           onKeyDown={(e) => {
             e.key === "Enter" ? handleMessage() : "";
           }}
         />
-        <BsFillEmojiLaughingFill className="text-zinc-500 hover:text-yellow-500 rounded-3xl text-2xl cursor-pointer" />
+        <EmojiPicker
+          trigger={
+            <BsFillEmojiLaughingFill className="text-zinc-500 hover:text-yellow-500 rounded-3xl text-2xl cursor-pointer" />
+          }
+          onChange={(val) => {
+            console.log(val);
+            setMsgInp(`${msgInp}${val}`);
+          }}
+        />
       </div>
     </>
   );

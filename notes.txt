@@ -1,7 +1,6 @@
 Remaining stuff
 
 LiveKit (video and audio)
-Check Online/offline
 
 Edit Room Settings
 Delete Server
