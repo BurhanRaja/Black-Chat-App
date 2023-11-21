@@ -44,7 +44,7 @@ model Profile {
   conversationsReceived  Conversation[]  @relation(name: "PTwoId")
   directMessages         DirectMessage[] @relation(name: "replyUser")
   replydirectMessages    DirectMessage[] @relation(name: "user")
-  reactions              Reaction[]
+  reactions              UserReaction[]
   Account                Account[]
 
   createdAt DateTime @default(now())
@@ -82,9 +82,9 @@ model SUser {
   server   Server  @relation(fields: [serverId], references: [serverId], onDelete: Cascade)
   serverId String
 
-  messages      Message[]  @relation(name: "user")
-  replymessages Message[]  @relation(name: "replyUser")
-  reactions     Reaction[]
+  messages      Message[]      @relation(name: "user")
+  replymessages Message[]      @relation(name: "replyUser")
+  reactions     UserReaction[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -137,23 +137,40 @@ model Room {
 }
 
 model Reaction {
-  id       String @id @default(uuid())
-  reaction String
-  count    Int
+  id         String @id @default(uuid())
+  reactionId String @unique
+  reaction   String
+  count      Int
 
-  suser           SUser         @relation(fields: [sUserId], references: [sUserId])
-  sUserId         String
-  user            Profile       @relation(fields: [userId], references: [userId])
-  userId          String
-  message         Message       @relation(fields: [messageId], references: [messageId])
-  messageId       String
-  directMessage   DirectMessage @relation(fields: [directMessageId], references: [directMessageId])
-  directMessageId String
+  message         Message?       @relation(fields: [messageId], references: [messageId])
+  messageId       String?
+  directMessage   DirectMessage? @relation(fields: [directMessageId], references: [directMessageId])
+  directMessageId String?
 
-  @@index([sUserId])
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  UserReaction UserReaction[]
+
   @@index([messageId])
   @@index([directMessageId])
-  @@index([userId])
+}
+
+model UserReaction {
+  id         String   @id @default(uuid())
+  reaction   Reaction @relation(fields: [reactionId], references: [reactionId])
+  reactionId String
+
+  Profile   Profile? @relation(fields: [profileId], references: [id])
+  profileId String?
+  SUser     SUser?   @relation(fields: [sUserId], references: [id])
+  sUserId   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sUserId])
+  @@index([profileId])
+  @@index([reactionId])
 }
 
 model Message {
@@ -224,8 +241,8 @@ model DirectMessage {
   conversation   Conversation? @relation(fields: [conversationId], references: [id])
   conversationId String?
 
-  reactions     Reaction[]
   replymessages DirectMessage[] @relation(name: "replymessage")
+  reactions     Reaction[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -1,7 +1,12 @@
 "use client";
 
 import { SocketContext } from "@/context/createContext";
-import { DirectMessageWithProfile, MessageWithProfile } from "@/types";
+import {
+  DirectMessageWithProfile,
+  MessageWithProfileWithReaction,
+  MessageWithProfile,
+} from "@/types";
+import { Reaction } from "@prisma/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { useContext, useEffect } from "react";
 
@@ -23,7 +28,7 @@ const useChatSocket = ({ queryKey, addKey, updateKey }: ChatSocketProps) => {
     socket.on(
       updateKey,
       (
-        message: MessageWithProfile | undefined,
+        message: MessageWithProfileWithReaction | undefined,
         directMessage: DirectMessageWithProfile | undefined,
         remove: boolean
       ) => {
@@ -38,7 +43,7 @@ const useChatSocket = ({ queryKey, addKey, updateKey }: ChatSocketProps) => {
                 return {
                   ...page,
                   items: page.items.filter(
-                    (item: MessageWithProfile) =>
+                    (item: MessageWithProfileWithReaction) =>
                       item.messageId !== message.messageId
                   ),
                 };
@@ -51,12 +56,15 @@ const useChatSocket = ({ queryKey, addKey, updateKey }: ChatSocketProps) => {
               let newData = oldData.pages?.map((page: any) => {
                 return {
                   ...page,
-                  items: page.items?.map((item: MessageWithProfile) => {
-                    if (item.messageId === message.messageId) {
-                      return message;
+                  items: page.items?.map(
+                    (item: MessageWithProfileWithReaction) => {
+                      if (item.messageId === message.messageId) {
+                        return message;
+                      }
+
+                      return item;
                     }
-                    return item;
-                  }),
+                  ),
                 };
               });
 

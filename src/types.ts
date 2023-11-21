@@ -3,8 +3,10 @@ import {
   DirectMessage,
   Message,
   Profile,
+  Reaction,
   RoomType,
   SUser,
+  UserReaction,
 } from "@prisma/client";
 import { NextApiResponse } from "next";
 import { Server as NetServer, Socket } from "net";
@@ -74,6 +76,14 @@ export type NextApiResponseServerIo = NextApiResponse & {
   };
 };
 
+// Message With Profile with Reaction
+export type MessageWithProfileWithReaction = Message & {
+  user: SUser & {
+    user: Profile;
+  };
+  reactions: Array<Reaction & { UserReaction: UserReaction }>;
+};
+
 // Message With Profile
 export type MessageWithProfile = Message & {
   user: SUser & {
@@ -83,4 +93,5 @@ export type MessageWithProfile = Message & {
 
 export type DirectMessageWithProfile = DirectMessage & {
   user: Profile;
+  reactions: Array<Reaction & { UserReaction: UserReaction }>;
 };

@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react";
 import axios from "axios";
 import { useContext, useRef, useState } from "react";
 import { AlertContext, ModalContext } from "@/context/createContext";
+import EmojiPicker from "./emoji-picker";
 
 interface ChatItemProps {
   color: string;
@@ -68,9 +69,6 @@ const ChatItemMessage = ({
     isAdmin = true;
     isModerator = true;
     isOwner = currmemberConversation.userId === messageUserId;
-
-    console.log(currmemberConversation.userId);
-    console.log(messageUserId);
     canDelete = !deleted && isOwner;
   }
 
@@ -112,6 +110,19 @@ const ChatItemMessage = ({
     }
   };
 
+  const handleReaction = async (reaction: string) => {
+    const response = await axios.put(
+      `/api/socket/messages/reaction/${messageId}?roomId=${chatId}&serverId=${serverId}`,
+      { reactionStr: reaction },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log(response);
+  };
+
   return (
     <>
       <div className="relative flex items-start hover:bg-[rgb(54,54,58)] p-2 py-3 group">
@@ -126,14 +137,19 @@ const ChatItemMessage = ({
               side="top"
               content="Reply"
             />
-            <Tooltip
+            <EmojiPicker
               trigger={
-                <button className="p-1.5 rounded-sm hover:bg-zinc-700">
-                  <SmilePlus size={20} className="text-yellow-400" />
-                </button>
+                <Tooltip
+                  trigger={
+                    <button className="p-1.5 rounded-sm hover:bg-zinc-700">
+                      <SmilePlus size={20} className="text-yellow-400" />
+                    </button>
+                  }
+                  side="top"
+                  content="Add Reaction"
+                />
               }
-              side="top"
-              content="Add Reaction"
+              onChange={handleReaction}
             />
             {canEdit && (
               <Tooltip

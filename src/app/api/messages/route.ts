@@ -53,6 +53,11 @@ export async function GET(req: NextRequest) {
               user: true,
             },
           },
+          reactions: {
+            include: {
+              UserReaction: true,
+            },
+          },
         },
         orderBy: {
           createdAt: "desc",
@@ -69,6 +74,11 @@ export async function GET(req: NextRequest) {
           user: {
             include: {
               user: true,
+            },
+          },
+          reactions: {
+            include: {
+              UserReaction: true,
             },
           },
         },

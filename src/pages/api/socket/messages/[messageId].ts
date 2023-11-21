@@ -82,6 +82,7 @@ export default async function handler(
             user: true,
           },
         },
+        reactions: true,
       },
     });
 
@@ -121,6 +122,7 @@ export default async function handler(
               user: true,
             },
           },
+          reactions: true,
         },
       });
     }
@@ -139,6 +141,11 @@ export default async function handler(
           user: {
             include: {
               user: true,
+            },
+          },
+          reactions: {
+            include: {
+              UserReaction: true,
             },
           },
         },

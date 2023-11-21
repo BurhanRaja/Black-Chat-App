@@ -97,6 +97,8 @@ const ChatMessages = ({
 
   // const { isConnected, socket } = useContext(SocketContext);
 
+  console.log(data?.pages);
+
   if (status === "loading") {
     return (
       <>
