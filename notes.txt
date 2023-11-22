@@ -6,6 +6,6 @@ Edit Room Settings
 Delete Server
 Leave Server
 
-Emoji Reaction on Message
+Emoji Reaction on Message in UI
 
 Message Reply

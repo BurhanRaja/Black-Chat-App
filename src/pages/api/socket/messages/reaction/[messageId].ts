@@ -121,16 +121,26 @@ export default async function handler(
             sUserId: sUser?.sUserId!,
           },
         });
-        reaction = await prisma.reaction.update({
-          data: {
-            count: reaction.count - 1,
-          },
-          where: {
-            id: reaction.id,
-            reaction: reactionStr as string,
-            messageId: messageId as string,
-          },
-        });
+        if (reaction.count === 1) {
+          reaction = await prisma.reaction.delete({
+            where: {
+              id: reaction.id,
+              reaction: reactionStr as string,
+              messageId: messageId as string,
+            },
+          });
+        } else {
+          reaction = await prisma.reaction.update({
+            data: {
+              count: reaction.count - 1,
+            },
+            where: {
+              id: reaction.id,
+              reaction: reactionStr as string,
+              messageId: messageId as string,
+            },
+          });
+        }
       } else {
         // If no then create the Reaction with count 1 and Create the User's Reaction
         reaction = await prisma.reaction.update({

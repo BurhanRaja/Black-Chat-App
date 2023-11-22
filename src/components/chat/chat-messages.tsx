@@ -2,13 +2,17 @@
 import Image from "next/image";
 import ChatItemMessage from "./chat-item-message";
 import { usePathname } from "next/navigation";
-import { Fragment, useRef } from "react";
+import { Fragment, useRef, useState } from "react";
 import ChatWelcome from "./chat-welcome";
 import useChatQuery from "@/hooks/useChatQuery";
 import useChatScroll from "@/hooks/useChatScroll";
 import { Loader2, ServerCrash } from "lucide-react";
 import useChatSocket from "@/hooks/useChatSocket";
-import { DirectMessageWithProfile, MessageWithProfile } from "@/types";
+import {
+  DirectMessageWithProfile,
+  MessageWithProfile,
+  MessageWithProfileWithReaction,
+} from "@/types";
 import { Profile, SUser } from "@prisma/client";
 import randomcolor from "randomcolor";
 
@@ -81,6 +85,7 @@ const ChatMessages = ({
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const chatRef = useRef<HTMLDivElement>(null);
+  const [openReactionTab, setOpenReactionTab] = useState<boolean>(false);
 
   const { data, isFetchingNextPage, fetchNextPage, hasNextPage, status } =
     useChatQuery({ queryKey, apiUrl, paramKey, paramValue });
@@ -96,8 +101,6 @@ const ChatMessages = ({
   let userColor: Array<{ color: string; userId: string }> = [];
 
   // const { isConnected, socket } = useContext(SocketContext);
-
-  console.log(data?.pages);
 
   if (status === "loading") {
     return (
@@ -149,7 +152,7 @@ const ChatMessages = ({
           ? data?.pages?.map((el, index) => {
               return (
                 <Fragment key={index}>
-                  {el?.items?.map((el: MessageWithProfile) => {
+                  {el?.items?.map((el: MessageWithProfileWithReaction) => {
                     let colorCheck = userColor?.find(
                       (elColor) => elColor.userId === el.user.userId
                     );
@@ -177,6 +180,7 @@ const ChatMessages = ({
                         userImage={el?.user?.user?.imageUrl}
                         deleted={el?.isDelete}
                         messageUserId={el?.user?.userId}
+                        reactions={el?.reactions!}
                       />
                     );
                   })}
@@ -213,6 +217,7 @@ const ChatMessages = ({
                         userImage={el?.user?.imageUrl}
                         deleted={el?.isDelete}
                         messageUserId={el?.user?.userId}
+                        reactions={el?.reactions}
                       />
                     );
                   })}

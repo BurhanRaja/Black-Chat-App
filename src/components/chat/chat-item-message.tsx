@@ -4,12 +4,21 @@ import Avatar from "../ui/avatar";
 import { BsFillReplyFill, BsFillEmojiLaughingFill } from "react-icons/bs";
 import { Ban, Edit2, File, SmilePlus, Trash2, X } from "lucide-react";
 import Tooltip from "../ui/tooltip";
-import { Profile, SUser, SUserRole } from "@prisma/client";
+import {
+  Profile,
+  Reaction,
+  SUser,
+  SUserRole,
+  UserReaction,
+} from "@prisma/client";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-import { useContext, useRef, useState } from "react";
+import { Fragment, useContext, useRef, useState } from "react";
 import { AlertContext, ModalContext } from "@/context/createContext";
 import EmojiPicker from "./emoji-picker";
+import data from "@emoji-mart/data";
+import Picker from "@emoji-mart/react";
+import PopOver from "../ui/popover";
 
 interface ChatItemProps {
   color: string;
@@ -29,6 +38,7 @@ interface ChatItemProps {
   userImage: string;
   deleted: boolean;
   messageUserId: string;
+  reactions: Array<Reaction & { UserReaction: UserReaction }>;
 }
 
 const ChatItemMessage = ({
@@ -47,9 +57,11 @@ const ChatItemMessage = ({
   messageId,
   currmemberServer,
   currmemberConversation,
+  reactions,
 }: ChatItemProps) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const editMsgRef = useRef<HTMLTextAreaElement>(null);
+  const [reaction, setReaction] = useState<string>("");
 
   const { onOpen } = useContext(ModalContext);
 
@@ -120,14 +132,15 @@ const ChatItemMessage = ({
         },
       }
     );
-    console.log(response);
   };
 
   return (
     <>
-      <div className="relative flex items-start hover:bg-[rgb(54,54,58)] p-2 py-3 group">
+      <div className="relative flex items-start hover:bg-[rgb(54,54,58)] p-2 py-3 group z-auto">
         {!deleted && !isEditing ? (
-          <div className="absolute right-10 top-[-6px] bg-zinc-800 px-2 py-0.5 hidden group-hover:block">
+          <div
+            className={`absolute right-10 top-[-6px] bg-zinc-800 px-2 py-0.5 hidden group-hover:block`}
+          >
             <Tooltip
               trigger={
                 <button className="mr-1 p-1 rounded-sm hover:bg-zinc-700">
@@ -151,13 +164,11 @@ const ChatItemMessage = ({
               }
               onChange={handleReaction}
             />
+
             {canEdit && (
               <Tooltip
                 trigger={
-                  <button
-                    className="p-1.5 rounded-sm hover:bg-zinc-700"
-                    onClick={() => setIsEditing(true)}
-                  >
+                  <button className="p-1.5 rounded-sm hover:bg-zinc-700">
                     <Edit2 size={20} />
                   </button>
                 }
@@ -264,10 +275,22 @@ const ChatItemMessage = ({
           ) : (
             <p className="text-gray-400">{message}</p>
           )}
-          {/* <button className="flex items-center justify-between bg-zinc-800 p-0.5 px-1 text-xs mt-1 rounded-md">
-            <BsFillEmojiLaughingFill className="text-xs text-yellow-500 mr-1" />
-            <p>1</p>
-          </button> */}
+          <div className="flex items-center justify-start flex-wrap">
+            {reactions?.map((el) => {
+              if (el.count > 0) {
+                return (
+                  <button
+                    key={el.reactionId}
+                    className="flex mr-1.5 items-center justify-between bg-zinc-800 p-0.5 px-1 text-sm mt-1 rounded-md"
+                    onClick={() => handleReaction(el.reaction)}
+                  >
+                    <p className="mr-1">{el?.reaction}</p>
+                    <p>{el?.count}</p>
+                  </button>
+                );
+              }
+            })}
+          </div>
         </div>
       </div>
     </>
