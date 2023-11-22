@@ -1,24 +1,14 @@
 "use client";
 
 import Avatar from "../ui/avatar";
-import { BsFillReplyFill, BsFillEmojiLaughingFill } from "react-icons/bs";
+import { BsFillReplyFill } from "react-icons/bs";
 import { Ban, Edit2, File, SmilePlus, Trash2, X } from "lucide-react";
 import Tooltip from "../ui/tooltip";
-import {
-  Profile,
-  Reaction,
-  SUser,
-  SUserRole,
-  UserReaction,
-} from "@prisma/client";
-import { useSession } from "next-auth/react";
+import { Profile, Reaction, SUser, UserReaction } from "@prisma/client";
 import axios from "axios";
-import { Fragment, useContext, useRef, useState } from "react";
-import { AlertContext, ModalContext } from "@/context/createContext";
+import { useContext, useRef, useState } from "react";
+import { ModalContext } from "@/context/createContext";
 import EmojiPicker from "./emoji-picker";
-import data from "@emoji-mart/data";
-import Picker from "@emoji-mart/react";
-import PopOver from "../ui/popover";
 
 interface ChatItemProps {
   color: string;
@@ -61,7 +51,6 @@ const ChatItemMessage = ({
 }: ChatItemProps) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const editMsgRef = useRef<HTMLTextAreaElement>(null);
-  const [reaction, setReaction] = useState<string>("");
 
   const { onOpen } = useContext(ModalContext);
 
@@ -100,6 +89,7 @@ const ChatItemMessage = ({
       : `/direct-messages/${messageId}?conversationId=${conversationId}`;
 
   const handleRemoveMessage = async () => {
+    console.log(removeAPI);
     await axios.delete(removeAPI);
   };
 
@@ -118,7 +108,9 @@ const ChatItemMessage = ({
 
     if (response.data.success) {
       setIsEditing(false);
-      editMsgRef.current.value = "";
+      if (editMsgRef.current.value) {
+        editMsgRef.current.value = "";
+      }
     }
   };
 
@@ -136,7 +128,9 @@ const ChatItemMessage = ({
 
   return (
     <>
-      <div className="relative flex items-start hover:bg-[rgb(54,54,58)] p-2 py-3 group z-auto">
+      <div
+        className={`relative flex items-start hover:bg-[rgb(54,54,58)] p-2 py-3 group z-auto`}
+      >
         {!deleted && !isEditing ? (
           <div
             className={`absolute right-10 top-[-6px] bg-zinc-800 px-2 py-0.5 hidden group-hover:block`}
@@ -168,7 +162,10 @@ const ChatItemMessage = ({
             {canEdit && (
               <Tooltip
                 trigger={
-                  <button className="p-1.5 rounded-sm hover:bg-zinc-700">
+                  <button
+                    className="p-1.5 rounded-sm hover:bg-zinc-700"
+                    onClick={() => setIsEditing(true)}
+                  >
                     <Edit2 size={20} />
                   </button>
                 }
@@ -270,10 +267,10 @@ const ChatItemMessage = ({
                   </a>
                 </div>
               )}
-              <p>{!isEditing ? message : ""}</p>
+              <p className=" my-1">{!isEditing ? message : ""}</p>
             </>
           ) : (
-            <p className="text-gray-400">{message}</p>
+            <p className="text-gray-400 my-1">{message}</p>
           )}
           <div className="flex items-center justify-start flex-wrap">
             {reactions?.map((el) => {
@@ -281,11 +278,11 @@ const ChatItemMessage = ({
                 return (
                   <button
                     key={el.reactionId}
-                    className="flex mr-1.5 items-center justify-between bg-zinc-800 p-0.5 px-1 text-sm mt-1 rounded-md"
+                    className="flex mr-1.5 items-center justify-between bg-zinc-800 p-0.5 px-1.5 mt-1 rounded-md"
                     onClick={() => handleReaction(el.reaction)}
                   >
                     <p className="mr-1">{el?.reaction}</p>
-                    <p>{el?.count}</p>
+                    <p className="text-xs">{el?.count}</p>
                   </button>
                 );
               }
