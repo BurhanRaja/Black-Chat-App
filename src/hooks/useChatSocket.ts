@@ -3,7 +3,7 @@
 import { SocketContext } from "@/context/createContext";
 import {
   DirectMessageWithProfile,
-  MessageWithProfileWithReaction,
+  MessageWithProfileWithReactionWithReply,
   MessageWithProfile,
 } from "@/types";
 import { Reaction } from "@prisma/client";
@@ -28,7 +28,7 @@ const useChatSocket = ({ queryKey, addKey, updateKey }: ChatSocketProps) => {
     socket.on(
       updateKey,
       (
-        message: MessageWithProfileWithReaction | undefined,
+        message: MessageWithProfileWithReactionWithReply | undefined,
         directMessage: DirectMessageWithProfile | undefined,
         remove: boolean
       ) => {
@@ -43,7 +43,7 @@ const useChatSocket = ({ queryKey, addKey, updateKey }: ChatSocketProps) => {
                 return {
                   ...page,
                   items: page.items.filter(
-                    (item: MessageWithProfileWithReaction) =>
+                    (item: MessageWithProfileWithReactionWithReply) =>
                       item.messageId !== message.messageId
                   ),
                 };
@@ -57,7 +57,7 @@ const useChatSocket = ({ queryKey, addKey, updateKey }: ChatSocketProps) => {
                 return {
                   ...page,
                   items: page.items?.map(
-                    (item: MessageWithProfileWithReaction) => {
+                    (item: MessageWithProfileWithReactionWithReply) => {
                       if (item.messageId === message.messageId) {
                         return message;
                       }

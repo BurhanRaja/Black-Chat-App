@@ -10,8 +10,7 @@ import { Loader2, ServerCrash } from "lucide-react";
 import useChatSocket from "@/hooks/useChatSocket";
 import {
   DirectMessageWithProfile,
-  MessageWithProfile,
-  MessageWithProfileWithReaction,
+  MessageWithProfileWithReactionWithReply,
 } from "@/types";
 import { Profile, SUser } from "@prisma/client";
 import randomcolor from "randomcolor";
@@ -85,7 +84,6 @@ const ChatMessages = ({
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const chatRef = useRef<HTMLDivElement>(null);
-  const [openReactionTab, setOpenReactionTab] = useState<boolean>(false);
 
   const { data, isFetchingNextPage, fetchNextPage, hasNextPage, status } =
     useChatQuery({ queryKey, apiUrl, paramKey, paramValue });
@@ -99,8 +97,6 @@ const ChatMessages = ({
   });
 
   let userColor: Array<{ color: string; userId: string }> = [];
-
-  // const { isConnected, socket } = useContext(SocketContext);
 
   if (status === "loading") {
     return (
@@ -152,38 +148,65 @@ const ChatMessages = ({
           ? data?.pages?.map((el, index) => {
               return (
                 <Fragment key={index}>
-                  {el?.items?.map((el: MessageWithProfileWithReaction) => {
-                    let colorCheck = userColor?.find(
-                      (elColor) => elColor.userId === el.user.userId
-                    );
-                    let randomColor = "";
-                    if (!colorCheck) {
-                      randomColor = randomcolor({ luminosity: "light" });
-                      userColor.push({
-                        userId: el?.user?.userId,
-                        color: randomColor,
-                      });
+                  {el?.items?.map(
+                    (el: MessageWithProfileWithReactionWithReply) => {
+                      let colorCheck = el?.isReply
+                        ? userColor?.find(
+                            (elColor) => elColor.userId === el.replymessage.user.userId
+                          )
+                        : userColor?.find(
+                            (elColor) => elColor.userId === el.user.userId
+                          );
+                      let randomColor = "";
+                      if (!colorCheck) {
+                        randomColor = randomcolor({ luminosity: "light" });
+                        userColor.push({
+                          userId: el?.user?.userId,
+                          color: randomColor,
+                        });
+                      }
+                      return (
+                        <ChatItemMessage
+                          color={colorCheck ? colorCheck.color : randomColor}
+                          chatId={chatId}
+                          serverId={serverId}
+                          messageId={el?.messageId}
+                          currmemberServer={memberServer}
+                          key={el?.messageId}
+                          message={el?.content!}
+                          file={el?.file!}
+                          fileType={el?.file ? el?.file?.split(".").pop() : ""}
+                          username={
+                            el?.isReply
+                              ? el?.replyuser?.user?.displayname
+                              : el?.user?.user?.displayname
+                          }
+                          createdAt={new Date(el?.createdAt).toLocaleString()}
+                          userImage={
+                            el?.isReply
+                              ? el?.replyuser?.user?.imageUrl
+                              : el?.user?.user?.imageUrl
+                          }
+                          deleted={el?.isDelete}
+                          reply={el?.isReply}
+                          messageUserId={
+                            el?.isReply
+                              ? el?.replyuser.userId
+                              : el?.user?.userId
+                          }
+                          reactions={el?.reactions!}
+                          replyMessage={
+                            el?.isReply ? el?.replymessage : undefined
+                          }
+                          repliedUsername={
+                            el?.isReply
+                              ? el?.replymessage?.user?.user?.displayname!
+                              : ""
+                          }
+                        />
+                      );
                     }
-                    return (
-                      <ChatItemMessage
-                        color={colorCheck ? colorCheck.color : randomColor}
-                        chatId={chatId}
-                        serverId={serverId}
-                        messageId={el?.messageId}
-                        currmemberServer={memberServer}
-                        key={el?.messageId}
-                        message={el?.content!}
-                        file={el?.file!}
-                        fileType={el?.file ? el?.file?.split(".").pop() : ""}
-                        username={el?.user?.user?.displayname}
-                        createdAt={new Date(el?.createdAt).toLocaleString()}
-                        userImage={el?.user?.user?.imageUrl}
-                        deleted={el?.isDelete}
-                        messageUserId={el?.user?.userId}
-                        reactions={el?.reactions!}
-                      />
-                    );
-                  })}
+                  )}
                 </Fragment>
               );
             })
@@ -216,6 +239,7 @@ const ChatMessages = ({
                         createdAt={new Date(el?.createdAt).toLocaleString()}
                         userImage={el?.user?.imageUrl}
                         deleted={el?.isDelete}
+                        reply={el?.isReply}
                         messageUserId={el?.user?.userId}
                         reactions={el?.reactions}
                       />

@@ -77,17 +77,33 @@ export type NextApiResponseServerIo = NextApiResponse & {
 };
 
 // Message With Profile with Reaction
-export type MessageWithProfileWithReaction = Message & {
+export type MessageWithProfileWithReactionWithReply = Message & {
   user: SUser & {
     user: Profile;
   };
+  replyuser: SUser & {
+    user: Profile;
+  };
   reactions: Array<Reaction & { UserReaction: UserReaction }>;
+  replymessage: Message & {
+    user: SUser & {
+      user: Profile;
+    };
+  };
 };
 
 // Message With Profile
 export type MessageWithProfile = Message & {
   user: SUser & {
     user: Profile;
+  };
+  replyuser: SUser & {
+    user: Profile;
+  };
+  replymessage: Message & {
+    user: SUser & {
+      user: Profile;
+    };
   };
 };
 

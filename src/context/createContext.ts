@@ -59,6 +59,21 @@ type SocketContextType = {
   socket: any | null;
 };
 
+type ReplyContextType = {
+  openreply: boolean;
+  message?: {
+    content: string;
+    fileUrl: string;
+    fileType: string;
+    id: string;
+    roomId: string;
+    serverId: string;
+    userId: string;
+    userName: string;
+  };
+  setReply: Function;
+};
+
 // Theme Context
 export const ThemeContext = createContext<ThemeContextType>({
   theme: "dark",
@@ -95,3 +110,21 @@ export const SocketContext = createContext<SocketContextType>({
 });
 
 export const UserConnectionContext = createContext(null);
+
+export const ReplyContext = createContext<ReplyContextType>({
+  openreply: false,
+  message: undefined,
+  setReply: (
+    open: boolean,
+    message: {
+      content: string;
+      fileUrl: string;
+      fileType: string;
+      id: string;
+      roomId: string;
+      serverId: string;
+      userId: string;
+      userName: string;
+    }
+  ) => {},
+});

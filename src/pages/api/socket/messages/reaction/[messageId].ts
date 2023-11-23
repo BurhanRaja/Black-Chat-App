@@ -78,6 +78,7 @@ export default async function handler(
           },
         },
         reactions: true,
+        replymessage: true,
       },
     });
 
@@ -206,6 +207,7 @@ export default async function handler(
             UserReaction: true,
           },
         },
+        replymessage: true,
       },
     });
 

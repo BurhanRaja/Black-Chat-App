@@ -8,6 +8,7 @@ import ChatAreaLayout from "./chat/chat-area-layout";
 import ChatInput from "./chat/chat-input";
 import currentProfile from "@/lib/current-profile";
 import { redirect } from "next/navigation";
+import ReplyMessageProvider from "./provider/reply-message-provider";
 
 interface AppServerLayoutProps {
   serverId: string;
@@ -61,27 +62,29 @@ const AppServerLayout = async ({ serverId, roomId }: AppServerLayoutProps) => {
         <div className="w-[79%] h-full">
           <Header />
           <div className="flex">
-            {currRoom?.type === "TEXT" && (
-              <>
-                <ChatAreaLayout>
-                  <ChatMessages
-                    conversationId=""
-                    memberServer={member!}
-                    chatId={roomId}
-                    serverId={serverId}
-                    apiUrl="/api/messages"
-                    paramKey="roomId"
-                    paramValue={roomId}
-                    welcomeName={currRoom?.name!}
-                    welcomeType="room"
-                  />
-                  <div className="bg-zinc-700 relative w-[100%] pb-6 pt-2">
-                    <ChatInput serverId={serverId} chatId={roomId} />
-                  </div>
-                </ChatAreaLayout>
-                <MemberPanel members={serverUsers} />
-              </>
-            )}
+            <ReplyMessageProvider>
+              {currRoom?.type === "TEXT" && (
+                <>
+                  <ChatAreaLayout>
+                    <ChatMessages
+                      conversationId=""
+                      memberServer={member!}
+                      chatId={roomId}
+                      serverId={serverId}
+                      apiUrl="/api/messages"
+                      paramKey="roomId"
+                      paramValue={roomId}
+                      welcomeName={currRoom?.name!}
+                      welcomeType="room"
+                    />
+                    <div className="bg-zinc-700 relative w-[100%] pb-6 pt-2">
+                      <ChatInput serverId={serverId} chatId={roomId} />
+                    </div>
+                  </ChatAreaLayout>
+                  <MemberPanel members={serverUsers} />
+                </>
+              )}
+            </ReplyMessageProvider>
           </div>
         </div>
       </MemberPannelProvider>

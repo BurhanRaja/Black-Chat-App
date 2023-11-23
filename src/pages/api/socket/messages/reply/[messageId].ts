@@ -2,13 +2,14 @@ import { NextApiResponseServerIo } from "@/types";
 import { NextApiRequest } from "next";
 import { prisma } from "@/db/client";
 import { decode } from "next-auth/jwt";
+import { randomBytes } from "crypto";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponseServerIo
 ) {
   let success = false;
-  if (req.method !== "DELETE") {
+  if (req.method !== "POST") {
     return res.status(405).send({ success, message: "Method not Allowed." });
   }
 
@@ -31,6 +32,7 @@ export default async function handler(
     }
 
     const { messageId, serverId, roomId } = req.query;
+    const { content, fileUrl } = req.body;
 
     let server = await prisma.server.findUnique({
       where: {
@@ -63,11 +65,19 @@ export default async function handler(
     }
 
     const member = server.sUsers.find((user) => user.userId === profile.userId);
-
     if (!member) {
       return res.status(404).send({
         success,
         message: "Member not found.",
+      });
+    }
+
+    const checkPermission = room.messagePermission.includes(member?.type!);
+
+    if (!checkPermission) {
+      return res.status(400).send({
+        success,
+        message: "Permission denied.",
       });
     }
 
@@ -77,12 +87,16 @@ export default async function handler(
         roomId: roomId as string,
       },
       include: {
+        replyuser: {
+          include: {
+            user: true,
+          },
+        },
         user: {
           include: {
             user: true,
           },
         },
-        replymessage: true,
       },
     });
 
@@ -93,31 +107,25 @@ export default async function handler(
       });
     }
 
-    if (!message.isDelete) {
+    if (message.isDelete) {
       return res.status(404).send({
         success,
-        message: "Message is not deleted",
+        message: "Message is deleted",
       });
     }
 
-    const isMessageOwner = message.sUserId === member.sUserId;
-    const isAdmin = member.type === "ADMIN";
-    const isModerator = member.type === "MODERATOR";
-    const canModify = isMessageOwner || isAdmin || isModerator;
+    let uniqueId = randomBytes(10).toString("hex");
 
-    if (!canModify) {
-      return res.status(401).send({
-        success,
-        message: "UnAuthorized",
-      });
-    }
-
-    message = await prisma.message.delete({
+    message = await prisma.message.findUnique({
       where: {
-        messageId: messageId as string,
-        roomId: roomId as string,
+        messageId: uniqueId,
       },
       include: {
+        replyuser: {
+          include: {
+            user: true,
+          },
+        },
         user: {
           include: {
             user: true,
@@ -127,12 +135,47 @@ export default async function handler(
       },
     });
 
-    res.socket.server.io.emit(
-      `chat:${roomId}:message:update`,
-      message,
-      undefined,
-      true
-    );
+    if (message) {
+      uniqueId += randomBytes(4).toString("hex");
+    }
+
+    let data = {
+      content: content as string,
+      file: fileUrl as string,
+      messageId: uniqueId,
+      replyuserId: member?.sUserId as string,
+      roomId: roomId as string,
+      replymessageId: messageId as string,
+      isReply: true,
+    };
+
+    message = await prisma.message.create({
+      data,
+      include: {
+        replyuser: {
+          include: {
+            user: true,
+          },
+        },
+        user: {
+          include: {
+            user: true,
+          },
+        },
+        replymessage: {
+          include: {
+            user: {
+              include: {
+                user: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    success = true;
+    res.socket.server.io.emit(`chat:${roomId}:message`, message);
     return res.status(200).send({
       success,
       message,

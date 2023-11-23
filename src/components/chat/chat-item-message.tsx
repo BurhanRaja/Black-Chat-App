@@ -4,10 +4,16 @@ import Avatar from "../ui/avatar";
 import { BsFillReplyFill } from "react-icons/bs";
 import { Ban, Edit2, File, SmilePlus, Trash2, X } from "lucide-react";
 import Tooltip from "../ui/tooltip";
-import { Profile, Reaction, SUser, UserReaction } from "@prisma/client";
+import {
+  Message,
+  Profile,
+  Reaction,
+  SUser,
+  UserReaction,
+} from "@prisma/client";
 import axios from "axios";
 import { useContext, useRef, useState } from "react";
-import { ModalContext } from "@/context/createContext";
+import { ModalContext, ReplyContext } from "@/context/createContext";
 import EmojiPicker from "./emoji-picker";
 
 interface ChatItemProps {
@@ -29,6 +35,15 @@ interface ChatItemProps {
   deleted: boolean;
   messageUserId: string;
   reactions: Array<Reaction & { UserReaction: UserReaction }>;
+  reply: boolean;
+  replyMessage?: Message & {
+    user: SUser & {
+      user: Profile;
+    };
+  };
+  replyFileUrl?: string;
+  replyFileType?: string | undefined;
+  repliedUsername?: string;
 }
 
 const ChatItemMessage = ({
@@ -48,11 +63,15 @@ const ChatItemMessage = ({
   currmemberServer,
   currmemberConversation,
   reactions,
+  reply,
+  replyMessage,
+  repliedUsername,
 }: ChatItemProps) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const editMsgRef = useRef<HTMLTextAreaElement>(null);
 
   const { onOpen } = useContext(ModalContext);
+  const { setReply, openreply } = useContext(ReplyContext);
 
   let isAdmin;
   let isModerator;
@@ -89,7 +108,6 @@ const ChatItemMessage = ({
       : `/direct-messages/${messageId}?conversationId=${conversationId}`;
 
   const handleRemoveMessage = async () => {
-    console.log(removeAPI);
     await axios.delete(removeAPI);
   };
 
@@ -129,164 +147,199 @@ const ChatItemMessage = ({
   return (
     <>
       <div
-        className={`relative flex items-start hover:bg-[rgb(54,54,58)] p-2 py-3 group z-auto`}
+        className={`relative  hover:bg-[rgb(54,54,58)] p-2 py-3 group z-auto ${
+          reply ? "pt-10 chat-reply" : ""
+        }`}
       >
-        {!deleted && !isEditing ? (
-          <div
-            className={`absolute right-10 top-[-6px] bg-zinc-800 px-2 py-0.5 hidden group-hover:block`}
-          >
-            <Tooltip
-              trigger={
-                <button className="mr-1 p-1 rounded-sm hover:bg-zinc-700">
-                  <BsFillReplyFill className="text-xl" />
-                </button>
-              }
-              side="top"
-              content="Reply"
-            />
-            <EmojiPicker
-              trigger={
-                <Tooltip
-                  trigger={
-                    <button className="p-1.5 rounded-sm hover:bg-zinc-700">
-                      <SmilePlus size={20} className="text-yellow-400" />
-                    </button>
-                  }
-                  side="top"
-                  content="Add Reaction"
-                />
-              }
-              onChange={handleReaction}
-            />
-
-            {canEdit && (
+        {reply && (
+          <p className="text-xs absolute text-gray-300 top-[16px] left-16">
+            <span className="mr-1" style={{ color: color }}>
+              {repliedUsername}
+            </span>
+            <span className="text-gray-400 mx-1">
+              {new Date(replyMessage?.createdAt!).toLocaleString()}
+            </span>
+            <span className="ml-1">{replyMessage?.content}</span>
+          </p>
+        )}
+        <div className="flex items-start">
+          {!deleted && !isEditing && !openreply ? (
+            <div
+              className={`absolute right-10 top-[-6px] bg-zinc-800 px-2 py-0.5 hidden group-hover:block`}
+            >
               <Tooltip
                 trigger={
                   <button
-                    className="p-1.5 rounded-sm hover:bg-zinc-700"
-                    onClick={() => setIsEditing(true)}
-                  >
-                    <Edit2 size={20} />
-                  </button>
-                }
-                side="top"
-                content="Edit"
-              />
-            )}
-
-            {canDelete && (
-              <Tooltip
-                trigger={
-                  <button
-                    className="p-1.5 rounded-sm hover:bg-zinc-700"
+                    className="mr-1 p-1 rounded-sm hover:bg-zinc-700"
                     onClick={() =>
-                      onOpen("deleteMessage", {
-                        query: deleteAPI,
+                      setReply({
+                        open: true,
+                        message: {
+                          id: messageId,
+                          content: message,
+                          fileUrl: file,
+                          roomId: chatId,
+                          fileType,
+                          serverId,
+                          userId: messageUserId,
+                          userName: username,
+                        },
                       })
                     }
                   >
-                    <Trash2 size={20} className="text-red-500" />
+                    <BsFillReplyFill className="text-xl" />
                   </button>
                 }
                 side="top"
-                content="Delete"
+                content="Reply"
               />
-            )}
-          </div>
-        ) : (
-          <div className="absolute right-10 top-[-6px] bg-zinc-800 px-2 py-0.5 hidden group-hover:block">
-            <Tooltip
-              trigger={
-                <button
-                  className="p-1.5 rounded-sm hover:bg-zinc-700"
-                  onClick={handleRemoveMessage}
-                >
-                  <X size={20} className="text-red-500" />
-                </button>
-              }
-              side="top"
-              content="Remove Deleted Message"
-            />
-          </div>
-        )}
-        {!deleted ? (
-          <Avatar image={userImage} altname="anyname" />
-        ) : (
-          <Avatar
-            fallback={<Ban size={40} />}
-            fallbackColor="text-gray-400"
-            fallbackBackgroundColor="bg-zinc-700"
-          />
-        )}
+              <EmojiPicker
+                trigger={
+                  <Tooltip
+                    trigger={
+                      <button className="p-1.5 rounded-sm hover:bg-zinc-700">
+                        <SmilePlus size={20} className="text-yellow-400" />
+                      </button>
+                    }
+                    side="top"
+                    content="Add Reaction"
+                  />
+                }
+                onChange={handleReaction}
+              />
 
-        <div className={`ml-2 ${isEditing ? "w-[75%]" : ""}`}>
-          <p className="text-sm">
-            <>
-              <span style={{ color: color }}>{username} </span> -{" "}
-              <span className="text-xs text-zinc-400">{createdAt}</span>
-            </>
-          </p>
-          {isEditing && (
-            <div className="my-1 flex">
-              <textarea
-                ref={editMsgRef}
-                className="w-[100%] p-2.5 mx-2 outline-none bg-zinc-800 chat-input rounded-sm"
-                placeholder="Write a Message"
-                defaultValue={message}
+              {canEdit && (
+                <Tooltip
+                  trigger={
+                    <button
+                      className="p-1.5 rounded-sm hover:bg-zinc-700"
+                      onClick={() => setIsEditing(true)}
+                    >
+                      <Edit2 size={20} />
+                    </button>
+                  }
+                  side="top"
+                  content="Edit"
+                />
+              )}
+
+              {canDelete && (
+                <Tooltip
+                  trigger={
+                    <button
+                      className="p-1.5 rounded-sm hover:bg-zinc-700"
+                      onClick={() =>
+                        onOpen("deleteMessage", {
+                          query: deleteAPI,
+                        })
+                      }
+                    >
+                      <Trash2 size={20} className="text-red-500" />
+                    </button>
+                  }
+                  side="top"
+                  content="Delete"
+                />
+              )}
+            </div>
+          ) : (
+            <div className="absolute right-10 top-[-6px] bg-zinc-800 px-2 py-0.5 hidden group-hover:block">
+              <Tooltip
+                trigger={
+                  <button
+                    className="p-1.5 rounded-sm hover:bg-zinc-700"
+                    onClick={handleRemoveMessage}
+                  >
+                    <X size={20} className="text-red-500" />
+                  </button>
+                }
+                side="top"
+                content="Remove Deleted Message"
               />
-              <div className="text-right">
-                <button
-                  className="p-2.5 rounded-sm bg-black"
-                  onClick={handleEditMessage}
-                >
-                  Save
-                </button>
-              </div>
             </div>
           )}
-
           {!deleted ? (
-            <>
-              {fileType && fileType !== "pdf" && (
-                <div className="bg-zinc-800 rounded-md max-h-[300px] max-width-[400px] h-auto p-2 cursor-pointer my-1">
-                  <img src={file} className="max-h-[250px] max-width-[350px]" />
-                </div>
-              )}
-              {fileType === "pdf" && (
-                <div className="relative flex items-center p-2 mt-2 rounded-md bg-neutral-800 my-1">
-                  <File
-                    size={35}
-                    className="h-10 w-10 fill-indigo-200 stroke-indigo-400"
-                  />
-                  <a
-                    target="_blank"
-                    href={file}
-                    className="ml-2 text-sm text-indigo-500 dark:text-indigo-400 hover:underline cursor-pointer"
-                  >
-                    PDF File
-                  </a>
-                </div>
-              )}
-              <p className=" my-1">{!isEditing ? message : ""}</p>
-            </>
+            <Avatar image={userImage} altname="anyname" />
           ) : (
-            <p className="text-gray-400 my-1">{message}</p>
+            <Avatar
+              fallback={<Ban size={40} />}
+              fallbackColor="text-gray-400"
+              fallbackBackgroundColor="bg-zinc-700"
+            />
           )}
-          <div className="flex items-center justify-start flex-wrap">
-            {reactions?.map((el) => {
-              if (el.count > 0) {
-                return (
+
+          <div className={`ml-2 ${isEditing ? "w-[75%]" : ""}`}>
+            <p className="text-sm">
+              <>
+                <span style={{ color: color }}>{username} </span> -{" "}
+                <span className="text-xs text-zinc-400">{createdAt}</span>
+              </>
+            </p>
+            {isEditing && (
+              <div className="my-1 flex">
+                <textarea
+                  ref={editMsgRef}
+                  className="w-[100%] p-2.5 mx-2 outline-none bg-zinc-800 chat-input rounded-sm"
+                  placeholder="Write a Message"
+                  defaultValue={message}
+                />
+                <div className="text-right">
                   <button
-                    key={el.reactionId}
-                    className="flex mr-1.5 items-center justify-between bg-zinc-800 p-0.5 px-1.5 mt-1 rounded-md"
-                    onClick={() => handleReaction(el.reaction)}
+                    className="p-2.5 rounded-sm bg-black"
+                    onClick={handleEditMessage}
                   >
-                    <p className="mr-1">{el?.reaction}</p>
-                    <p className="text-xs">{el?.count}</p>
+                    Save
                   </button>
-                );
-              }
-            })}
+                </div>
+              </div>
+            )}
+
+            {!deleted ? (
+              <>
+                {fileType && fileType !== "pdf" && (
+                  <div className="bg-zinc-800 rounded-md max-h-[300px] max-width-[400px] h-auto p-2 cursor-pointer my-1">
+                    <img
+                      src={file}
+                      className="max-h-[250px] max-width-[350px]"
+                    />
+                  </div>
+                )}
+                {fileType === "pdf" && (
+                  <div className="relative flex items-center p-2 mt-2 rounded-md bg-neutral-800 my-1">
+                    <File
+                      size={35}
+                      className="h-10 w-10 fill-indigo-200 stroke-indigo-400"
+                    />
+                    <a
+                      target="_blank"
+                      href={file}
+                      className="ml-2 text-sm text-indigo-500 dark:text-indigo-400 hover:underline cursor-pointer"
+                    >
+                      PDF File
+                    </a>
+                  </div>
+                )}
+                <p className=" my-1">{!isEditing ? message : ""}</p>
+              </>
+            ) : (
+              <p className="text-gray-400 my-1">{message}</p>
+            )}
+            <div className="flex items-center justify-start flex-wrap">
+              {reactions?.map((el) => {
+                if (el.count > 0) {
+                  return (
+                    <button
+                      key={el.reactionId}
+                      className="flex mr-1.5 items-center justify-between bg-zinc-800 p-0.5 px-1.5 mt-1 rounded-md"
+                      onClick={() => handleReaction(el.reaction)}
+                    >
+                      <p className="mr-1">{el?.reaction}</p>
+                      <p className="text-xs">{el?.count}</p>
+                    </button>
+                  );
+                }
+              })}
+            </div>
           </div>
         </div>
       </div>
