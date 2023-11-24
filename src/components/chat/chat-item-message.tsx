@@ -106,6 +106,10 @@ const ChatItemMessage = ({
     !conversationId && serverId && chatId
       ? `/messages/${messageId}?serverId=${serverId}&roomId=${chatId}`
       : `/direct-messages/${messageId}?conversationId=${conversationId}`;
+  const reactionAPI =
+    !conversationId && serverId && chatId
+      ? `/api/socket/messages/reaction/${messageId}?roomId=${chatId}&serverId=${serverId}`
+      : `/api/socket/direct-messages/reaction/${messageId}?conversationId=${conversationId}`;
 
   const handleRemoveMessage = async () => {
     await axios.delete(removeAPI);
@@ -134,7 +138,7 @@ const ChatItemMessage = ({
 
   const handleReaction = async (reaction: string) => {
     const response = await axios.put(
-      `/api/socket/messages/reaction/${messageId}?roomId=${chatId}&serverId=${serverId}`,
+      reactionAPI,
       { reactionStr: reaction },
       {
         headers: {
@@ -143,6 +147,8 @@ const ChatItemMessage = ({
       }
     );
   };
+
+  console.log(reactions);
 
   return (
     <>
@@ -153,9 +159,7 @@ const ChatItemMessage = ({
       >
         {reply && (
           <p className="text-xs absolute text-gray-300 top-[16px] left-16">
-            <span className="mr-1" style={{ color: color }}>
-              {repliedUsername}
-            </span>
+            <span className="mr-1 text-gray-200">{repliedUsername}</span>
             <span className="text-gray-400 mx-1">
               {new Date(replyMessage?.createdAt!).toLocaleString()}
             </span>

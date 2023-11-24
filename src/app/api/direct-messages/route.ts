@@ -49,6 +49,16 @@ export async function GET(req: NextRequest) {
         },
         include: {
           user: true,
+          reactions: {
+            include: {
+              UserReaction: true,
+            },
+          },
+          replymessage: {
+            include: {
+              user: true,
+            },
+          },
         },
         orderBy: {
           createdAt: "desc",
@@ -63,6 +73,16 @@ export async function GET(req: NextRequest) {
         },
         include: {
           user: true,
+          reactions: {
+            include: {
+              UserReaction: true,
+            },
+          },
+          replymessage: {
+            include: {
+              user: true,
+            },
+          },
         },
         orderBy: {
           createdAt: "desc",

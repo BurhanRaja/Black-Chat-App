@@ -107,7 +107,27 @@ export type MessageWithProfile = Message & {
   };
 };
 
+export type DirectMessageWithProfileWithReactionWithReply = DirectMessage & {
+  user: Profile;
+  replyuser: SUser & {
+    user: Profile;
+  };
+  replymessage: Message & {
+    user: SUser & {
+      user: Profile;
+    };
+  };
+  reactions: Array<Reaction & { UserReaction: UserReaction }>;
+};
+
 export type DirectMessageWithProfile = DirectMessage & {
   user: Profile;
-  reactions: Array<Reaction & { UserReaction: UserReaction }>;
+  replyuser: SUser & {
+    user: Profile;
+  };
+  replymessage: Message & {
+    user: SUser & {
+      user: Profile;
+    };
+  };
 };

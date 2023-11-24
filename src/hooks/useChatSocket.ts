@@ -2,6 +2,7 @@
 
 import { SocketContext } from "@/context/createContext";
 import {
+  DirectMessageWithProfileWithReactionWithReply,
   DirectMessageWithProfile,
   MessageWithProfileWithReactionWithReply,
   MessageWithProfile,
@@ -29,7 +30,9 @@ const useChatSocket = ({ queryKey, addKey, updateKey }: ChatSocketProps) => {
       updateKey,
       (
         message: MessageWithProfileWithReactionWithReply | undefined,
-        directMessage: DirectMessageWithProfile | undefined,
+        directMessage:
+          | DirectMessageWithProfileWithReactionWithReply
+          | undefined,
         remove: boolean
       ) => {
         queryClient.setQueriesData([queryKey], (oldData: any) => {

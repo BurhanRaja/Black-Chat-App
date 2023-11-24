@@ -9,7 +9,7 @@ import useChatScroll from "@/hooks/useChatScroll";
 import { Loader2, ServerCrash } from "lucide-react";
 import useChatSocket from "@/hooks/useChatSocket";
 import {
-  DirectMessageWithProfile,
+  DirectMessageWithProfileWithReactionWithReply,
   MessageWithProfileWithReactionWithReply,
 } from "@/types";
 import { Profile, SUser } from "@prisma/client";
@@ -150,13 +150,11 @@ const ChatMessages = ({
                 <Fragment key={index}>
                   {el?.items?.map(
                     (el: MessageWithProfileWithReactionWithReply) => {
-                      let colorCheck = el?.isReply
-                        ? userColor?.find(
-                            (elColor) => elColor.userId === el.replymessage.user.userId
-                          )
-                        : userColor?.find(
-                            (elColor) => elColor.userId === el.user.userId
-                          );
+                      let colorCheck = userColor?.find((elColor) =>
+                        el?.isReply
+                          ? elColor.userId === el?.user?.userId
+                          : elColor.userId === el?.replyuser?.userId
+                      );
                       let randomColor = "";
                       if (!colorCheck) {
                         randomColor = randomcolor({ luminosity: "light" });
@@ -213,38 +211,40 @@ const ChatMessages = ({
           : data?.pages?.map((el, index) => {
               return (
                 <Fragment key={index}>
-                  {el?.items?.map((el: DirectMessageWithProfile) => {
-                    let colorCheck = userColor?.find(
-                      (elColor) => elColor.userId === el.user.userId
-                    );
-                    let randomColor = "";
-                    if (!colorCheck) {
-                      randomColor = randomcolor({ luminosity: "light" });
-                      userColor.push({
-                        userId: el?.user?.userId,
-                        color: randomColor,
-                      });
+                  {el?.items?.map(
+                    (el: DirectMessageWithProfileWithReactionWithReply) => {
+                      let colorCheck = userColor?.find(
+                        (elColor) => elColor.userId === el.user.userId
+                      );
+                      let randomColor = "";
+                      if (!colorCheck) {
+                        randomColor = randomcolor({ luminosity: "light" });
+                        userColor.push({
+                          userId: el?.user?.userId,
+                          color: randomColor,
+                        });
+                      }
+                      return (
+                        <ChatItemMessage
+                          color={colorCheck ? colorCheck.color : randomColor}
+                          conversationId={conversationId!}
+                          messageId={el?.directMessageId}
+                          currmemberConversation={memberConversation}
+                          key={el?.directMessageId}
+                          message={el?.content!}
+                          file={el?.file!}
+                          fileType={el?.file ? el?.file?.split(".").pop() : ""}
+                          username={el?.user?.displayname}
+                          createdAt={new Date(el?.createdAt).toLocaleString()}
+                          userImage={el?.user?.imageUrl}
+                          deleted={el?.isDelete}
+                          reply={el?.isReply}
+                          messageUserId={el?.user?.userId}
+                          reactions={el?.reactions}
+                        />
+                      );
                     }
-                    return (
-                      <ChatItemMessage
-                        color={colorCheck ? colorCheck.color : randomColor}
-                        conversationId={conversationId!}
-                        messageId={el?.directMessageId}
-                        currmemberConversation={memberConversation}
-                        key={el?.directMessageId}
-                        message={el?.content!}
-                        file={el?.file!}
-                        fileType={el?.file ? el?.file?.split(".").pop() : ""}
-                        username={el?.user?.displayname}
-                        createdAt={new Date(el?.createdAt).toLocaleString()}
-                        userImage={el?.user?.imageUrl}
-                        deleted={el?.isDelete}
-                        reply={el?.isReply}
-                        messageUserId={el?.user?.userId}
-                        reactions={el?.reactions}
-                      />
-                    );
-                  })}
+                  )}
                 </Fragment>
               );
             })}

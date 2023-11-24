@@ -95,6 +95,8 @@ const ChatInput = ({ serverId, chatId, conversationId }: ChatInputProps) => {
     }
   }, [file]);
 
+  console.log(openreply);
+
   return (
     <>
       <MessageFileUpload file={file} setFile={(val) => setFile(val)} />

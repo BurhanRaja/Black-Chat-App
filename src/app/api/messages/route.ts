@@ -53,9 +53,23 @@ export async function GET(req: NextRequest) {
               user: true,
             },
           },
+          replyuser: {
+            include: {
+              user: true,
+            },
+          },
           reactions: {
             include: {
               UserReaction: true,
+            },
+          },
+          replymessage: {
+            include: {
+              user: {
+                include: {
+                  user: true,
+                },
+              },
             },
           },
         },
