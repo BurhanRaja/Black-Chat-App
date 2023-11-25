@@ -190,9 +190,11 @@ const ChatInput = ({
             />
           </>
         )}
-        {
-          !canMessage && <p className="text-start p-2.5">Not Allowed to Message</p>
-        }
+        {!canMessage && (
+          <p className="text-start p-2.5 text-gray-500">
+            You do not have the permission to Message
+          </p>
+        )}
       </div>
     </>
   );

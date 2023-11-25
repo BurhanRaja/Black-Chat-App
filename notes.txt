@@ -2,6 +2,5 @@ Remaining stuff
 
 LiveKit (video and audio)
 
-Edit Room Settings
-Delete Server
-Leave Server
+Delete Server - UI
+Leave Server - UI

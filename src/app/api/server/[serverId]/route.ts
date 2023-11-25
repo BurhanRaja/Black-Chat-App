@@ -24,7 +24,14 @@ export async function GET(
 
   try {
     const { serverId } = params;
-    const user = await currentProfile();
+    const profile = await currentProfile();
+
+    if (!profile) {
+      return NextResponse.json(
+        { success, message: "Profile not found" },
+        { status: 404 }
+      );
+    }
 
     let server = await prisma.server.findUnique({
       where: {
@@ -153,11 +160,21 @@ export async function DELETE(
   try {
     const { serverId } = params;
 
-    const user = await currentProfile();
+    const profile = await currentProfile();
+
+    if (!profile) {
+      return NextResponse.json(
+        { success, message: "Profile not found" },
+        { status: 404 }
+      );
+    }
 
     let server = await prisma.server.findUnique({
       where: {
         serverId,
+      },
+      include: {
+        sUsers: true,
       },
     });
 
@@ -168,22 +185,12 @@ export async function DELETE(
       );
     }
 
-    server = await prisma.server.findUnique({
-      where: {
-        serverId,
-        sUsers: {
-          some: {
-            userId: user?.userId!,
-            type: SUserRole["ADMIN"],
-          },
-        },
-      },
-    });
+    let member = server.sUsers.find((el) => el.userId === profile.userId);
 
-    if (!server) {
+    if (member?.type !== "ADMIN") {
       return NextResponse.json(
-        { success, message: "Only Admin can update Server." },
-        { status: 403 }
+        { success, message: "Permission denied." },
+        { status: 400 }
       );
     }
 

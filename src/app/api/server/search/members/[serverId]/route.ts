@@ -23,7 +23,7 @@ export async function GET(
 
   try {
     const { searchParams } = new URL(req.url);
-    const searchText = searchParams.get("search") as string;
+    const searchText = searchParams.get("search");
 
     const { serverId } = params;
 
@@ -42,10 +42,13 @@ export async function GET(
 
     let members = [];
 
-    if (!searchParams) {
+    if (searchText === "undefined") {
       members = await prisma.sUser.findMany({
         where: {
           serverId,
+        },
+        include: {
+          user: true,
         },
       });
     } else {
@@ -56,14 +59,14 @@ export async function GET(
             {
               user: {
                 displayname: {
-                  startsWith: searchText,
+                  startsWith: searchText as string,
                 },
               },
             },
             {
               user: {
                 displayname: {
-                  endsWith: searchText,
+                  endsWith: searchText as string,
                 },
               },
             },

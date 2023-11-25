@@ -59,7 +59,8 @@ const RoomCollapsible = ({
                       }
                       icons={
                         <>
-                          {isAdmin || moderatorDelete ? (
+                          {(isAdmin || moderatorUpdate) &&
+                          room.type === "TEXT" ? (
                             <Edit2
                               size={16}
                               className="mr-2 text-gray-400"
@@ -68,7 +69,7 @@ const RoomCollapsible = ({
                           ) : (
                             ""
                           )}
-                          {isAdmin || moderatorUpdate ? (
+                          {isAdmin || moderatorDelete ? (
                             <Trash2
                               size={16}
                               className="text-gray-400"

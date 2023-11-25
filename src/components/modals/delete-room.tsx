@@ -1,13 +1,39 @@
 "use client";
 
 import { useContext } from "react";
-import { ModalContext } from "@/context/createContext";
+import { AlertContext, ModalContext } from "@/context/createContext";
 import * as Dialog from "@radix-ui/react-dialog";
 import { XCircle } from "lucide-react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const DeleteRoomModal = () => {
   const { type, isOpen, onClose, data } = useContext(ModalContext);
+  const { setAlertOpen, setTitle, setDescription, setType } =
+    useContext(AlertContext);
   const isModal = type === "deleteRoom" && isOpen;
+  const router = useRouter();
+
+  const handleDeleteRoom = async () => {
+    const response = await axios.delete(
+      `/api/room/${data.room?.roomId}?serverId=${data?.room?.serverId}`
+    );
+
+    if (response.data.success) {
+      setTitle("Success");
+      setDescription("Room deleted Successfully.");
+      setType("success");
+      setAlertOpen(true);
+      onClose();
+      router.push(`/servers/${data?.room?.serverId}`);
+      router.refresh();
+    } else {
+      setTitle("Error");
+      setDescription("Some Error Occured. Please Try Again.");
+      setType("error");
+      setAlertOpen(true);
+    }
+  };
 
   return (
     <>
@@ -31,7 +57,10 @@ const DeleteRoomModal = () => {
               </p>
             </div>
             <div className="flex justify-end mt-10">
-              <button className="p-2 w-[30%] rounded-md border border-gray-200 text-gray-200 hover:bg-red-500 hover:text-white hover:border-red-500 font-bold">
+              <button
+                className="p-2 w-[30%] rounded-md border border-gray-200 text-gray-200 hover:bg-red-500 hover:text-white hover:border-red-500 font-bold"
+                onClick={handleDeleteRoom}
+              >
                 Delete
               </button>
             </div>

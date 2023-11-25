@@ -120,3 +120,54 @@ export async function PUT(
     );
   }
 }
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: RoomGetParams
+): Promise<
+  | NextResponse<{
+      success: boolean;
+      message: string;
+    }>
+  | undefined
+> {
+  let success = false;
+
+  try {
+    const { roomId } = params;
+    const { searchParams } = new URL(req.url);
+    const serverId = searchParams.get("serverId");
+
+    let room = await prisma.room.findUnique({
+      where: {
+        roomId,
+        serverId: serverId as string,
+      },
+    });
+
+    if (!room) {
+      return NextResponse.json(
+        { success, message: "Room not found." },
+        { status: 404 }
+      );
+    }
+
+    await prisma.room.delete({
+      where: {
+        roomId,
+        serverId: serverId as string,
+      },
+    });
+
+    success = true;
+    return NextResponse.json(
+      { success, message: "Room deleted successfully." },
+      { status: 200 }
+    );
+  } catch (err) {
+    return NextResponse.json(
+      { success, message: "Internal Server Error." },
+      { status: 500 }
+    );
+  }
+}

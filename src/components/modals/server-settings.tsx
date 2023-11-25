@@ -1,12 +1,7 @@
 "use client";
 
-import { ModalContext } from "@/context/createContext";
-import {
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { AlertContext, ModalContext } from "@/context/createContext";
+import { useContext, useEffect, useRef, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
 import { Check, Search, XCircle } from "lucide-react";
@@ -26,6 +21,8 @@ interface CustomUser extends SUser {
 
 const ServerSettingsMembers = () => {
   const { data } = useContext(ModalContext);
+  const { setAlertOpen, setDescription, setTitle, setType } =
+    useContext(AlertContext);
   const router = useRouter();
   const [memberData, setMemberData] = useState<Array<CustomUser>>(data.sUsers!);
   const [searchText, setSearchText] = useState<string>();
@@ -36,6 +33,7 @@ const ServerSettingsMembers = () => {
       `/api/server/search/members/${data.server?.serverId}?search=${searchText}`
     );
     if (response.data.success) {
+      console.log(response.data);
       setMemberData(response.data.data);
     }
   };
@@ -76,7 +74,7 @@ const ServerSettingsMembers = () => {
     );
 
     if (response.data.success) {
-      router.refresh();
+      
       await handleSearch();
     }
   };
@@ -97,22 +95,22 @@ const ServerSettingsMembers = () => {
             {memberData?.map((member) => {
               return (
                 <tr
-                  key={member.user.userId}
+                  key={member?.user?.userId}
                   className="border-b border-opacity-20 dark:border-zinc-700 dark:bg-zinc-900"
                 >
                   <td className="p-3 py-4">
                     <Avatar
-                      image={member.user.imageUrl}
-                      altname={member.user.username}
+                      image={member?.user?.imageUrl}
+                      altname={member?.user?.username}
                       width="w-[35px]"
                       height="h-[35px]"
                     />
                   </td>
                   <td className="p-3 py-4">
-                    <p className="">{member.user.displayname}</p>
+                    <p className="">{member?.user?.displayname}</p>
                   </td>
                   <td className="p-3 py-4">
-                    <p>{member.user.email}</p>
+                    <p>{member?.user?.email}</p>
                   </td>
                   <td className="p-3 py-4">
                     <p className="rounded-md dark:bg-black p-1 text-xs   text-center">
@@ -120,9 +118,9 @@ const ServerSettingsMembers = () => {
                     </p>
                   </td>
                   <td className="p-3 py-4">
-                    <p>{new Date(member.createdAt).toLocaleDateString()}</p>
+                    <p>{new Date(member?.createdAt).toLocaleDateString()}</p>
                   </td>
-                  {isAdmin && member.type !== "ADMIN" ? (
+                  {isAdmin && member?.type !== "ADMIN" ? (
                     <td className="p-3 py-4 text-right">
                       <Dropdown
                         trigger={
@@ -135,7 +133,7 @@ const ServerSettingsMembers = () => {
                             content: (
                               <>
                                 <div className="flex items-center">
-                                  {member.type === "MEMBER" ? (
+                                  {member?.type === "MEMBER" ? (
                                     <>
                                       <Check
                                         size={16}
@@ -167,7 +165,7 @@ const ServerSettingsMembers = () => {
                             content: (
                               <>
                                 <div className="flex items-center">
-                                  {member.type === "MODERATOR" ? (
+                                  {member?.type === "MODERATOR" ? (
                                     <>
                                       <Check
                                         size={16}
@@ -190,7 +188,7 @@ const ServerSettingsMembers = () => {
                             ),
                             handleFunction: () =>
                               handleRoleChange({
-                                sUserId: member.sUserId,
+                                sUserId: member?.sUserId,
                                 type: "MODERATOR",
                               }),
                             link: "",
