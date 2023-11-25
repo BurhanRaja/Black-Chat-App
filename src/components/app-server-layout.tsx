@@ -51,6 +51,8 @@ const AppServerLayout = async ({ serverId, roomId }: AppServerLayoutProps) => {
 
   const currRoom = server?.rooms.find((room) => room.roomId === roomId);
 
+  const canMessage = currRoom?.messagePermission.includes(member?.type!);
+
   return (
     <>
       <MemberPannelProvider>
@@ -78,7 +80,11 @@ const AppServerLayout = async ({ serverId, roomId }: AppServerLayoutProps) => {
                       welcomeType="room"
                     />
                     <div className="bg-zinc-700 relative w-[100%] pb-6 pt-2">
-                      <ChatInput serverId={serverId} chatId={roomId} />
+                      <ChatInput
+                        serverId={serverId}
+                        chatId={roomId}
+                        canMessage={canMessage!}
+                      />
                     </div>
                   </ChatAreaLayout>
                   <MemberPanel members={serverUsers} />

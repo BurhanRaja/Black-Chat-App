@@ -189,7 +189,7 @@ const ChatMessages = ({
                           reply={el?.isReply}
                           messageUserId={
                             el?.isReply
-                              ? el?.replyuser.userId
+                              ? el?.replyuser?.userId
                               : el?.user?.userId
                           }
                           reactions={el?.reactions!}
@@ -213,8 +213,10 @@ const ChatMessages = ({
                 <Fragment key={index}>
                   {el?.items?.map(
                     (el: DirectMessageWithProfileWithReactionWithReply) => {
-                      let colorCheck = userColor?.find(
-                        (elColor) => elColor.userId === el.user.userId
+                      let colorCheck = userColor?.find((elColor) =>
+                        el?.isReply
+                          ? elColor.userId === el?.user?.userId
+                          : elColor.userId === el?.replyuser?.userId
                       );
                       let randomColor = "";
                       if (!colorCheck) {
@@ -224,6 +226,7 @@ const ChatMessages = ({
                           color: randomColor,
                         });
                       }
+                      console.log(el);
                       return (
                         <ChatItemMessage
                           color={colorCheck ? colorCheck.color : randomColor}
@@ -234,13 +237,33 @@ const ChatMessages = ({
                           message={el?.content!}
                           file={el?.file!}
                           fileType={el?.file ? el?.file?.split(".").pop() : ""}
-                          username={el?.user?.displayname}
+                          username={
+                            el?.isReply
+                              ? el?.replyuser?.displayname
+                              : el?.user?.displayname
+                          }
                           createdAt={new Date(el?.createdAt).toLocaleString()}
-                          userImage={el?.user?.imageUrl}
+                          userImage={
+                            el?.isReply
+                              ? el?.replyuser?.imageUrl
+                              : el?.user?.imageUrl
+                          }
                           deleted={el?.isDelete}
                           reply={el?.isReply}
-                          messageUserId={el?.user?.userId}
                           reactions={el?.reactions}
+                          messageUserId={
+                            el?.isReply
+                              ? el?.replyuser?.userId
+                              : el?.user?.userId
+                          }
+                          replyDirectMessage={
+                            el?.isReply ? el?.replymessage : undefined
+                          }
+                          repliedUsername={
+                            el?.isReply
+                              ? el?.replymessage?.user?.displayname!
+                              : ""
+                          }
                         />
                       );
                     }

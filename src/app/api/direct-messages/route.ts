@@ -49,6 +49,7 @@ export async function GET(req: NextRequest) {
         },
         include: {
           user: true,
+          replyuser: true,
           reactions: {
             include: {
               UserReaction: true,
@@ -73,6 +74,7 @@ export async function GET(req: NextRequest) {
         },
         include: {
           user: true,
+          replyuser: true,
           reactions: {
             include: {
               UserReaction: true,
@@ -89,6 +91,8 @@ export async function GET(req: NextRequest) {
         },
       });
     }
+
+    // console.log(messages);
 
     let nextCursor = null;
     if (messages.length === MESSAGE_BATCH) {

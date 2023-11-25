@@ -5,6 +5,7 @@ import { BsFillReplyFill } from "react-icons/bs";
 import { Ban, Edit2, File, SmilePlus, Trash2, X } from "lucide-react";
 import Tooltip from "../ui/tooltip";
 import {
+  DirectMessage,
   Message,
   Profile,
   Reaction,
@@ -41,6 +42,9 @@ interface ChatItemProps {
       user: Profile;
     };
   };
+  replyDirectMessage?: DirectMessage & {
+    user: Profile;
+  };
   replyFileUrl?: string;
   replyFileType?: string | undefined;
   repliedUsername?: string;
@@ -65,6 +69,7 @@ const ChatItemMessage = ({
   reactions,
   reply,
   replyMessage,
+  replyDirectMessage,
   repliedUsername,
 }: ChatItemProps) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -148,8 +153,6 @@ const ChatItemMessage = ({
     );
   };
 
-  console.log(reactions);
-
   return (
     <>
       <div
@@ -161,9 +164,15 @@ const ChatItemMessage = ({
           <p className="text-xs absolute text-gray-300 top-[16px] left-16">
             <span className="mr-1 text-gray-200">{repliedUsername}</span>
             <span className="text-gray-400 mx-1">
-              {new Date(replyMessage?.createdAt!).toLocaleString()}
+              {!conversationId && serverId && chatId
+                ? new Date(replyMessage?.createdAt!).toLocaleString()
+                : new Date(replyDirectMessage?.createdAt!).toLocaleString()}
             </span>
-            <span className="ml-1">{replyMessage?.content}</span>
+            <span className="ml-1">
+              {!conversationId && serverId && chatId
+                ? replyMessage?.content
+                : replyDirectMessage?.content}
+            </span>
           </p>
         )}
         <div className="flex items-start">
@@ -176,19 +185,32 @@ const ChatItemMessage = ({
                   <button
                     className="mr-1 p-1 rounded-sm hover:bg-zinc-700"
                     onClick={() =>
-                      setReply({
-                        open: true,
-                        message: {
-                          id: messageId,
-                          content: message,
-                          fileUrl: file,
-                          roomId: chatId,
-                          fileType,
-                          serverId,
-                          userId: messageUserId,
-                          userName: username,
-                        },
-                      })
+                      !conversationId && serverId && chatId
+                        ? setReply({
+                            open: true,
+                            message: {
+                              id: messageId,
+                              content: message,
+                              fileUrl: file,
+                              roomId: chatId,
+                              fileType,
+                              serverId,
+                              userId: messageUserId,
+                              userName: username,
+                            },
+                          })
+                        : setReply({
+                            open: true,
+                            message: {
+                              id: messageId,
+                              content: message,
+                              fileUrl: file,
+                              conversationId,
+                              fileType,
+                              userId: messageUserId,
+                              userName: username,
+                            },
+                          })
                     }
                   >
                     <BsFillReplyFill className="text-xl" />

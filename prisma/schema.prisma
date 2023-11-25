@@ -225,7 +225,7 @@ model Conversation {
 model DirectMessage {
   id              String  @id @default(uuid())
   directMessageId String  @unique
-  content         String
+  content         String?
   file            String?
   isDelete        Boolean @default(false)
   isReply         Boolean @default(false)
@@ -236,8 +236,8 @@ model DirectMessage {
   replymessage   DirectMessage? @relation(fields: [replymessageId], references: [directMessageId], onDelete: Restrict, onUpdate: Restrict, name: "replymessage")
   replymessageId String?
 
-  user           Profile       @relation(fields: [userId], references: [userId], name: "user")
-  userId         String
+  user           Profile?       @relation(fields: [userId], references: [userId], name: "user")
+  userId         String?
   conversation   Conversation? @relation(fields: [conversationId], references: [id])
   conversationId String?
 

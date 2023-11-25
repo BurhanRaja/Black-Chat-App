@@ -1,5 +1,5 @@
 "use client";
-import { File, FileIcon, PlusCircle, X, XCircle } from "lucide-react";
+import { FileIcon, PlusCircle, X, XCircle } from "lucide-react";
 import { BsFillEmojiLaughingFill } from "react-icons/bs";
 import { FaUpload } from "react-icons/fa";
 import Dropdown from "../ui/dropdown";
@@ -45,9 +45,15 @@ interface ChatInputProps {
   serverId?: string;
   chatId?: string;
   conversationId?: string;
+  canMessage: boolean;
 }
 
-const ChatInput = ({ serverId, chatId, conversationId }: ChatInputProps) => {
+const ChatInput = ({
+  serverId,
+  chatId,
+  conversationId,
+  canMessage,
+}: ChatInputProps) => {
   const [msgInp, setMsgInp] = useState<string>("");
   const [file, setFile] = useState<string>("");
   const [fileType, setFileType] = useState<string>("");
@@ -57,12 +63,12 @@ const ChatInput = ({ serverId, chatId, conversationId }: ChatInputProps) => {
 
   let addAPI =
     !conversationId && serverId && chatId
-      ? `/api/socket/messages?serverId=${serverId}&roomId=${chatId}&reply=no`
-      : `/api/socket/direct-messages?conversationId=${conversationId}&reply=no`;
+      ? `/api/socket/messages?serverId=${serverId}&roomId=${chatId}`
+      : `/api/socket/direct-messages?conversationId=${conversationId}`;
   let replyAPI =
     !conversationId && serverId && chatId
-      ? `/api/socket/messages/reply/${message?.id}?serverId=${serverId}&roomId=${chatId}&reply=no`
-      : `/api/socket/direct-messages/reply/${message?.id}?conversationId=${conversationId}&reply=no`;
+      ? `/api/socket/messages/reply/${message?.id}?serverId=${serverId}&roomId=${chatId}`
+      : `/api/socket/direct-messages/reply/${message?.id}?conversationId=${conversationId}`;
 
   const handleMessage = async () => {
     if (msgInp.length === 0 && !file) return;
@@ -94,8 +100,6 @@ const ChatInput = ({ serverId, chatId, conversationId }: ChatInputProps) => {
       onClose();
     }
   }, [file]);
-
-  console.log(openreply);
 
   return (
     <>
@@ -161,27 +165,34 @@ const ChatInput = ({ serverId, chatId, conversationId }: ChatInputProps) => {
           </div>
         )}
 
-        <FileUpload />
-        <input
-          type="text"
-          value={msgInp}
-          name="msgInp"
-          onChange={(e) => setMsgInp(e.target.value)}
-          className="w-[90%] p-2.5 mx-2 outline-none bg-zinc-800 chat-input"
-          placeholder="Write a Message"
-          onKeyDown={(e) => {
-            e.key === "Enter" ? handleMessage() : "";
-          }}
-        />
-        <EmojiPicker
-          trigger={
-            <BsFillEmojiLaughingFill className="text-zinc-500 hover:text-yellow-500 rounded-3xl text-2xl cursor-pointer" />
-          }
-          onChange={(val) => {
-            console.log(val);
-            setMsgInp(`${msgInp}${val}`);
-          }}
-        />
+        {canMessage && (
+          <>
+            <FileUpload />
+            <input
+              type="text"
+              value={msgInp}
+              name="msgInp"
+              onChange={(e) => setMsgInp(e.target.value)}
+              className="w-[90%] p-2.5 mx-2 outline-none bg-zinc-800 chat-input"
+              placeholder="Write a Message"
+              onKeyDown={(e) => {
+                e.key === "Enter" ? handleMessage() : "";
+              }}
+            />
+            <EmojiPicker
+              trigger={
+                <BsFillEmojiLaughingFill className="text-zinc-500 hover:text-yellow-500 rounded-3xl text-2xl cursor-pointer" />
+              }
+              onChange={(val) => {
+                console.log(val);
+                setMsgInp(`${msgInp}${val}`);
+              }}
+            />
+          </>
+        )}
+        {
+          !canMessage && <p className="text-start p-2.5">Not Allowed to Message</p>
+        }
       </div>
     </>
   );

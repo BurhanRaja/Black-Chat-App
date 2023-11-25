@@ -104,7 +104,7 @@ export default async function handler(
       content: content as string,
       file: fileUrl as string,
       directMessageId: uniqueId,
-      userId: profile.userId,
+      replymessageId: messageId as string,
       replyuserId: profile.userId,
       conversationId: conversationId as string,
       isReply: true,
@@ -114,6 +114,7 @@ export default async function handler(
       data,
       include: {
         user: true,
+        replyuser: true,
         reactions: {
           include: {
             UserReaction: true,
@@ -128,12 +129,17 @@ export default async function handler(
     });
 
     success = true;
-    res.socket.server.io.emit(`chat:${conversationId}:message`, message);
+    res.socket.server.io.emit(
+      `chat:${conversationId}:message`,
+      undefined,
+      message
+    );
     return res.status(200).send({
       success,
       message,
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).send({
       success,
       message: "Internal Server Error.",

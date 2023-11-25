@@ -52,3 +52,71 @@ export async function GET(
     );
   }
 }
+
+export async function PUT(
+  req: NextRequest,
+  { params }: RoomGetParams
+): Promise<
+  | NextResponse<{
+      success: boolean;
+      message: string;
+    }>
+  | undefined
+> {
+  let success = false;
+
+  try {
+    const { roomId } = params;
+
+    const { searchParams } = new URL(req.url);
+    const serverId = searchParams.get("serverId");
+    const {
+      name,
+      isPrivate,
+      updatePermission,
+      deletePermission,
+      messagePermission,
+      privatePermission,
+    } = await req.json();
+
+    let room = await prisma.room.findUnique({
+      where: {
+        roomId,
+        serverId: serverId as string,
+      },
+    });
+
+    if (!room) {
+      return NextResponse.json(
+        { success, message: "Room not found." },
+        { status: 404 }
+      );
+    }
+
+    room = await prisma.room.update({
+      data: {
+        name,
+        isPrivate,
+        updatePermission,
+        deletePermission,
+        messagePermission,
+        privatePermission,
+      },
+      where: {
+        roomId,
+        serverId: serverId as string,
+      },
+    });
+
+    success = true;
+    return NextResponse.json(
+      { success, message: "Room updated successfully." },
+      { status: 200 }
+    );
+  } catch (err) {
+    return NextResponse.json(
+      { success, message: "Internal Server Error." },
+      { status: 500 }
+    );
+  }
+}

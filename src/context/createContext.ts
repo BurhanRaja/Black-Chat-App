@@ -66,8 +66,9 @@ type ReplyContextType = {
     fileUrl: string;
     fileType: string;
     id: string;
-    roomId: string;
-    serverId: string;
+    conversationId?: string;
+    roomId?: string;
+    serverId?: string;
     userId: string;
     userName: string;
   };
@@ -114,17 +115,5 @@ export const UserConnectionContext = createContext(null);
 export const ReplyContext = createContext<ReplyContextType>({
   openreply: false,
   message: undefined,
-  setReply: (
-    open: boolean,
-    message: {
-      content: string;
-      fileUrl: string;
-      fileType: string;
-      id: string;
-      roomId: string;
-      serverId: string;
-      userId: string;
-      userName: string;
-    }
-  ) => {},
+  setReply: (open: boolean, message: ReplyContextType["message"]) => {},
 });

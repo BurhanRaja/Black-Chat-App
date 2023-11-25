@@ -109,13 +109,9 @@ export type MessageWithProfile = Message & {
 
 export type DirectMessageWithProfileWithReactionWithReply = DirectMessage & {
   user: Profile;
-  replyuser: SUser & {
+  replyuser: Profile;
+  replymessage: DirectMessage & {
     user: Profile;
-  };
-  replymessage: Message & {
-    user: SUser & {
-      user: Profile;
-    };
   };
   reactions: Array<Reaction & { UserReaction: UserReaction }>;
 };

@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import ChatMessages from "./chat/chat-messages";
 import ChatAreaLayout from "./chat/chat-area-layout";
 import ChatInput from "./chat/chat-input";
+import ReplyMessageProvider from "./provider/reply-message-provider";
 
 interface AppDMLayoutProps {
   conversationId: string;
@@ -65,20 +66,22 @@ const AppDMLayout = async ({ conversationId }: AppDMLayoutProps) => {
       <div className="w-[79%] h-full">
         <Header conversationUser={otherMember} />
         <div className="flex">
-          <ChatAreaLayout>
-            <ChatMessages
-              memberConversation={member!}
-              apiUrl="/api/direct-messages"
-              conversationId={conversationId}
-              paramKey="conversationId"
-              paramValue={conversationId}
-              welcomeName={otherMember.displayname}
-              welcomeType="conversation"
-            />
-            <div className="bg-zinc-700 relative w-[100%] pb-6 pt-2">
-              <ChatInput conversationId={conversationId} />
-            </div>
-          </ChatAreaLayout>
+          <ReplyMessageProvider>
+            <ChatAreaLayout>
+              <ChatMessages
+                memberConversation={member!}
+                apiUrl="/api/direct-messages"
+                conversationId={conversationId}
+                paramKey="conversationId"
+                paramValue={conversationId}
+                welcomeName={otherMember.displayname}
+                welcomeType="conversation"
+              />
+              <div className="bg-zinc-700 relative w-[100%] pb-6 pt-2">
+                <ChatInput conversationId={conversationId} canMessage  />
+              </div>
+            </ChatAreaLayout>
+          </ReplyMessageProvider>
         </div>
       </div>
     </>
