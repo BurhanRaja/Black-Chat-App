@@ -151,17 +151,24 @@ const ChatMessages = ({
                   {el?.items?.map(
                     (el: MessageWithProfileWithReactionWithReply) => {
                       let colorCheck = userColor?.find((elColor) =>
-                        el?.isReply
+                        !el?.isReply
                           ? elColor.userId === el?.user?.userId
                           : elColor.userId === el?.replyuser?.userId
                       );
                       let randomColor = "";
                       if (!colorCheck) {
                         randomColor = randomcolor({ luminosity: "light" });
-                        userColor.push({
-                          userId: el?.user?.userId,
-                          color: randomColor,
-                        });
+                        if (!el?.isReply) {
+                          userColor.push({
+                            userId: el?.user?.userId,
+                            color: randomColor,
+                          });
+                        } else {
+                          userColor.push({
+                            userId: el?.replyuser?.userId,
+                            color: randomColor,
+                          });
+                        }
                       }
                       return (
                         <ChatItemMessage
@@ -226,7 +233,6 @@ const ChatMessages = ({
                           color: randomColor,
                         });
                       }
-                      console.log(el);
                       return (
                         <ChatItemMessage
                           color={colorCheck ? colorCheck.color : randomColor}

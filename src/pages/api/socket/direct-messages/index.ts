@@ -54,6 +54,17 @@ export default async function handler(
       },
       include: {
         user: true,
+        replyuser: true,
+        reactions: {
+          include: {
+            UserReaction: true,
+          },
+        },
+        replymessage: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
 
@@ -74,6 +85,17 @@ export default async function handler(
       data,
       include: {
         user: true,
+        replyuser: true,
+        reactions: {
+          include: {
+            UserReaction: true,
+          },
+        },
+        replymessage: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
 

@@ -57,6 +57,25 @@ export async function GET(
       },
     });
 
+    if (!sUser) {
+      return NextResponse.json(
+        { success, message: "Member not found." },
+        { status: 404 }
+      );
+    }
+
+    await prisma.message.deleteMany({
+      where: {
+        sUserId: sUser.sUserId,
+      },
+    });
+
+    await prisma.message.deleteMany({
+      where: {
+        replyuserId: sUser.sUserId,
+      },
+    });
+
     await prisma.sUser.delete({
       where: {
         id: sUser?.id,

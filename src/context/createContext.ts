@@ -17,6 +17,7 @@ export type ModalType =
   | "createServer"
   | "editServer"
   | "deleteServer"
+  | "leaveServer"
   | "serverSettings"
   | "createRoom"
   | "editRoom"
@@ -33,12 +34,15 @@ interface CustomUser extends SUser {
 }
 
 export type ModalData = {
-  server?: Server;
+  server?: Server & {
+    rooms: Array<Room>;
+    sUsers: Array<SUser>;
+  };
   room?: Room;
   profile?: Profile;
   sUsers?: Array<CustomUser>;
   apiUrl?: string;
-  query?: string;
+  query?: string | boolean;
 };
 
 export type ModalContextType = {

@@ -3,7 +3,7 @@
 import { Trash2, Hash, Edit2 } from "lucide-react";
 import Collapsible from "../ui/collapsible";
 import RoomItem from "./room-item";
-import { Room, SUserRole } from "@prisma/client";
+import { Room, SUser, SUserRole, Server } from "@prisma/client";
 import { useContext } from "react";
 import { ModalContext } from "@/context/createContext";
 import { IoVideocam } from "react-icons/io5";
@@ -64,7 +64,9 @@ const RoomCollapsible = ({
                             <Edit2
                               size={16}
                               className="mr-2 text-gray-400"
-                              onClick={() => onOpen("editRoom", { room })}
+                              onClick={() =>
+                                onOpen("editRoom", { room, query: isAdmin })
+                              }
                             />
                           ) : (
                             ""

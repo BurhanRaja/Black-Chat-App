@@ -268,6 +268,8 @@ const ChatItemMessage = ({
                 />
               )}
             </div>
+          ) : openreply ? (
+            ""
           ) : (
             <div className="absolute right-10 top-[-6px] bg-zinc-800 px-2 py-0.5 hidden group-hover:block">
               <Tooltip

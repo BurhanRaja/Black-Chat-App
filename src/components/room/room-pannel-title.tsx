@@ -25,23 +25,6 @@ const RoomPannelTitle = ({
 }: RoomPannelTitleProps) => {
   const { onOpen } = useContext(ModalContext);
 
-  // const handleServerDelete = async () => {
-  //   const response = await axios.delete(`/api/server/${params?.serverId}`);
-  //   if (response.data.success) {
-  //     setAlertOpen(true);
-  //     setTitle("Success");
-  //     setDescription("Server Successfully deleted.");
-  //     setType("success");
-  //     router.refresh();
-  //     router.push("/servers/@me");
-  //   } else {
-  //     setAlertOpen(true);
-  //     setTitle("Error");
-  //     setDescription(response.data.message);
-  //     setType("error");
-  //   }
-  // };
-
   return (
     <>
       <Dropdown
@@ -90,7 +73,15 @@ const RoomPannelTitle = ({
                   link: "",
                   textColor: "text-red-500",
                   icon: <Trash2 size={16} />,
-                  handleFunction: () => {},
+                  handleFunction: () =>
+                    onOpen("deleteServer", {
+                      server: {
+                        serverId: server?.serverId,
+                        name: server?.name,
+                        imageUrl: server?.imageUrl,
+                        createdAt: server?.createdAt,
+                      },
+                    }),
                 },
               ]
             : isModerator
@@ -132,7 +123,15 @@ const RoomPannelTitle = ({
                   link: "",
                   textColor: "text-red-500",
                   icon: <LogOut size={16} />,
-                  handleFunction: () => {},
+                  handleFunction: () =>
+                    onOpen("leaveServer", {
+                      server: {
+                        serverId: server?.serverId,
+                        name: server?.name,
+                        imageUrl: server?.imageUrl,
+                        createdAt: server?.createdAt,
+                      },
+                    }),
                 },
               ]
         }

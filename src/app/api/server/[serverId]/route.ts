@@ -194,6 +194,26 @@ export async function DELETE(
       );
     }
 
+    await prisma.room.deleteMany({
+      where: {
+        serverId,
+      },
+    });
+
+    await prisma.sUser.deleteMany({
+      where: {
+        serverId,
+      },
+    });
+
+    await prisma.message.deleteMany({
+      where: {
+        room: {
+          serverId,
+        },
+      },
+    });
+
     await prisma.server.delete({
       where: {
         serverId,

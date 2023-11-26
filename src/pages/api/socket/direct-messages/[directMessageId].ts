@@ -26,11 +26,11 @@ export default async function handler(
       },
     });
 
-    if (!profile) {
+    if (!profile?.userId) {
       return res.status(401).send({ success, message: "UnAuthorized" });
     }
 
-    const { messageId, conversationId } = req.query;
+    const { directMessageId, conversationId } = req.query;
 
     let conversation = await prisma.conversation.findUnique({
       where: {
@@ -50,7 +50,7 @@ export default async function handler(
     }
 
     const member =
-      conversation.profileOne.userId === profile.userId
+      conversation.profileOneId === profile.userId
         ? conversation.profileOne
         : conversation.profileTwo;
 
@@ -63,10 +63,22 @@ export default async function handler(
 
     let message = await prisma.directMessage.findUnique({
       where: {
-        id: conversationId as string,
+        conversationId: conversationId as string,
+        directMessageId: directMessageId as string,
       },
       include: {
         user: true,
+        replyuser: true,
+        reactions: {
+          include: {
+            UserReaction: true,
+          },
+        },
+        replymessage: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
 
@@ -77,20 +89,21 @@ export default async function handler(
       });
     }
 
-    const isMessageOwner = message.userId === member.userId;
+    const isMessageOwner =
+      message.userId === member.userId || message.replyuserId === member.userId;
     const canModify = isMessageOwner;
 
     if (!canModify) {
-      return res.status(401).send({
+      return res.status(400).send({
         success,
-        message: "UnAuthorized",
+        message: "Permission denied",
       });
     }
 
     if (req.method === "DELETE") {
       message = await prisma.directMessage.update({
         where: {
-          directMessageId: message.directMessageId,
+          directMessageId: directMessageId as string,
         },
         data: {
           file: null,
@@ -99,6 +112,17 @@ export default async function handler(
         },
         include: {
           user: true,
+          replyuser: true,
+          reactions: {
+            include: {
+              UserReaction: true,
+            },
+          },
+          replymessage: {
+            include: {
+              user: true,
+            },
+          },
         },
       });
     }
@@ -107,13 +131,24 @@ export default async function handler(
       const { content } = req.body;
       message = await prisma.directMessage.update({
         where: {
-          directMessageId: message.directMessageId,
+          directMessageId: directMessageId as string,
         },
         data: {
           content: content,
         },
         include: {
           user: true,
+          replyuser: true,
+          reactions: {
+            include: {
+              UserReaction: true,
+            },
+          },
+          replymessage: {
+            include: {
+              user: true,
+            },
+          },
         },
       });
     }
@@ -130,6 +165,7 @@ export default async function handler(
       message,
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).send({
       success,
       message: "Internal Server Error.",

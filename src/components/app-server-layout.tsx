@@ -9,6 +9,7 @@ import ChatInput from "./chat/chat-input";
 import currentProfile from "@/lib/current-profile";
 import { redirect } from "next/navigation";
 import ReplyMessageProvider from "./provider/reply-message-provider";
+import MediaRoom from "./room/media-room";
 
 interface AppServerLayoutProps {
   serverId: string;
@@ -63,7 +64,7 @@ const AppServerLayout = async ({ serverId, roomId }: AppServerLayoutProps) => {
         />
         <div className="w-[79%] h-full">
           <Header />
-          <div className="flex">
+          <div className="flex h-[92%]">
             <ReplyMessageProvider>
               {currRoom?.type === "TEXT" && (
                 <>
@@ -89,6 +90,16 @@ const AppServerLayout = async ({ serverId, roomId }: AppServerLayoutProps) => {
                   </ChatAreaLayout>
                   <MemberPanel members={serverUsers} />
                 </>
+              )}
+              {currRoom?.type === "VIDEO" && (
+                <ChatAreaLayout>
+                  <MediaRoom audio video roomId={roomId} />
+                </ChatAreaLayout>
+              )}
+              {currRoom?.type === "AUDIO" && (
+                <ChatAreaLayout>
+                  <MediaRoom audio video={false} roomId={roomId} />
+                </ChatAreaLayout>
               )}
             </ReplyMessageProvider>
           </div>
