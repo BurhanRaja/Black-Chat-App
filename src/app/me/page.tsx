@@ -1,5 +1,3 @@
-import EmailVerifiedPannel from "@/components/email-verified-pannel";
-import ServerPanel from "@/components/server/server-panel";
 import { ChatAreaImageItem } from "@/components/chat/chat-messages";
 import DMPannel from "@/components/dm/dm-pannel";
 import Header from "@/components/defaults/header";
@@ -57,15 +55,11 @@ const Home = async ({ params }: { params: { conversationId: string } }) => {
 
   return (
     <>
-      <EmailVerifiedPannel />
-      <div className="flex">
-        <ServerPanel />
-        <DMPannel conversations={allConversations} curruser={profile} />
-        <div className="w-[79%] h-full">
-          <Header />
-          <div className="flex">
-            <ChatAreaImageItem />
-          </div>
+      <DMPannel conversations={allConversations} curruser={profile} />
+      <div className="w-[79%] h-full">
+        <Header />
+        <div className="flex">
+          <ChatAreaImageItem />
         </div>
       </div>
     </>

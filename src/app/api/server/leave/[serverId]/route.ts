@@ -78,7 +78,8 @@ export async function GET(
 
     await prisma.sUser.delete({
       where: {
-        id: sUser?.id,
+        serverId: serverId as string,
+        userId: profile.userId,
         sUserId: sUser?.sUserId,
       },
     });

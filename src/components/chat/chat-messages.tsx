@@ -101,11 +101,68 @@ const ChatMessages = ({
   if (status === "loading") {
     return (
       <>
-        <div className="flex flex-col flex-1 justify-center items-center">
-          <Loader2 className="h-7 w-7 text-zinc-500 animate-spin my-4" />
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            Loading messages...
-          </p>
+        <div className="flex flex-col flex-1 justify-start h-[585px] bg-zinc-700">
+          <div className="p-4 max-w-lg w-full ">
+            <div className="animate-pulse flex space-x-4">
+              <div className="rounded-full bg-zinc-500 h-14 w-14"></div>
+              <div className="flex-1 space-y-6 py-1 ">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="h-2 bg-zinc-500 rounded"></div>
+                </div>
+                <div className="space-y-3">
+                  <div className="h-2 bg-zinc-500 rounded"></div>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="h-2 bg-zinc-500 rounded col-span-2"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="p-4 max-w-lg w-full ">
+            <div className="animate-pulse flex space-x-4">
+              <div className="rounded-full bg-zinc-500 h-14 w-14"></div>
+              <div className="flex-1 space-y-6 py-1 ">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="h-2 bg-zinc-500 rounded"></div>
+                </div>
+                <div className="space-y-3">
+                  <div className="h-2 bg-zinc-500 rounded"></div>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="h-2 bg-zinc-500 rounded col-span-2"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="p-4 max-w-lg w-full ">
+            <div className="animate-pulse flex space-x-4">
+              <div className="rounded-full bg-zinc-500 h-14 w-14"></div>
+              <div className="flex-1 space-y-6 py-1 ">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="h-2 bg-zinc-500 rounded"></div>
+                </div>
+                <div className="space-y-3">
+                  <div className="h-2 bg-zinc-500 rounded"></div>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="h-2 bg-zinc-500 rounded col-span-2"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="p-4 max-w-lg w-full ">
+            <div className="animate-pulse flex space-x-4">
+              <div className="rounded-full bg-zinc-500 h-14 w-14"></div>
+              <div className="flex-1 space-y-6 py-1 ">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="h-2 bg-zinc-500 rounded"></div>
+                </div>
+                <div className="space-y-3">
+                  <div className="p-3 bg-zinc-500 h-52 rounded-md"></div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </>
     );

@@ -38,13 +38,16 @@ const ServerPanel = async () => {
             />
             <hr className="border-gray-500" />
             {servers?.map((el, index) => {
+              const defaultRoom = el.rooms.find(
+                (room: any) => room.default === true
+              );
               return (
                 <ServerIcon
                   key={el.serverId}
                   image={el.imageUrl}
                   altName={el.name}
                   tooltipText={el.name}
-                  link={`/servers/${el?.serverId}/${el?.rooms[0].roomId}`}
+                  link={`/servers/${el?.serverId}/${defaultRoom.roomId}`}
                 />
               );
             })}

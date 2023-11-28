@@ -45,10 +45,10 @@ const ProfileItem = () => {
   };
 
   useEffect(() => {
-    if (!session?.user && status === "authenticated") {
+    if (!session?.user.image && status === "authenticated") {
       getProfile();
     }
-  }, [session, status]);
+  }, [status, session?.user]);
 
   return (
     <>

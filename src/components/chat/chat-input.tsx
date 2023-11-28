@@ -26,16 +26,16 @@ const FileUpload = () => {
             content: "Upload File",
             link: "",
             icon: <FaUpload className="text-lg" />,
-            textColor: "text-white hover:text-gray-100",
-            hoverBackgroundColor: "hover:bg-gray-800",
+            textColor: "text-white hover:text-zinc-100",
+            hoverBackgroundColor: "hover:bg-zinc-800",
             handleFunction: () => onOpen("messageFile", {}),
           },
         ]}
-        contentWidth="w-[150px] mb-3"
-        contentColor="bg-gray-900"
+        contentWidth="w-[200px] mb-3"
+        contentColor="bg-zinc-900"
         side="top"
         align="start"
-        alignOffset={-19}
+        alignOffset={-29}
       />
     </>
   );

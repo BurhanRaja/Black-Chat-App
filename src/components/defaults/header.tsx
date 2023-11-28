@@ -11,6 +11,7 @@ import { Profile, Room } from "@prisma/client";
 import { MemberPannelContext } from "@/context/createContext";
 import Avatar from "../ui/avatar";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 interface HeaderProps {
   conversationUser?: Profile;
@@ -18,6 +19,7 @@ interface HeaderProps {
 
 const Header = ({ conversationUser }: HeaderProps) => {
   const [roomDetails, setRoomDetails] = useState<Room>();
+
   const params = useParams();
   const pathname = usePathname();
   const { memberPannelOpen, setMemberPannelOpen } =
@@ -40,7 +42,7 @@ const Header = ({ conversationUser }: HeaderProps) => {
   return (
     <>
       <div className="bg-[rgb(71,71,79)] p-3 pb-2 shadow-md flex justify-between pr-5">
-        {pathname === "/me" ? (
+        {pathname === "/me" || pathname === "/me/conversation/online" ? (
           <>
             <div className="flex items-center">
               <p className="mr-2 flex items-center">
@@ -50,9 +52,11 @@ const Header = ({ conversationUser }: HeaderProps) => {
                 <span>Friends</span>
               </p>
               <p className="mr-2 text-zinc-400">|</p>
-              <button className="p-1 px-2 text-sm mr-2 hover:bg-zinc-800 rounded-md">
-                Online
-              </button>
+              <Link href={"/me/conversation/online"}>
+                <button className="p-1 px-2 text-sm mr-2 hover:bg-zinc-800 rounded-md">
+                  Online
+                </button>
+              </Link>
               <button className="p-1 px-2 text-sm hover:bg-zinc-800 rounded-md">
                 All
               </button>
