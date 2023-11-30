@@ -88,9 +88,19 @@ export async function PUT(
 
     const user = await currentProfile();
 
+    if (!user) {
+      return NextResponse.json(
+        { success, message: "UnAuthorized ." },
+        { status: 401 }
+      );
+    }
+
     let server = await prisma.server.findUnique({
       where: {
         serverId,
+      },
+      include: {
+        sUsers: true,
       },
     });
 
@@ -101,21 +111,13 @@ export async function PUT(
       );
     }
 
-    server = await prisma.server.findUnique({
-      where: {
-        serverId,
-        sUsers: {
-          some: {
-            userId: user?.userId!,
-            type: SUserRole["ADMIN"],
-          },
-        },
-      },
-    });
+    let memberIsAdmin = server.sUsers.find(
+      (el) => el.type === "ADMIN" && el.userId === user?.userId
+    );
 
-    if (!server) {
+    if (!memberIsAdmin) {
       return NextResponse.json(
-        { success, message: "Only Admin can update Server." },
+        { success, message: "Permission Denied." },
         { status: 403 }
       );
     }
@@ -130,11 +132,13 @@ export async function PUT(
       },
     });
 
+    success = true;
     return NextResponse.json(
       { success, message: "Server details updated successfully." },
       { status: 200 }
     );
   } catch (err) {
+    console.log(err);
     return NextResponse.json(
       {
         success,

@@ -62,7 +62,11 @@ const AppDMLayout = async ({ conversationId }: AppDMLayoutProps) => {
 
   return (
     <>
-      <DMPannel conversations={allConversations} curruser={profile} />
+      <DMPannel
+        conversations={allConversations}
+        conversationId={conversationId}
+        curruser={profile}
+      />
       <div className="w-[79%] h-full">
         <Header conversationUser={otherMember} />
         <div className="flex">
@@ -78,7 +82,7 @@ const AppDMLayout = async ({ conversationId }: AppDMLayoutProps) => {
                 welcomeType="conversation"
               />
               <div className="bg-zinc-700 relative w-[100%] pb-6 pt-2">
-                <ChatInput conversationId={conversationId} canMessage  />
+                <ChatInput conversationId={conversationId} canMessage />
               </div>
             </ChatAreaLayout>
           </ReplyMessageProvider>

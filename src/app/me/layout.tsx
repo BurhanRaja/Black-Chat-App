@@ -7,7 +7,7 @@ const ConversationLayout = ({ children }: { children: ReactNode }) => {
     <>
       <EmailVerifiedPannel />
       <div className="flex">
-        <ServerPanel />
+        <ServerPanel serverId={""} />
         {children}
       </div>
     </>

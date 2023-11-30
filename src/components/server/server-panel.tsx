@@ -3,9 +3,12 @@ import ServerIcon from "./server-icon";
 import { prisma } from "@/db/client";
 import currentProfile from "@/lib/current-profile";
 import CreateServerBtn from "./create-server-btn";
-import Link from "next/link";
 
-const ServerPanel = async () => {
+interface ServerPannelProps {
+  serverId: string;
+}
+
+const ServerPanel = async ({ serverId }: ServerPannelProps) => {
   const profile = await currentProfile();
 
   let servers: Array<any> = [];
@@ -48,6 +51,7 @@ const ServerPanel = async () => {
                   altName={el.name}
                   tooltipText={el.name}
                   link={`/servers/${el?.serverId}/${defaultRoom.roomId}`}
+                  selected={serverId === el.serverId}
                 />
               );
             })}

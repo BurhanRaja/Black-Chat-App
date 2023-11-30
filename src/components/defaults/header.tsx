@@ -53,7 +53,13 @@ const Header = ({ conversationUser }: HeaderProps) => {
               </p>
               <p className="mr-2 text-zinc-400">|</p>
               <Link href={"/me/conversation/online"}>
-                <button className="p-1 px-2 text-sm mr-2 hover:bg-zinc-800 rounded-md">
+                <button
+                  className={`p-1 px-2 text-sm mr-2 ${
+                    pathname === "/me/conversation/online"
+                      ? "bg-zinc-800"
+                      : "hover:bg-zinc-800"
+                  } rounded-md`}
+                >
                   Online
                 </button>
               </Link>

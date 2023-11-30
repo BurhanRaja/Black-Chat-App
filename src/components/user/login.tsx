@@ -14,7 +14,6 @@ const Login = () => {
   const [password, setPassword] = useState<string>("");
 
   const { status } = useSession();
-  const router = useRouter();
   const { setAlertOpen, setTitle, setDescription, setType } =
     useContext(AlertContext);
 
@@ -45,12 +44,6 @@ const Login = () => {
       }
     });
   };
-
-  useEffect(() => {
-    if (status === "authenticated") {
-      router.push("/me");
-    }
-  }, [status]);
 
   return (
     <>

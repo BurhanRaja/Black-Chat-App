@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertContext, ModalContext } from "@/context/createContext";
-import { useContext, useEffect, useRef, useState } from "react";
+import { FormEvent, useContext, useEffect, useRef, useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
 import { Check, Search, XCircle } from "lucide-react";
@@ -74,7 +74,6 @@ const ServerSettingsMembers = () => {
     );
 
     if (response.data.success) {
-      
       await handleSearch();
     }
   };
@@ -217,15 +216,55 @@ const ServerSettingsMembers = () => {
 };
 
 const ServerDetailsForm = () => {
-  const { data } = useContext(ModalContext);
+  const { data, onClose } = useContext(ModalContext);
   const [file, setFile] = useState<string>(data.server?.imageUrl!);
 
   const serverNameRef = useRef<HTMLInputElement>(null);
 
+  const { setAlertOpen, setTitle, setDescription, setType } =
+    useContext(AlertContext);
+
+  const router = useRouter();
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    if (serverNameRef.current?.value === "" || file === "") {
+      return;
+    }
+    let updateData = {
+      name: serverNameRef.current?.value,
+      imageUrl: file,
+    };
+    const response = await axios.put(
+      `/api/server/${data.server?.serverId}`,
+      updateData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (response.data.success) {
+      setTitle("Success");
+      setDescription("Server Details updated successfully.");
+      setType("success");
+      setAlertOpen(true);
+      onClose();
+      router.refresh();
+    } else {
+      setTitle("Error");
+      setDescription("Some Error Occurred. Please try again.");
+      setType("error");
+      onClose();
+      setAlertOpen(true);
+    }
+  };
+
   return (
     <>
       <p className="mb-5 text-mauve11 text-xl leading-normal">Server Details</p>
-      <form className="w-[70%] mx-auto">
+      <form className="w-[70%] mx-auto" onSubmit={handleSubmit}>
         <div className="mx-auto mb-3">
           <FileUpload
             value={file}
@@ -244,7 +283,7 @@ const ServerDetailsForm = () => {
         </div>
         <div className="flex justify-end mt-10">
           <button className="p-2 w-[30%] rounded-md border border-gray-200 text-gray-200 hover:bg-gray-200 hover:text-gray-800 font-bold">
-            Create
+            Update
           </button>
         </div>
       </form>

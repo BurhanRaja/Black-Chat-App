@@ -13,6 +13,7 @@ interface ServerIconProps {
   tooltipText?: string;
   needLink?: boolean;
   link?: string;
+  selected: boolean;
 }
 
 const ServerIcon = ({
@@ -24,6 +25,7 @@ const ServerIcon = ({
   tooltipText,
   needLink = true,
   link,
+  selected,
 }: ServerIconProps) => {
   return (
     <div className="my-3">
@@ -35,7 +37,7 @@ const ServerIcon = ({
                 <Avatar
                   image={image}
                   altname={altName}
-                  radius=""
+                  radius={selected ? "large" : ""}
                   transition={true}
                   fallback={fallback}
                   fallbackBackgroundColor={fallbackBackgroundColor}

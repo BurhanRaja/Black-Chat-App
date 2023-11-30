@@ -9,9 +9,14 @@ interface DMPannelProps {
     Conversation & { profileOne: Profile; profileTwo: Profile }
   >;
   curruser: Profile;
+  conversationId: string;
 }
 
-const DMPannel = ({ conversations, curruser }: DMPannelProps) => {
+const DMPannel = ({
+  conversations,
+  curruser,
+  conversationId,
+}: DMPannelProps) => {
   return (
     <>
       <div className="h-[100vh] bg-[rgb(71,71,79)] pb-2 w-[255px] ml-20">
@@ -42,6 +47,7 @@ const DMPannel = ({ conversations, curruser }: DMPannelProps) => {
                         altname="any"
                         title={conversation.profileOne.displayname}
                         backgroundHover="hover:bg-zinc-800"
+                        selected={conversationId === conversation.id}
                       />
                     );
                   }
@@ -54,6 +60,7 @@ const DMPannel = ({ conversations, curruser }: DMPannelProps) => {
                         altname="any"
                         title={conversation.profileTwo.displayname}
                         backgroundHover="hover:bg-zinc-800"
+                        selected={conversationId === conversation.id}
                       />
                     );
                   }

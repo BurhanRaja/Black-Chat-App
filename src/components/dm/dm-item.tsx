@@ -10,6 +10,7 @@ interface DMItemProps {
   altname: string;
   backgroundHover?: string;
   link: string;
+  selected: boolean;
 }
 
 const DMItem = ({
@@ -18,12 +19,15 @@ const DMItem = ({
   altname,
   backgroundHover,
   link,
+  selected,
 }: DMItemProps) => {
   return (
     <>
       <Link href={link}>
         <div
-          className={`flex justify-between items-center py-1.5 my-2 p-3 ${backgroundHover} cursor-pointer rounded-md group`}
+          className={`flex justify-between items-center py-1.5 my-2 p-3 ${backgroundHover} ${
+            selected ? "bg-zinc-800" : ""
+          } cursor-pointer rounded-md group`}
         >
           <div className="flex items-center text-sm">
             <Avatar
