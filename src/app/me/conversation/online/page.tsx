@@ -99,7 +99,7 @@ const ConversationOnlineMember = async () => {
                           side="top"
                           content="Message"
                         />
-                        <Tooltip
+                        {/* <Tooltip
                           trigger={
                             <button className="hidden group-hover:block ml-3">
                               <X
@@ -110,7 +110,7 @@ const ConversationOnlineMember = async () => {
                           }
                           side="top"
                           content="Remove Conversation"
-                        />
+                        /> */}
                       </div>
                     </div>
                     <hr className="border-gray-400 border-1" />
