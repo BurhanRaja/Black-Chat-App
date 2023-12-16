@@ -27,6 +27,7 @@ export type ModalType =
   | "deleteMessage"
   | "editProfile"
   | "invitePeople"
+  | "profileDetails"
   | null;
 
 interface CustomUser extends SUser {

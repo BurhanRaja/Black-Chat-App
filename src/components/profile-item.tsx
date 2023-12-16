@@ -32,8 +32,13 @@ const ProfileItem = () => {
     });
   };
 
-  const handleOpenModal = async () => {
+  const handleEditOpenModal = async () => {
     onOpen("editProfile", { profile: profileData });
+    return;
+  };
+
+  const handleProfileOpenModal = async () => {
+    onOpen("profileDetails", { profile: profileData });
     return;
   };
 
@@ -91,13 +96,14 @@ const ProfileItem = () => {
               link: "",
               textColor: "text-white",
               icon: <Pencil size={16} />,
-              OpenModal: () => handleOpenModal(),
+              OpenModal: () => handleEditOpenModal(),
             },
             {
               content: "Profile Details",
               link: "",
               textColor: "text-violet-400",
               icon: <UserCircle2 size={16} />,
+              OpenModal: () => handleProfileOpenModal(),
             },
             {
               content: "Sign Out",

@@ -12,6 +12,7 @@ import ServerSettingsModal from "../modals/server-settings";
 import DeleteMessageModal from "../modals/delete-message";
 import DeleteServerModal from "../modals/delete-server";
 import LeaveServerModal from "../modals/leave-server";
+import ProfileDetailsModal from "../modals/profile-details";
 
 interface ModalProviderProps {
   children: React.ReactNode;
@@ -46,6 +47,7 @@ const ModalProvider = ({ children }: ModalProviderProps) => {
       <DeleteServerModal />
       <DeleteMessageModal />
       <LeaveServerModal />
+      <ProfileDetailsModal />
       {children}
     </ModalContext.Provider>
   );

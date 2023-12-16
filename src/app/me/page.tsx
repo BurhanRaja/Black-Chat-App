@@ -5,36 +5,12 @@ import currentProfile from "@/lib/current-profile";
 import { redirect } from "next/navigation";
 import { prisma } from "@/db/client";
 
-const Home = async ({ params }: { params: { conversationId: string } }) => {
+const Home = async () => {
   const profile = await currentProfile();
 
   if (!profile) {
     redirect("/auth/signin");
   }
-
-  const conversation = await prisma.conversation.findFirst({
-    where: {
-      id: params.conversationId,
-    },
-    include: {
-      profileOne: true,
-      profileTwo: true,
-    },
-  });
-
-  if (!conversation) {
-    redirect("/me");
-  }
-
-  let member =
-    profile?.userId === conversation.profileOne.userId
-      ? conversation.profileOne
-      : conversation.profileTwo;
-
-  let otherMember =
-    profile?.userId !== conversation.profileOne.userId
-      ? conversation.profileOne
-      : conversation.profileTwo;
 
   let allConversations = await prisma.conversation.findMany({
     where: {
@@ -55,7 +31,11 @@ const Home = async ({ params }: { params: { conversationId: string } }) => {
 
   return (
     <>
-      <DMPannel conversations={allConversations} curruser={profile} />
+      <DMPannel
+        conversations={allConversations}
+        curruser={profile}
+        conversationId={""}
+      />
       <div className="w-[79%] h-full">
         <Header />
         <div className="flex">

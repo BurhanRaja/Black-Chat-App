@@ -53,7 +53,7 @@ const createOauthUser = async ({
       subject: "Email Verification",
       content:
         "Thank you for registering as our user. Kindly click on the button below to activate your account.",
-      link: `http://localhost:3000/verify/login/${encryptToken}`,
+      link: `http://localhost:3000/verify/login/${encryptedToken}`,
       linkText: "Verify Link",
     };
     sendEmail(emailSend);

@@ -79,6 +79,8 @@ export async function POST(req: NextRequest): Promise<
     const userData = user.userId + "-" + user.email;
     const encryptedToken = encryptToken(userData);
 
+    console.log(encryptedToken);
+
     if (user.id) {
       let mailData: NewSendEmailOptions = {
         from: `${appName} <${appEmail}>`,

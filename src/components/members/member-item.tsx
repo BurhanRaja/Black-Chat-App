@@ -1,10 +1,12 @@
 "use client";
 
+import { useContext } from "react";
 import { useSession } from "next-auth/react";
 import Avatar from "../ui/avatar";
 import Dropdown from "../ui/dropdown";
 import { Send } from "lucide-react";
 import { FaCircle } from "react-icons/fa";
+import { SocketContext } from "@/context/createContext";
 
 interface MemberItemProps {
   image: string;
@@ -15,7 +17,8 @@ interface MemberItemProps {
 
 const MemberItem = ({ image, name, userId, isOnline }: MemberItemProps) => {
   const { data: session } = useSession();
-  console.log(isOnline);
+  const { isConnected } = useContext(SocketContext);
+
   return (
     <>
       {session?.user.userId !== userId ? (
